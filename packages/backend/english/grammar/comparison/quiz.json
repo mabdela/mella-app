@@ -1,0 +1,107 @@
+{
+  "topic_id":"105",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Andi is 165 cm tall. Donna is 167 cm tall. So, Donna is ________________ than Andi.",
+      "choice": ["Taller", "Bigger", "Shorter", "Smaller"],
+      "answer": 0,
+      "explanation": "Taller is the correct answer.",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "Comparative adjectives are used when comparing ________________ things, people or groups.",
+      "choice": ["Two", "Two or more", "Three or more", "None"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "Which is the comparative form?\n \"I'm strong, but my brother is ________________ .\"",
+      "choice": ["Strongest", "Stronger", "as strong", "more Stronger"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "Choose the correct degree of comparison in the following sentence.\n Of all the hurricanes in American history, Hurricane Katrina is probably the ________________ .",
+      "choice": [
+        "destructiver",
+        "more destructived",
+        "destructivist",
+        "most destructive"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [{ "hurricanes": "አውሎ ነፋሶች" }, { "destructive": "አጥፊ" }]
+    },
+    {
+      "id": 5,
+      "question": "What is the degree of comparison for each adjective in capital letters?\n The raven may be SMARTER than all other birds since it is very adaptable.",
+      "choice": ["positive", "comparative", "superlative"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        { "raven": "ቁራ" },
+        { "SMARTER": "ብልህ" },
+        { "adaptable": "ተለማማጅ" }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "What is the degree of comparison for each adjective in capital letters?\n They are LIGHTER than most animals because their bones are hollow.",
+      "choice": ["positive", "comparative", "superlative"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        { "LIGHTER": "ቀላል" },
+        { "bones": "አጥንቶች" },
+        { "hollow": "ባዶ" }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "What is the degree of comparison for each adjective in capital letters?\n One of the FASTEST flying birds is the peregrine falcon.",
+      "choice": ["positive", "comparative", "superlative"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        { "FASTEST": "ፈጣኑ" },
+        { "birds": "ወፎች" },
+        { "falcon": "ጭልፊት" }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "What is the degree of comparison for each adjective in capital letters?\n Some people think it is LEAST ATTRACTIVE of all birds.",
+      "choice": ["positive", "comparative", "superlative"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [{ "LEAST": "ትንሹ" }, { "ATTRACTIVE": "ማራኪ" }]
+    },
+    {
+      "id": 9,
+      "question": "What is the degree of comparison for each adjective in capital letters?\n Some would say that birds are the MOST MUSICAL of all animals.",
+      "choice": ["positive", "comparative", "superlative"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [{ "MUSICAL": "ሙዚቃዊ" }]
+    },
+    {
+      "id": 10,
+      "question": "What is the degree of comparison for each adjective in capital letters?\n When it cannot find a FAVORITE food, it will learn to eat something else.",
+      "choice": ["positive", "comparative", "superlative"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [
+        { "FAVORITE": "የሚወደድ" },
+        { "food": "ምግብ" },
+        { "eat": "ብላ" },
+        { "learn": "ይማሩ" }
+      ]
+    }
+  ]
+}

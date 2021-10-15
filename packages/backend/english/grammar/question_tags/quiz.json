@@ -1,0 +1,60 @@
+{
+  "topic_id":"117",
+  "questions": [
+    {
+      "id": 1,
+      "question": "You wouldn't like to invite my Dad, ________",
+      "choice": ["did you?", "wouldn't you?", "won't you?", "would you?"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "So you bought a car, ________",
+      "choice": ["is not he?", "isn't he?", "wasn't he?", "didn't he?"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "We must lock the doors, ________",
+      "choice": ["mustn't they?", "shouldn't we?", "mustn't we?", "must we?"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "Let's go for a walk, ________",
+      "choice": ["shall we?", "will we?", "do we?", "A and C"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "You do go to school, ________",
+      "choice": ["do we?", "do you?", "aren't you?", "don't you?"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },{
+      "id": 6,
+      "question": "man : _________________\nBoy: 300 miles",
+      "choice": ["how far is to losangeles?", "how fast is the car?", "both?", "none?"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 6,
+      "question": "Tizita :what did you do last night?\nBoy: ____________",
+      "choice": ["I am studying", "I do nothing", "I studied", "why do ask me?"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    }
+  ]
+}

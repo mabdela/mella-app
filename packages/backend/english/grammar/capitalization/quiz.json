@@ -1,0 +1,143 @@
+{
+  "topic_id":"10",
+  "questions": [
+    {
+      "id": 1,
+      "question": "which one of the statments is correct.",
+      "choice": [
+        "my grandmother grew up in witemere.",
+        "st.marry",
+        "i would like to become a famous writer like sydney sheldon",
+        "Dear Bryan, Yours faithfully"
+      ],
+      "answer": 3,
+      "explanation": "The ansewer is 4th one. ",
+      "keywords": [{ "correct": "ትክክል" }]
+    },
+    {
+      "id": 2,
+      "question": "which one is correctly punctuated",
+      "choice": [
+        "No it isn’t seven yet.",
+        "“After a while,” he added, I was walking without a cane",
+        "My mother-in-law’s photograph album",
+        "he she and me'"
+      ],
+      "answer": 0,
+      "explanation": "will shows future action , the second option is correct but for past action so the answer is 'studies'",
+      "keywords": [{ "My mother-in-law’s": "አማት" }]
+    },
+    {
+      "id": 3,
+      "question": "Which sentence is capitalized correctly?",
+      "choice": [
+        "The planet nearest the sun is mercury.",
+        "the Planet nearest the Sun is Mercury.",
+        "The Planet nearest the Sun is Mercury.",
+        "The planet nearest the Sun is Mercury."
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [{ "nearest": "ቅርብ" }]
+    },
+    {
+      "id": 4,
+      "question": "Which sentence is capitalized correctly?",
+      "choice": [
+        "I walked Home with Cindy.",
+        "I walked home with Cindy.",
+        "i walked home with Cindy.",
+        "I walked home with cindy."
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Which sentence is capitalized correctly?",
+      "choice": [
+        "'That,' We were informed, 'Is a snow leopard.'",
+        "'That,' we were informed, 'is a snow leopard.'",
+        "'That,' We were informed, 'is a snow leopard.'",
+        "'That,' we were informed, 'Is a snow leopard.'"
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        { "informed": "አሳወቀ" },
+        { "snow": "በረዶ" },
+        { "leopard": "ነብር" }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "Which sentence is capitalized correctly?",
+      "choice": [
+        "On a cloudless night, I studied pisces, a constellation in the northern sky.",
+        "on a Cloudless Night, i studied Pisces, a constellation in the Northern Sky.",
+        "On a cloudless night, I studies Pisces, a constellation in the Northern Sky.",
+        "on a cloudless night, I studied pisces, a constellation in the northern sky."
+      ],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [
+        { "cloudless": "ደመና የሌለው" },
+        { "constellation": "ህብረ ከዋክብት" },
+        { "sky": "ሰማይ" }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "Which sentence is capitalized correctly?",
+      "choice": [
+        "I have shopped for clothes from the gap on the store's website.",
+        "i have shopped for clothes from the Gap on the store's Website.",
+        "I have shopped for clothes from the Gap on the store's website.",
+        "i have shopped for clothes from the gap on the store's website."
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [{ "shopped": "ተገዝቷል" }, { "clothes": "አልባሳት" }]
+    },
+    {
+      "id": 8,
+      "question": "Choose the sentence with correct capitalization and punctuation.",
+      "choice": [
+        "Are we going to dinner at 5 30 P.M.?",
+        "Are we going to dinner at 5:30 P.M.",
+        "Are we going to dinner at 5:30 P.M.?",
+        "Are we going to dinner at 5:30 PM?"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [{ "dinner": "እራት" }]
+    },
+    {
+      "id": 9,
+      "question": "Which of the following sentence is capitalized correctly?",
+      "choice": [
+        "A tale of two cities",
+        "A Tale Of Two Cities",
+        "a Tale of Two Cities",
+        "A Tale of Two Cities"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [{ "tale": "ተረት" }, { "cities": "ከተሞች" }]
+    },
+    {
+      "id": 10,
+      "question": "Which of the following sentence is capitalized correctly?",
+      "choice": [
+        "'can we go home?'",
+        "'can we go Home?'",
+        "'Can we go Home?'",
+        "'Can we go home?'"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [{ "home": "ቤት" }]
+    }
+  ]
+}

@@ -1,0 +1,212 @@
+{
+  "topic_id":"107",
+  "questions": [
+    {
+      "id": 1,
+      "question": "The ________________ steep angle made it difficult to climb.",
+      "choice": ["stairs", "stairs'", "stairs's", "stair's"],
+      "answer": 1,
+      "explanation": "In this sentence, the plural form of stair is intended. Since the plural form of stair is stairs, the correct possessive noun should be stairs’.",
+      "keywords": [
+        {
+          "stairs": "ደረጃዎች"
+        },
+        {
+          "climb": "መውጣት"
+        },
+        {
+          "intended": "የታሰበ"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "question": "The ________________ hands need to be washed regularly.",
+      "choice": ["children’s", "children", "childrens", "childrens'"],
+      "answer": 0,
+      "explanation": "Children which is the plural form of child does not end in plural s, so its possessive form should be children’s.",
+      "keywords": [
+        {
+          "children": "ልጆች"
+        },
+        {
+          "washed": "ታጠበ"
+        },
+        {
+          "regularly": "በየጊዜው"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Sugary drinks make your ________________ enamel more vulnerable to decay.",
+      "choice": ["teeth", "teeth's", "teeths'", "tooths'"],
+      "answer": 1,
+      "explanation": "Teeth which is the plural form of tooth does not end in plural s, so its possessive form should be teeth’s.",
+      "keywords": [
+        {
+          "enamel": "የጥርስ ውጨኛው አካል"
+        },
+        {
+          "sugary": "ጣፋጭ"
+        },
+        {
+          "drinks": "መጠጦች"
+        },
+        {
+          "vulnerable": "ተጋላጭ"
+        },
+        {
+          "teeth": "ጥርሶች"
+        },
+        {
+          "decay": "መበስበስ"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "question": "An ________________ is a word that is used to modify a noun or pronoun.",
+      "choice": ["article", "adjective", "proper adjective", "adverb'"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        {
+          "modify": "ቀይር"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "question": "Choose the adjective:",
+      "choice": ["girl", "jumped", "bird", "sweet"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        {
+          "girl": "ሴት ልጅ"
+        },
+        {
+          "jumped": "ዘለሉ"
+        },
+        {
+          "bird": "ወፍ"
+        },
+        {
+          "sweet": "ጣፋጭ"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "Sam brought five bananas, so Jay could eat one each day at school.\n What part of speech is five?",
+      "choice": ["noun", "pronoun", "verb", "adjective"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [
+        {
+          "brought": "አመጣ"
+        },
+        {
+          "bananas": "ሙዝ"
+        },
+        {
+          "speech": "ንግግር"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "Find the superlative form of the adjective DELICIOUS.",
+      "choice": [
+        "deliciouser",
+        "more delicious",
+        "most delicious",
+        "deliciousest"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        {
+          "delicious": "ጣፋጭ"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "In which sentence are coordinate adjectives used correctly?",
+      "choice": [
+        "The small, dog barked all night long, and it kept us awake.",
+        "The large, white cat decided to make our backyard her new home.",
+        "I walked to school with my smart, athletic friend.",
+        "The noisy rude class was kept five minutes after the bell because of their behavior."
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        {
+          "barked": "ጮኸ"
+        },
+        {
+          "awake": "መንቃት"
+        },
+        {
+          "decided": "ወሰነ"
+        },
+        {
+          "backyard": "ጓሮ"
+        },
+        {
+          "athletic": "አትሌቲክስ"
+        },
+        {
+          "noisy": "ጫጫታ"
+        },
+        {
+          "rude": "ባለጌ"
+        },
+        {
+          "bell": "ደወል"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "question": "'Of all the heroes in Greek myths, Hercules was the greatest.'\n Name the predicate adjective:",
+      "choice": ["all", "myths", "was", "greatest"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [
+        {
+          "heroes": "ጀግኖች"
+        },
+        {
+          "myths": "አፈ ታሪኮች"
+        },
+        {
+          "greatest": "ትልቅ"
+        },
+        {
+          "predicate": "ገላጭ"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "question": "What is the adjective clause?\n Students who are intelligent get good grades.",
+      "choice": [
+        "get good grades",
+        "intelligent",
+        "Students who",
+        "who are intelligent"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [
+        {
+          "intelligent": "ብልህ"
+        }
+      ]
+    }
+  ]
+}

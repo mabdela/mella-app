@@ -1,0 +1,62 @@
+{
+    "_id":"3041",
+    "Paragraph 1":[
+        
+                    {"Item":[
+                        {"mark":false,
+                        "question":"What conclusion can be made based on the fact that Jake’s pajamas do not fit?",
+                        "Choice":["He has cheap pajamas that came apart while he slept.",
+                            " He has grown lots in the four years he was asleep.",
+                            "He ate too much the night before and gained weight.",
+                            "He had a growth spurt that happened overnight."],
+                        "answer":2,
+                        "explanation":"explanation",
+                        "KeyWord":[{"fit":"ተስማሚ"}]
+                        }
+                ]
+                },
+                {"Item":[
+                    {"mark":false,
+                    "question":"Which event happens first?",
+                    "Choice":["Jake dreams about having lunch with Tom Cruise.",
+                        " Jake dreams about flying over the neighborhood.",
+                        "Jake dreams about playing baseball for the Dodgers.",
+                        " Jake dreams about sleeping for four years"],
+                    "answer":1,
+                    "explanation":"explanation",
+                    "KeyWord":[{"happens":"ክስተት"}]
+                    }
+            ]
+            },
+            {"Item":[
+                {"mark":false,
+                "question":"Why does Jake leap out of bed at the end of the story?",
+                "Choice":[" He does not want his dad bugging him.",
+                        " He does not want his sister laughing at him",
+                        "He does not want to sleep his life away",
+                        " He does not want to grow anymore."],
+                "answer":1,
+                "explanation":"explanation",
+                "KeyWord":[{"leap":"ዘለለ"}]
+                }
+        ]
+        },
+        {"Item":[
+            {"mark":false,
+            "question":"After reading the passage, what could be the belief of the author?",
+            "Choice":["  Teenagers should not listen to their friends.",
+                    "Teenagers should not listen to their parents.",
+                    "Teenagers should not let opportunities pass them by",
+                    "Teenagers should not sleep more than ten hours a night."],
+            "answer":1,
+            "explanation":"explanation",
+            "KeyWord":[{"belief":"እምነት"}]
+            }
+        ]
+        }    
+
+
+
+]
+
+}

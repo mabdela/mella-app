@@ -1,0 +1,100 @@
+{
+  "topic_id":"205",
+  "questions": [
+    {
+      "id": 1,
+      "question": "How many different types of paragraphs are in an essay?",
+      "choice": ["One", "Two", "Three", "Four"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "What do you call the first paragraph in a formal essay?",
+      "choice": ["Beginning", "Grabber", "Hook", "Introduction"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "What do you call the last paragraph in a formal essay?",
+      "choice": ["Resolution", "Conclusion", "Ending", "Finale"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "Begin every body paragraph with  _________________.",
+      "choice": [
+        "a lead",
+        "an introduction",
+        "a topic sentence",
+        "background information"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Which transition signals a conclusion?",
+      "choice": ["In addition,", "Similarly,", "For example,", "In short,"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 6,
+      "question": "All of the following are acceptable types of hooks when writing an argumentative essay EXCEPT:",
+      "choice": [
+        "Statistics,",
+        "Your opinion,",
+        "Questions",
+        "Shock Statements"
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 7,
+      "question": "The supporting details in the essay are:",
+      "choice": [
+        "restating the question,",
+        "thesis statements",
+        "summarizing",
+        "evidence"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 8,
+      "question": "This type of essay illustrates the similarities and differences between two subjects:",
+      "choice": ["Compare and contrast", "T-charts", "Narrative", "Persuasive"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 9,
+      "question": "In this step of the writing process, you create a graphic organizer.",
+      "choice": ["Writing", "Publishing", "Editing", "Prewriting"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 10,
+      "question": "This is the final step of the writing process.",
+      "choice": ["Publishing", "Writing", "Revising", "Editing"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    }
+  ]
+}

@@ -1,0 +1,85 @@
+{
+  "topic_id":"119",
+  "questions": [
+    {
+      "id": 1,
+      "question": "I am not angry ________________ anything I feel a little surprised.",
+      "choice": ["If", "Unless", "Whether", "even though"],
+      "answer": 0,
+      "explanation": "If can be used before non-assertive words like any, anything, ever and not.",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "The Kaziranga National Park is a World Heritage Site ________________ hosts two-thirds of the one-horned rhinoceros in the world.",
+      "choice": ["And", "That", "Or", "A and B"],
+      "answer": 3,
+      "explanation": "A and B can be possible answer.",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "August 31st is a national holiday ________________ everybody dances in the streets.",
+      "choice": ["when", "where", "that", "why"],
+      "answer": 0,
+      "explanation": "When indicates time; where indicates place. That cannot be used instead of when or where.",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "We will get there ________________ you do.",
+      "choice": ["sonner", "as soon as", "as soon than", "A and B"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Strange ________________ it may sound, I don't like watching cricket.",
+      "choice": ["as", "though", "so", "A and B"],
+      "answer": 3,
+      "explanation": "After an adjective or an adverb, as and though can be used in a special structure.",
+      "keywords": []
+    },
+    {
+      "id": 6,
+      "question": "Select the conjunction in the following sentence. \nCamels may bite or spit at their owners.",
+      "choice": ["may", "or", "at", "their"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 7,
+      "question": "Supply the correct coordinating conjunction. \nI like science, ________________ I prefer math.",
+      "choice": ["and; or", "for; yet", "or; and", "but; yet"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 8,
+      "question": "Supply the correct coordinating conjunction. \nWe should hurry, ________________ the show is about to begin.",
+      "choice": ["but", "for", "yet", "or"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 9,
+      "question": "My sister ________________ I do chores after school.",
+      "choice": ["and; or", "but", "nor", "for"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 10,
+      "question": "Sarah will ________________ fly in on Monday ________________ drive and arrive on Tuesday.",
+      "choice": ["Both/and", "Either/or", "Neither/nor", "Not only/but also"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    }
+  ]
+}

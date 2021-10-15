@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+    <style>
+.mella-content-wrapper {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  overflow-x: hidden;  
+}
+
+
+  .mella-content-container {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    cursor: pointer;
+  }
+
+  .tooltip .tooltiptext-text{
+    visibility: hidden;
+    width: 120px;
+    background-color: #bb7900;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgb(121, 95, 47);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  .tooltip:hover .tooltiptext-text {
+    visibility: visible;
+  }
+
+  h2 {
+      padding-top: 30px;
+    }
+
+
+@media (min-width: 768px) {
+  .mella-content-wrapper {
+    width: 700px;
+  }
+  
+    h2 {
+      text-align: start;
+    }
+    .mella-content-container {
+      padding: 20px;
+    }
+    
+  
+}
+    </style>
+    <body >
+      <div class="mella-content-wrapper">
+      <br>
+        <h2>The <a class="tooltip"><span class="tooltiptext">ሐረጎች
+        </span>Phrases</a> </h2>
+        <div class="mella-content-container">
+        A phrase is a group of words without a subject or a predicate or both and does not express a complete thought.
+        <h3>Types</h3>
+        <ol>
+            <li><h4>Noun Phrases</h4><p>A noun phrase consists of a noun and all its modifiers.</p></li>
+            <li><h4>Verb phrases</h4><p>A verb phrase consists of a main verb and its helping verbs.</p></li> 
+            <li><h4> Prepositional phrases</h4><p>A prepositional phrase is made up of a preposition, the object of the preposition, and all the words between them.</p></li> 
+            <li><h4> Gerund phrases</h4><p>A gerund is a verb form used as a noun.</p></li>    
+       
+            
+        </ol>
+        </div>
+        </div>
+    </body>
+</html>

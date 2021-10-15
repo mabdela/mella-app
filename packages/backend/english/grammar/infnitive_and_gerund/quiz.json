@@ -1,0 +1,57 @@
+{
+    "topic_id":"125",
+    "questions": [
+        {
+            "id": 1,
+            "question": "It is easy________mistakes.",
+            "choice": [
+                "make",
+                "making",
+                "make",
+                "made"
+            ],
+            "answer": 0,
+            "explanation": "certain adjective is followed by to-infnitive",
+            "keywords": [
+                {
+                    "mistake": "ስህተት"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "question": "It is impssible __________ sneeze without ____________your eyes.",
+            "choice": [
+                "sneezing/closing",
+                "to sneez/closing",
+                "to sneeze/to close",
+                "sneeze/close'"
+            ],
+            "answer": 1,
+            "explanation": "as adjectives are followed by to- infinitve , gerund can also be used after certain preposions",
+            "keywords": [
+                {
+                    "sneeze": "ማስነጠስ"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "question": "my friend enjoys _______ horour films.",
+            "choice": [
+                "to watch",
+                "to watching",
+                "to be watching",
+                "watching"
+            ],
+            "answer": 3,
+            "explanation": "we use ing immdiatley after some verbs",
+            "keywords": [
+                {
+                    "enjoys": "መዝናናት"
+                }
+                
+            ]
+        }
+    ]
+}

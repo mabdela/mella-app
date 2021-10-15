@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    .mella-content-wrapper {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    .mella-content-container {
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 5px;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black;
+      cursor: pointer;
+    }
+
+    .tooltip .tooltiptext-text {
+      visibility: hidden;
+      width: 120px;
+      background-color: #bb7900;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      bottom: 100%;
+
+      /* Position the tooltip */
+      position: absolute;
+      right: 0;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background: rgb(121, 95, 47);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      bottom: 100%;
+
+      /* Position the tooltip */
+      position: absolute;
+      right: 0;
+    }
+    h2 {
+      padding-top: 30px;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+    .tooltip:hover .tooltiptext-text {
+      visibility: visible;
+    }
+
+    @media (min-width: 768px) {
+      .mella-content-wrapper {
+        width: 700px;
+      }
+
+      h2 {
+        text-align: start;
+      }
+      .mella-content-container {
+        padding: 20px;
+      }
+      .tooltip .tooltiptext {
+        right: -70% !important;
+      }
+    }
+  </style>
+  <body>
+    <div class="mella-content-wrapper">
+      <h2>
+        The
+        <a class="tooltip"
+          ><span class="tooltiptext-text">ካፒታላይዜሽን</span>Capitalization</a
+        >
+      </h2>
+      <div class="mella-content-container">
+        Capitalization is the writing of a word with its first letter as an upper case and the remaining letters inlower case.
+        <h3>The following are the cases when capitalization is used:</h3>
+        <ol>
+          <li>
+           <h4>Abbreviations</h4>
+           Abbreviations begin with a capital letter.<br>
+           Example : St.james
+          </li>
+          <li>
+            <h4>) Words used as addresses</h4>
+            
+            Example : Rd. (Road)
+           </li>
+           <li>
+            <h4>The first word of every sentence</h4>
+            Abbreviations begin with a capital letter.<br>
+            Example : What should I do next?
+           </li>
+           <li>
+            <h4> Names of organisations and institutions</h4>
+            Abbreviations begin with a capital letter.<br>
+            Example :: There will be a beauty contest at school
+           </li>
+
+          
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>

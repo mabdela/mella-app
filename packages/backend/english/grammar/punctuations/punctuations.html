@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <style>
+    .mella-content-wrapper {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    .mella-content-container {
+      padding: 10px;
+      background-color: rgba(255, 255, 255, 0.6);
+      border-radius: 5px;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 1px dotted black;
+      cursor: pointer;
+    }
+
+    .tooltip .tooltiptext-text {
+      visibility: hidden;
+      width: 120px;
+      background-color: #bb7900;
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      bottom: 100%;
+
+      /* Position the tooltip */
+      position: absolute;
+      right: 0;
+    }
+
+    .tooltip .tooltiptext {
+      visibility: hidden;
+      width: 120px;
+      background: rgb(121, 95, 47);
+      color: #fff;
+      text-align: center;
+      border-radius: 6px;
+      padding: 5px 0;
+      bottom: 100%;
+
+      /* Position the tooltip */
+      position: absolute;
+      right: 0;
+    }
+    h2 {
+      padding-top: 30px;
+    }
+
+    .tooltip:hover .tooltiptext {
+      visibility: visible;
+    }
+    .tooltip:hover .tooltiptext-text {
+      visibility: visible;
+    }
+
+    @media (min-width: 768px) {
+      .mella-content-wrapper {
+        width: 700px;
+      }
+
+      h2 {
+        text-align: start;
+      }
+      .mella-content-container {
+        padding: 20px;
+      }
+      .tooltip .tooltiptext {
+        right: -70% !important;
+      }
+    }
+  </style>
+  <body>
+    <div class="mella-content-wrapper">
+      <h2>
+        The
+        <a class="tooltip"
+          ><span class="tooltiptext-text">ሥርዓተ ነጥብ</span>Punctuation</a
+        >
+      </h2>
+      <div class="mella-content-container">
+        Punctuation is the system of symbols that we use to separate sentences
+        and parts of sentences, and to make their meaning clear.
+        <h3>Punctuation marks can be grouped into:</h3>
+        <ol>
+          <li>
+            End marks
+            <ul>
+              <li>The full stop(.)</li>
+              <li>The question mark(?)</li>
+              <li>The exclamation mark(!)</li>
+            </ul>
+          </li>
+          <li>The comma(,)</li>
+          <li>The semicolon(;)</li>
+          <li>The semicolon(;) and colon(:)</li>
+          <li>The hyphen(-)</li>
+          <li>The apostoph(')</li>
+          <li>The quotaion mark("")</li>
+        </ol>
+      </div>
+    </div>
+  </body>
+</html>

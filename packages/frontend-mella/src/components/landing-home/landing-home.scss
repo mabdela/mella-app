@@ -1,0 +1,99 @@
+.landing-home-container {
+  padding: 67px 10px 10px 10px;
+  flex-grow: 1;
+  background-color: #f0f2f5;
+
+  .landing-home-wrapper {
+    margin: 50px auto;
+    .landing-home-list-item {
+      padding: 10px;
+      border: 1px solid #4267b2;
+      margin: 16px 0;
+      border-radius: 4px;
+      cursor: pointer;
+      &:hover {
+        background-color: #4267b2;
+        color: white;
+      }
+    }
+  }
+  .landing-about-news {
+    margin: 50px auto;
+    padding: 20px;
+    background-color: white;
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    border-radius: 15px;
+    h3 {
+      margin-top: 0 !important;
+      text-align: center;
+    }
+  }
+
+  .landing-home-sidebar {
+    margin: 0 auto;
+    .landing-home-sidebar-item {
+      padding: 10px;
+      border: 1px solid #4267b2;
+      border-radius: 4px;
+      margin-bottom: 16px;
+      background-color: #fff;
+      &:last-child {
+        margin-bottom: 0 !important;
+      }
+      .landing-home-subitem {
+        span {
+          display: block;
+        }
+      }
+    }
+  }
+}
+
+@media (min-width: 414px) {
+  .landing-home-sidebar-item {
+    box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+    width: 390px;
+    margin: 0 auto 15px auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .landing-home-wrapper {
+    width: 650px;
+  }
+  .landing-about-news {
+    width: 650px;
+    margin: 0 !important;
+  }
+
+  .landing-home-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 70px 0 20px 0 !important;
+    .landing-home-sidebar {
+      width: 270px;
+      margin-right: 0;
+      margin-left: 20px;
+      .landing-home-sidebar-item {
+        width: 100%;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .landing-home-container {
+    .landing-home-wrapper {
+      width: 100%;
+      margin: 0 20px 0 0 !important;
+      .landing-home-list-item {
+        margin: 0 0 20px 0 !important;
+      }
+    }
+
+    .landing-home-sidebar {
+      margin-left: 30px;
+    }
+  }
+}

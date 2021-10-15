@@ -1,0 +1,57 @@
+{
+    "topic_id":"124",
+    "questions": [
+        {
+            "id": 1,
+            "question": "If I finish highschool, my father _____ me to Europe.",
+            "choice": [
+                "sends",
+                "will send",
+                "would send",
+                "is send"
+            ],
+            "answer": 1,
+            "explanation": "First conditional sendtence present simple + future",
+            "keywords": [
+                {
+                    "finish": "መጨረስ"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "question": "what would happen if they _______ alchol.",
+            "choice": [
+                "drank",
+                "drinks",
+                "drink",
+                "drinking"
+            ],
+            "answer": 0,
+            "explanation": "it's Second conditional sentecce",
+            "keywords": [
+                {
+                    "happen": "ክስተት"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "question": "Alemu didn't come to class. I wish he _________ to the class",
+            "choice": [
+                "had come",
+                "come",
+                "came",
+                "were"
+            ],
+            "answer": 0,
+            "explanation": "third conditional sentence",
+            "keywords": [
+                {
+                    "wish": "ምኞት"
+                }
+                
+            ]
+        }
+    ]
+}

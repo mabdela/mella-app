@@ -1,0 +1,38 @@
+export const datas = [
+  {
+    id: 1,
+    userId: 1,
+    name: 'Bek',
+    comment: 'Join Mella.',
+    contentId: 101,
+    hour: 10,
+    like: [{ userId: 1 }, { userId: 5 }],
+  },
+  {
+    id: 2,
+    userId: 2,
+    name: 'Mubarek',
+    comment: 'Hello guys',
+    contentId: 101,
+    hour: 10,
+    like: [{ userId: 1 }, { userId: 5 }],
+  },
+  {
+    id: 3,
+    userId: 3,
+    name: 'Bek',
+    comment: 'Join Mella.',
+    contentId: 101,
+    hour: 10,
+    like: [{ userId: 1 }, { userId: 5 }],
+  },
+  {
+    id: 4,
+    userId: 4,
+    name: 'Mubarek',
+    comment: 'Hello guys',
+    contentId: 101,
+    hour: 10,
+    like: [{ userId: 1 }, { userId: 5 }],
+  },
+];

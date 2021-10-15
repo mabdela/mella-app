@@ -1,0 +1,65 @@
+{
+  "topic_id":"110",
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is the adverbial phrase in the sentence below? \nThe baby elephant was curious about the large ball.",
+      "choice": [
+        "The baby elephant",
+        "was curious'",
+        "about the large ball",
+        "None of the above"
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [{ "curious": "የማወቅ ጉጉት" }]
+    },
+    {
+      "id": 2,
+      "question": "While Mario talked to Jennifer, Jorge talked to Jose.\nWhat does the above sentence contain?",
+      "choice": [
+        "a dependent clause and an independent clause",
+        "two dependent clauses",
+        "two independent clauses",
+        "a coordinating conjunction"
+      ],
+      "answer": 0,
+      "explanation": "the first sentence can not stand by its own but the second can",
+      "keywords": [{ "talked": "ተነጋገረ" }]
+    },
+    {
+      "id": 3,
+      "question": "In the following sentence, which word does the modifier describe?\n Zoe played a trumpet who was five.",
+      "choice": ["zoe", "trumpet", "five'", "who"],
+      "answer": 1,
+      "explanation": "'who was five' is modifier which discribes trumpet",
+      "keywords": [{ "trumpet": "መለከት" }]
+    },
+    {
+      "id": 4,
+      "question": "Which phrase is an infinitive phrase?",
+      "choice": [
+        "to the house",
+        "to be",
+        "to the store'",
+        "to his friend's recital"
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Which phrase is a prepositional phrase?",
+      "choice": [
+        "to run",
+        "to sing joyfully",
+        "to have suffered'",
+        "to the beach"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    }
+  ]
+}

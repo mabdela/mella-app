@@ -1,0 +1,198 @@
+{
+  "topic_id":"101",
+  "questions": [
+    {
+      "id": 1,
+      "question": "The ________________ steep angle made it difficult to climb.",
+      "choice": ["stairs", "stairs'", "stairs's", "stair's"],
+      "answer": 1,
+      "explanation": "In this sentence, the plural form of stair is intended. Since the plural form of stair is stairs, the correct possessive noun should be stairs’.",
+      "keywords": [
+        {
+          "stairs": "ደረጃዎች"
+        },
+        {
+          "climb": "መውጣት"
+        },
+        {
+          "intended": "የታሰበ"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "question": "The ________________ hands need to be washed regularly.",
+      "choice": ["children’s", "children", "childrens", "childrens'"],
+      "answer": 0,
+      "explanation": "Children which is the plural form of child does not end in plural s, so its possessive form should be children’s.",
+      "keywords": [
+        {
+          "children": "ልጆች"
+        },
+        {
+          "washed": "ታጠበ"
+        },
+        {
+          "regularly": "በየጊዜው"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Sugary drinks make your ________________ enamel more vulnerable to decay.",
+      "choice": ["teeth", "teeth's", "teeths'", "tooths'"],
+      "answer": 1,
+      "explanation": "Teeth which is the plural form of tooth does not end in plural s, so its possessive form should be teeth’s.",
+      "keywords": [
+        {
+          "enamel": "የጥርስ ውጨኛው አካል"
+        },
+        {
+          "sugary": "ጣፋጭ"
+        },
+        {
+          "drinks": "መጠጦች"
+        },
+        {
+          "vulnerable": "ተጋላጭ"
+        },
+        {
+          "teeth": "ጥርሶች"
+        },
+        {
+          "decay": "መበስበስ"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "question": "Tourist buy many things at this famous market. \nMarket is an example of what?",
+      "choice": [
+        "Compound Noun",
+        "Possessive Noun",
+        "Object of a Preposition",
+        "Direct Object"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        {
+          "Tourist": "ቱሪስት"
+        },
+        {
+          "buy": "ይግዙ"
+        },
+        {
+          "famous": "ዝነኛ"
+        },
+        {
+          "Market": "ገበያ"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "question": "How do I get to Pismo beach? Which type of sentence is this?",
+      "choice": ["question", "command", "noun", "statement"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [
+        {
+          "beach": "beach"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "A noun that refers to material things, to people, or to places. Example: PONY.",
+      "choice": [
+        "Proper Noun",
+        "Common Noun",
+        "Concrete Noun",
+        "Abstract Noun"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        {
+          "pony": "ፈረስ"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "In the following sentence, the word \"elephants\" is what kind of noun?\n\"The nine elephants were trained by a man named Zingarelli.\"",
+      "choice": [
+        "possessive Noun",
+        "compound Noun",
+        "plural Noun",
+        "abstract Noun"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        {
+          "elephants": "ዝሆኖች"
+        },
+        {
+          "trained": "የሰለጠነ"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "question": " ________________ names an unspecified person, place, or thing.",
+      "choice": [
+        "possessive Noun",
+        "proper Noun",
+        "plural Noun",
+        "common Noun"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [
+        {
+          "unspecified": "ያልተገለጸ"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "question": " ________________ names an unspecified person, place, or thing.",
+      "choice": [
+        "possessive Noun",
+        "proper Noun",
+        "plural Noun",
+        "common Noun"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [
+        {
+          "unspecified": "ያልተገለጸ"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "question": "I went to the grocery store to purchase some milk. \nThe words \"store\" and \"milk\" are what kind of nouns?",
+      "choice": ["common Noun", "proper Noun", "plural Noun", "specific Noun"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [
+        {
+          "grocery": "ግሮሰሪ"
+        },
+        {
+          "store": "መደብር"
+        },
+        {
+          "purchase": "ግዢ"
+        },
+        {
+          "milk": "ወተት"
+        }
+      ]
+    }
+  ]
+}

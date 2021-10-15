@@ -1,0 +1,202 @@
+{
+  "topic_id":"109",
+  "questions": [
+    {
+      "id": 1,
+      "question": "which one of the following is verb.",
+      "choice": ["Ethiopia", "tall'", "white", "go"],
+      "answer": 3,
+      "explanation": "Ethipia is a name and the rest two are adjectives the answer is go ",
+      "keywords": [
+        {
+          "tall": "ረጅም"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "question": "She carefully ________________ the map (study) which one shows present action",
+      "choice": ["studies", "studied", "have studied", "will study'"],
+      "answer": 0,
+      "explanation": "will shows future action , the second option is correct but for past action so the answer is 'studies'",
+      "keywords": [
+        {
+          "study": "ማጥናት"
+        },
+        {
+          "carefully": "በጥንቃቄ"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "question": "The school choir is singing a new song. which one is the verb of the sentence",
+      "choice": ["school", "new", "song", "singing"],
+      "answer": 1,
+      "explanation": "school and song are both nouns and new is adjective so singing is a verb of the sentence",
+      "keywords": [
+        {
+          "school": "ትምህርት ቤት"
+        },
+        {
+          "singing": "መዘመር"
+        },
+        {
+          "choir": "መዘምራን"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "question": "The kids polluted the water. What is the verb in the sentence?",
+      "choice": ["the", "polluted", "water", "kids"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        {
+          "polluted": "የተበከለ"
+        },
+        {
+          "water": "ውሃ"
+        },
+        {
+          "kids": "ልጆች"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "question": " I ________________ for a pen ________________ this composition.",
+      "choice": [
+        "look, write",
+        "am looking, to write",
+        "look, for writing",
+        "am looking, write"
+      ],
+      "answer": 1,
+      "explanation": "We use the present continuous to talk about actions or situations that are going on at the moment of speaking.",
+      "keywords": [
+        {
+          "composition": "ቅንብር"
+        },
+        {
+          "write": "ጻፍ"
+        },
+        {
+          "look": "ይመልከቱ"
+        }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "She ________________ up the stairs slowly because she didn't want ________________",
+      "choice": [
+        "was climbing, fall",
+        "will climb, falling",
+        "climbed, to fall",
+        "was climbing, falling"
+      ],
+      "answer": 2,
+      "explanation": "We use the simple past to say that somebody did something in the past.",
+      "keywords": [
+        {
+          "stairs": "ደረጃዎች"
+        },
+        {
+          "slowly": "በቀስታ"
+        },
+        {
+          "fall": "መውደቅ"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "The teacher ________________ the students ________________ the sum.",
+      "choice": [
+        "was asking, to solve",
+        "asked, solved",
+        "asked, to solve",
+        "asking, to solve"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        {
+          "teacher": "መምህር"
+        },
+        {
+          "students": "ተማሪዎች"
+        },
+        {
+          "solve": "መፍታት"
+        },
+        {
+          "sum": "ድምር"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "Nobody ________________ that he is innocent.",
+      "choice": ["is believing", "believes", "believe", "believed"],
+      "answer": 1,
+      "explanation": "Since the verb in the subordinate clause is in the present tense, the verb in the main clause is also likely to be in the present or future tense. A past tense seems improbable. Nobody is singular and hence the verb takes the marker -s.",
+      "keywords": [
+        {
+          "innocent": "ንፁህ"
+        },
+        {
+          "believe": "ማመን"
+        },
+        {
+          "Nobody": "ማንም"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "question": "Although the children were tired, they ________________ playing.",
+      "choice": ["were continuing", "continued", "had continued", "continue"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        {
+          "continued": "ቀጠለ"
+        },
+        {
+          "children": "ልጆች"
+        },
+        {
+          "tired": "መድክም"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "question": "The stranger ________________ the shopkeeper to give him a glass of water because he ________________ thirsty.",
+      "choice": [
+        "was requesting, was",
+        "requested, was",
+        "requested, is",
+        "request, is"
+      ],
+      "answer": 1,
+      "explanation": "school and song are both nouns and new is adjective so singing is a verb of the sentence",
+      "keywords": [
+        {
+          "stranger": "እንግዳ"
+        },
+        {
+          "shopkeeper": "ባለሱቅ"
+        },
+        {
+          "thirsty": "ተጠማ"
+        },
+        {
+          "request": "ጥያቄ"
+        }
+      ]
+    }
+  ]
+}

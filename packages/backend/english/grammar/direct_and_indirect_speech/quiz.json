@@ -1,0 +1,70 @@
+{
+  "topic_id":"120",
+  "questions": [
+    {
+      "id": 1,
+      "question": "He said, \"I went to school yesterday.\"",
+      "choice": [
+        "He said that he had gone to school yesterday.",
+        "He said that he had gone to school the day after.",
+        "He said that he had gone to school the previous day.",
+        "He said that he had gone to school the next day."
+      ],
+      "answer": 2,
+      "explanation": "To make negative infinitives we put not before to.",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "She said to me, \"I can sleep alone.\"",
+      "choice": [
+        "She said to me that she can sleep alone.",
+        "She told me that she can sleep alone.",
+        "She said to me that she could sleep alone.",
+        "She told me that she could sleep alone."
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "He said to me, \"I must win this game.\"",
+      "choice": [
+        "He told me that he must win this game.",
+        "He told me that he had to win that game.",
+        "He told me that he had to win this game.",
+        "He told me that he must win that game."
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "He said, \"I am a man.\"",
+      "choice": [
+        "He said that he was a man.",
+        "He said that he is a man.",
+        "He said that I am a man.",
+        "He said that I was a man."
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Thomas said, \"I will go to school next year.\"",
+      "choice": [
+        "Thomas said that he would go to school the year before.",
+        "Thomas said that he would go to school the the following year.",
+        "Thomas said that he would come to school the year before.",
+        "Thomas said that he would come to school the year after."
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    }
+  ]
+}

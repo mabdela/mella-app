@@ -1,0 +1,83 @@
+{
+    "topic_id":"118",
+    "questions": [
+        {
+            "id": 1,
+            "question": "Choose the correct article from the choices given in brackets in the following sentences",
+            "choice": [
+                "A",
+                "An'",
+                "The",
+                "a and c can be answers"
+            ],
+            "answer": 3,
+            "explanation": "In the sentence both a and the can be the answers but an can not be because 'm' is not voul",
+            "keywords": [
+                {
+                    "stairs": "ደረጃዎች"
+                },
+                {
+                    "climb": "መውጣት"
+                },
+                {
+                    "intended": "የታሰበ"
+                }
+            ]
+        },
+        {
+            "id": 2,
+            "question": "The _____ hands need to be washed regularly.",
+            "choice": [
+                "children’s",
+                "children",
+                "childrens",
+                "childrens'"
+            ],
+            "answer": 0,
+            "explanation": "Children which is the plural form of child does not end in plural s, so its possessive form should be children’s.",
+            "keywords": [
+                {
+                    "children": "ልጆች"
+                },
+                {
+                    "washed": "ታጠበ"
+                },
+                {
+                    "regularly": "በየጊዜው"
+                }
+            ]
+        },
+        {
+            "id": 3,
+            "question": "Sugary drinks make your _____ enamel more vulnerable to decay.",
+            "choice": [
+                "teeth",
+                "teeth's",
+                "teeths'",
+                "tooths'"
+            ],
+            "answer": 1,
+            "explanation": "Teeth which is the plural form of tooth does not end in plural s, so its possessive form should be teeth’s.",
+            "keywords": [
+                {
+                    "enamel": "የጥርስ ውጨኛው አካል"
+                },
+                {
+                    "sugary": "ጣፋጭ"
+                },
+                {
+                    "drinks": "መጠጦች"
+                },
+                {
+                    "vulnerable": "ተጋላጭ"
+                },
+                {
+                    "teeth": "ጥርሶች"
+                },
+                {
+                    "decay": "መበስበስ"
+                }
+            ]
+        }
+    ]
+}

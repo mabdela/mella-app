@@ -1,0 +1,14 @@
+{
+  "name": "mono-repo",
+  "version": "1.0.0",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "frontend-mella": "cd packages/frontend-mella && yarn start",
+    "frontend-mella-admin": "cd packages/frontend-mella-admin && yarn start",
+    "backend": "cd packages/backend/cmd && go run main.go"
+  }
+}

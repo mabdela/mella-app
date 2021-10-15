@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html>
+    <style>
+.mella-content-wrapper {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  overflow-x: hidden;  
+}
+
+
+  .mella-content-container {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    cursor: pointer;
+  }
+
+  .tooltip .tooltiptext-text{
+    visibility: hidden;
+    width: 120px;
+    background-color: #bb7900;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgb(121, 95, 47);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  .tooltip:hover .tooltiptext-text {
+    visibility: visible;
+  }
+
+  h2 {
+      padding-top: 30px;
+    }
+
+
+@media (min-width: 768px) {
+  .mella-content-wrapper {
+    width: 700px;
+  }
+  
+    h2 {
+      text-align: start;
+    }
+    .mella-content-container {
+      padding: 20px;
+    }
+    
+  
+}
+    </style>
+    <body >
+      <div class="mella-content-wrapper">      <br>
+        <h2><a class="tooltip"><span class="tooltiptext">
+          የንግግር ክፍሎች
+        </span>Parts of speech</a> </h2>
+        <div class="mella-content-container">
+        All words may be classified into groups called parts of speech.
+        <h3>There are 8 parts of speech namely:</h3>
+        <ol>
+          <li><a href="../nouns/nouns.html" class="tooltip"><span class="tooltiptext"> ስሞች
+          </span>Nouns</a></li>
+          <br>
+          <li><a href="../verbs/verb.html" class="tooltip"><span class="tooltiptext"> ግሶች
+          </span>verbs</a></li>
+          <br>
+          <li><a  class="tooltip"><span       class="tooltiptext"> ተውላጠ ስም
+          </span>pronouns</a></li>
+          <br>
+          <li><a href="../adjectives/adjective.html" class="tooltip"><span       class="tooltiptext"> ቅፅሎች
+          </span>adjectives</a></li>
+          <br>
+          <li><a href="../adverbs/adverbs.html" class="tooltip"><span       class="tooltiptext"> ተዉሳካ ግስ
+          </span>adverbs</a></li>
+          <br>
+          <li><a href="../conjections/conjections.html" class="tooltip"><span       class="tooltiptext"> ማያያዣዎች
+          </span>conjunctions</a></li>
+          <br>
+          <li><a href="../conjections/conjections.html" class="tooltip"><span       class="tooltiptext"> ማያያዣዎች
+          </span>interjections</a></li>
+          <br>
+          <li><a href="../prepositions/preposition.html" class="tooltip"><span       class="tooltiptext"> ቅድመ -ግምቶች
+          </span>prepositions</a></li>
+        </ol>
+        </div>
+        </div>
+    </body>
+</html>

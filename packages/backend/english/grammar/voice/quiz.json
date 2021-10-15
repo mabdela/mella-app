@@ -1,0 +1,118 @@
+{
+  "topic_id":"103",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Select the sentence in the active voice.",
+      "choice": [
+        " I like pies.",
+        "The pies were eaten.",
+        "The pies are being eaten.",
+        "the ball is kicked"
+      ],
+      "answer": 0,
+      "explanation": "the subjuct did the verb in choice A",
+      "keywords": [{ "pies": "ኬኮች" }]
+    },
+    {
+      "id": 2,
+      "question": "Select the sentence in the passive voice.",
+      "choice": [
+        " The postman bite the dog.",
+        "The dog bite the postman.",
+        "The postman was bitten by the dog.",
+        "All'"
+      ],
+      "answer": 2,
+      "explanation": "subject is having the verb done in choice C",
+      "keywords": [{ "bite": "ንክሻ" }, { "postman": "ፖስታ ቤት" }]
+    },
+    {
+      "id": 3,
+      "question": "Select the verb in the active voice \nMy music was considered uncool, but I always felt a connection with the audience. (Singer David Cassidy)",
+      "choice": ["always", "connection", "audience", "felt"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [{ "felt": "ተሰማኝ" }, { "audience": "ታዳሚዎች" }]
+    },
+    {
+      "id": 4,
+      "question": "His command ________________",
+      "choice": [
+        "promptly obeyed",
+        "was promptly obeyed",
+        "has promptly obeyed",
+        "will promptly obeyed"
+      ],
+      "answer": 1,
+      "explanation": "We use the passive voice when we want to talk about an action, but are not interested in saying who/what does/did it.",
+      "keywords": [
+        { "command": "ትእዛዝ" },
+        { "promptly": "በፍጥነት" },
+        { "obeyed": "ታዘዘ" }
+      ]
+    },
+    {
+      "id": 5,
+      "question": "That portrait ________________ by my grandmother.",
+      "choice": ["painted", "has painted", "was painted", "paints"],
+      "answer": 2,
+      "explanation": "Passive voice is used when the subject is not the doer of the action.",
+      "keywords": [
+        { "portrait": "የቁም ስዕል" },
+        { "grandmother": "ሴት አያት" },
+        { "painted": "ተሳለ" }
+      ]
+    },
+    {
+      "id": 6,
+      "question": "They ________________ to the party.",
+      "choice": [
+        "have invited",
+        "are invited",
+        "have been invited",
+        "have been inviting"
+      ],
+      "answer": 2,
+      "explanation": "We use the passive voice, when the subject is not the doer of the action.",
+      "keywords": [{ "invited": "ተጋብዘዋል" }, { "party": "ፓርቲ" }]
+    },
+    {
+      "id": 7,
+      "question": "You ________________ when the time comes.",
+      "choice": ["will be told", "told", "will told", "have told"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [{ "told": "ነገረው" }]
+    },
+    {
+      "id": 8,
+      "question": "Everybody ________________ with me.",
+      "choice": ["agrees", "is agrees", "agreed", "agreed"],
+      "answer": 3,
+      "explanation": "Active voice is used when the subject is the doer of the action.",
+      "keywords": [{ "Everybody": "ሁሉም" }, { "agrees": "ይስማማል" }]
+    },
+    {
+      "id": 9,
+      "question": "The ocean ________________ dry.",
+      "choice": [
+        "cannot pump",
+        "pumped",
+        "cannot have pumped",
+        "cannot be pumped"
+      ],
+      "answer": 3,
+      "explanation": "The ocean does not perform any action here so a passive verb is required.",
+      "keywords": [{ "ocean": "ውቅያኖስ" }, { "pump": "ፓምፕ" }, { "dry": "ደረቅ" }]
+    },
+    {
+      "id": 10,
+      "question": "I was very ________________ in the lesson.",
+      "choice": ["interest", "interested", "interesting", "is interesting"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [{ "interest": "ፍላጎት" }, { "lesson": "ትምህርት" }]
+    }
+  ]
+}

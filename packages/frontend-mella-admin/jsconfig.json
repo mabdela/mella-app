@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "target": "es6",
+    "paths": {
+      "@mono-repo/common/*": ["../common/*"]
+    }
+  },
+  "exclude": ["node_modules"]
+}

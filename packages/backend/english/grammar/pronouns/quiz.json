@@ -1,0 +1,85 @@
+{
+  "topic_id":"104",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Pronouns take the place of ________________.",
+      "choice": ["a noun", "a verb", "an adjective", "an adverb"],
+      "answer": 0,
+      "explanation": "A pronoun is a part of speech that takes the place of a noun.",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "At the left, you can see Simon. ________________ is my brother.",
+      "choice": ["That", "He", "It", "Him"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "I met Sonia yesterday. ________________ made me laugh.",
+      "choice": ["It", "Her", "She", "They"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "Our friend, ________________ we invited for the party, arrived early.",
+      "choice": ["Whose", "That", "Whom", "Them"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Why have you not sent the report? ________________ was your responsibility.",
+      "choice": ["It", "Those", "Its", "Them"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 6,
+      "question": "Which is a possessive pronoun?",
+      "choice": ["He", "Theirs", "Us", "Them"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 7,
+      "question": "A ________________ pronoun introduces a question.",
+      "choice": ["indefinite", "compound", "silly", "interrogative"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 8,
+      "question": "Which of the following is a Personal Pronoun?",
+      "choice": ["She", "Them", "You", "all"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 9,
+      "question": "Which of the following is considered an indefinite pronoun?",
+      "choice": ["anybody", "both", "either", "all"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 10,
+      "question": "Choose the best pronoun to fill in the blank.\n ________________ car is red.",
+      "choice": ["They're", "Their", "There", "There's"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    }
+  ]
+}

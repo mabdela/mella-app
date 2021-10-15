@@ -1,0 +1,116 @@
+@mixin nonSelectable {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.side-pane {
+  position: fixed;
+  left: 0;
+  width: 320px;
+  height: 100%;
+  padding: 60px 10px 10px 10px;
+  z-index: 112;
+  // background-color: #ccc;
+  // background-color: #5d4e34;
+  // background: #4b5257;
+  // background-color: #515159;
+  background-color: #5874ad;
+  // background-image: linear-gradient(to bottom, #515159, rgba(33, 33, 38, 1));
+  transition: 1s;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    width: 0 !important;
+  }
+  &.hide {
+    left: -100%;
+  }
+  .input-container {
+    width: 100%;
+    padding: 10px;
+    outline: none;
+    margin-bottom: 5px;
+    border: none;
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+  .categories-container {
+    // background: white;
+    background-color: rgba(255, 255, 255, 0.7);
+    padding: 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-bottom: 5px;
+    width: 100%;
+    @include nonSelectable();
+
+    .categories {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+
+      .sub-icons {
+        color: #4267b2;
+      }
+    }
+    a {
+      text-decoration: none;
+      color: black;
+    }
+  }
+  .hide {
+    display: none !important;
+  }
+  .sub-categories-container {
+    text-decoration: none;
+    .sub-categories {
+      background-color: rgba(255, 255, 255, 0.4);
+      padding: 5px 0 5px 20px;
+      border-radius: 3px;
+      // color: #34393c;
+      color: #212126;
+      cursor: pointer;
+      margin-bottom: 5px;
+      width: 100%;
+
+      @include nonSelectable();
+      &:hover {
+        color: black;
+        background-color: white;
+      }
+      &.active {
+        background-color: white;
+      }
+    }
+    a {
+      text-decoration: none;
+    }
+  }
+  .logout {
+    margin-top: auto;
+    width: 100%;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.7);
+    color: #4267b2;
+  }
+}
+
+@media (min-width: 768px) {
+  .side-pane {
+    width: 350px !important;
+    position: block !important;
+    z-index: 10000;
+    padding: 10px;
+
+    &.hide {
+      position: fixed;
+      left: -340px;
+    }
+  }
+}

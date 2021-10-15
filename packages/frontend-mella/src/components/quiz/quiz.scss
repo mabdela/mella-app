@@ -1,0 +1,121 @@
+.quiz-container {
+  margin: 20px 5px;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  background-color: #4267b2;
+  border-radius: 5px;
+
+  h4 {
+    color: white;
+    text-align: center;
+    margin: 0;
+    font-weight: 700;
+    font-size: 19px;
+    padding-bottom: 10px;
+  }
+  .quiz-choice-container {
+    //   background: rgba(189, 123, 0, 0.781);
+    background-color: rgba(255, 255, 255, 0.6);
+    padding: 5px;
+    .quiz-question {
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .quiz-choose {
+      display: flex;
+      background-color: rgba(255, 255, 255, 0.3);
+      padding: 0 10px;
+      border-radius: 5px;
+      margin-bottom: 5px;
+      cursor: pointer;
+
+      &.valid {
+        background-color: #187d18b8 !important;
+      }
+      &.invalid {
+        background-color: rgba(236, 72, 72, 0.9) !important;
+      }
+      &:hover {
+        background-color: #ffffffd1;
+      }
+      .quiz-choice {
+        padding: 2px 5px;
+        border: 1px solid #4267b2;
+        border-radius: 40px;
+        background: #4267b2;
+        // color: rgba(189, 123, 0, 0.781);
+        color: #fff;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 5px;
+      }
+    }
+    .quiz-warning {
+      color: red;
+      padding: 10px 0;
+    }
+  }
+}
+
+.quiz-progress {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+h2 {
+  text-align: center;
+}
+.quiz-progress-bar {
+  position: fixed;
+  top: 50px;
+  right: 10px;
+  left: -10px;
+  border-bottom: 3px solid #86bf77;
+  z-index: 111;
+}
+
+.quiz-score {
+  text-align: center;
+  p {
+    font-size: 20px;
+  }
+  span {
+    i {
+      color: #5874ad;
+    }
+    span {
+      font-size: 30px;
+      color: green;
+      font-weight: 800;
+      margin-left: 10px;
+      line-height: 52px;
+    }
+  }
+}
+
+@media (min-width: 768px) {
+  .quiz-container {
+    width: 600px;
+
+    h4 {
+      text-align: start;
+      font-size: 30px;
+    }
+    .quiz-choice-container {
+      padding: 10px;
+      .quiz-question {
+        font-size: 15px;
+        font-weight: 600;
+      }
+    }
+  }
+}
+
+@media (min-width: 1024px) {
+  .quiz-container {
+    width: 800px;
+  }
+}

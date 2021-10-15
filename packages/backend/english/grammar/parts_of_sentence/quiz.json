@@ -1,0 +1,44 @@
+{
+  "topic_id":"108",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Identify sentence that is written correctly.",
+      "choice": [
+        "The wind was very strong the damage was everywhere.",
+        "Through the student doors in a hurry.'",
+        "Sally opened her gift it was a new IPod.",
+        "These puppies are for sale by the owner for $100 each."
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "Sentences that ask a question are called",
+      "choice": [
+        "exclamatory.",
+        "declarative.",
+        "interrogative.",
+        "inquisitive."
+      ],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "Grade 7 Types of Sentences Which of these is a complete sentence?",
+      "choice": [
+        "The beautiful bluebirds on the tree.",
+        "Are flying over the tree.",
+        "The bluebirds are flying over the tree.'",
+        "They flying bluebirds."
+      ],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    }
+  ]
+}

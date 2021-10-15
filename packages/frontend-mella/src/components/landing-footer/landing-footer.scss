@@ -1,0 +1,33 @@
+.landing-footer-container {
+  padding: 5px;
+  text-align: center;
+  background-color: #fff;
+  .landing-footer-follow {
+    margin: 0 10px 10px 0;
+  }
+  .landing-footer-icons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+
+    a {
+      text-decoration: none;
+      img {
+        width: 25px;
+        margin-right: 15px;
+        &:last-child {
+          margin-left: 0 !important;
+        }
+      }
+    }
+  }
+  .copy-container {
+    .far {
+      margin-right: 10px;
+    }
+    .footer-mella {
+      margin-right: 5px;
+      color: #4267b2;
+    }
+  }
+}

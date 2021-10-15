@@ -1,0 +1,110 @@
+{
+
+  "topic_id":"112",
+
+  "questions": [
+    {
+      "id": 1,
+      "question": "What is the main clause in this sentence?\n Even though John likes jam, he hates marmalade.",
+      "choice": ["Even though John likes jam,", "he hates marmalade."],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "What is the subordinate (or dependent) clause in this sentence?\n The wax is melting because it is too hot.",
+      "choice": ["the wax is melting", "because it is too hot"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "Identify the type of clause:\n The students needed to complete their maths homework",
+      "choice": ["main", "subordinate"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "Identify the type of clause:\n The players were thrilled",
+      "choice": ["main", "subordinate"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Identify the type of clause:\n After we finished cleaning our room",
+      "choice": ["main", "subordinate"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 6,
+      "question": "Identify the type of clause:\n Since we moved here from Chile, we have met many people.",
+      "choice": ["main", "subordinate"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [{ "moved": "ተንቀሳቅሷል" }]
+    },
+    {
+      "id": 7,
+      "question": "Identify the type of clause:\n If the trip is cancelled, we can play tennis.",
+      "choice": ["main", "subordinate"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [
+        { "trip": "ጉዞ" },
+        { "cancelled": "መሰረዝ" },
+        { "play": "ይጫወቱ" }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "Identify the type of clause:\n Was the movie that the reviewers liked sold out?",
+      "choice": ["main", "subordinate"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        { "reviewers": "ገምጋሚዎች" },
+        { "liked": "ወደውታል" },
+        { "sold out": "ተሽጦ አልቆዋል" }
+      ]
+    },
+    {
+      "id": 9,
+      "question": "What part of the following sentence is an INDEPENDENT CLAUSE, also known as the main clause?\n Until you eat your supper, there will be no dessert for you!",
+      "choice": [
+        "there will be no dessert for you",
+        "until you eat your supper",
+        "until you eat",
+        "there will be no"
+      ],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [{ "supper": "እራት" }, { "dessert": "ጣፋጮች" }]
+    },
+    {
+      "id": 10,
+      "question": "What is the subordinating clause in the sentence below?\n While the children slept, their parents decorated for the party.",
+      "choice": [
+        "While the children",
+        "their parents decorated",
+        "While the children slept",
+        "their parents decorated for the party"
+      ],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [
+        { "children": "ልጆች" },
+        { "decorated": "ያጌጠ" },
+        { "parents": "ወላጆች" },
+        { "party": "ፓርቲ" }
+      ]
+    }
+  ]
+}

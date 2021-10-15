@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <style>
+ .mella-content-wrapper {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  overflow-x: hidden;  
+}
+
+
+  .mella-content-container {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    cursor: pointer;
+  }
+
+  .tooltip .tooltiptext-text{
+    visibility: hidden;
+    width: 120px;
+    background-color: #bb7900;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgb(121, 95, 47);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  .tooltip:hover .tooltiptext-text {
+    visibility: visible;
+  }
+
+  h2 {
+      padding-top: 30px;
+    }
+
+
+@media (min-width: 768px) {
+  .mella-content-wrapper {
+    width: 700px;
+  }
+  
+    h2 {
+      text-align: start;
+    }
+    .mella-content-container {
+      padding: 20px;
+    }
+    
+  
+}
+    </style>
+    <body >
+      <div class = "mella-content-wrapper">
+            <br><br>
+        <h2>The <a class="tooltip"><span class="tooltiptext">ቅድመ -ግምቶች</span>Prepositions</a> </h2>
+        <div class="mella-content-container">
+        A preposition is a word that shows the <a class="tooltip"><span class="tooltiptext">ግንኙነት</span> relationship </a> between other words in a sentence.
+        <h3>Example</h3>
+        <p>The cat <a class="tooltip"><span class="tooltiptext">ተኛ</span> lay </a> under the table.</p><article>
+        <p>Hence a preposition is a word that links another word or word group to the rest of the sentence. The noun or pronoun after the preposition is called the object of the preposition.
+            <br><br>
+        The table is the object of the preposition under in the above sentence.
+            <br><br>
+        The preposition under relates the verb lay to the noun table.</p>
+      </article>
+            </div>
+    </div> 
+ </body>
+</html>

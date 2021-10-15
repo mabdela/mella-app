@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+    <style>
+.mella-content-wrapper {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  overflow-x: hidden;  
+}
+
+
+  .mella-content-container {
+    padding: 10px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border-radius: 5px;
+  }
+
+  .tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+    cursor: pointer;
+  }
+
+  .tooltip .tooltiptext-text{
+    visibility: hidden;
+    width: 120px;
+    background-color: #bb7900;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: rgb(121, 95, 47);
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+    bottom: 100%;
+
+    /* Position the tooltip */
+    position: absolute;
+    right: -70%;
+  }
+
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }
+  .tooltip:hover .tooltiptext-text {
+    visibility: visible;
+  }
+
+  h2 {
+      padding-top: 30px;
+    }
+
+
+@media (min-width: 768px) {
+  .mella-content-wrapper {
+    width: 700px;
+  }
+  
+    h2 {
+      text-align: start;
+    }
+    .mella-content-container {
+      padding: 20px;
+    }
+    
+  
+}
+    </style>
+    <body >
+      <div class="mella-content-wrapper">
+      <br>
+        <h2>The <a class="tooltip"><span class="tooltiptext">ሐረጎች</span>Clause</a> </h2>
+        <div class="mella-content-container">
+        A clause is a group of words that contains a verb and its subject.
+        <br><br>
+        There are two types of clauses – main clauses and subordinate clauses.
+        <h3>Main clause</h3>
+        <p>A main clause is a clause that can stand as sentence by itself.</p>
+        <h4>Example :</h4>When the power failed , the computer stopped.(the first phrase)
+        <h3><a class="tooltip"><span class="tooltiptext">የበታች</span>subordinate</a> clause</h3>
+        <h4>Examples :</h4>When the power failed , the computer stopped.(the second phrase).
+
+        </div>
+        </div>
+    </body>
+</html>

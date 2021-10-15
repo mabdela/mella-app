@@ -1,0 +1,105 @@
+{
+  "topic_id":"114",
+  "questions": [
+    {
+      "id": 1,
+      "question": "This is very heady punch, so watch your step.",
+      "choice": ["Simple sentence", "Complex sentence", "Compound sentence"],
+      "answer": 2,
+      "explanation": "A compound sentence has two or more coordinate clauses.",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "I don’t know what I should do now.",
+      "choice": ["Simple sentence", "Complex sentence", "Compound sentence"],
+      "answer": 1,
+      "explanation": "A complex sentence has one main clause and one or more subordinate clauses.",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "The helicopter hovered over the house.",
+      "choice": ["Simple sentence", "Complex sentence", "Compound sentence"],
+      "answer": 0,
+      "explanation": "A simple sentence has just one subject and one predicate.",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "A howl of protest went up when the voting was announced.",
+      "choice": ["Simple sentence", "Complex sentence", "Compound sentence"],
+      "answer": 1,
+      "explanation": "A complex sentence has one main clause and one or more subordinate clauses.",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "He became rich through wise investments.",
+      "choice": ["Simple sentence", "Complex sentence", "Compound sentence"],
+      "answer": 0,
+      "explanation": "A simple sentence has just one subject and one predicate.",
+      "keywords": []
+    },
+    {
+      "id": 6,
+      "question": "What type of sentence is this?\n I absolutely love to see the lion tamer perform!",
+      "choice": ["declarative", "imperative", "interrogative", "exclamatory"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 7,
+      "question": "Read the following sentence and identify the sentence type:\n Pauline loves to go to the beach and spend her days sunbathing.",
+      "choice": [
+        "Simple sentence",
+        "Complex sentence",
+        "Compound sentence",
+        "compound-complex sentence"
+      ],
+      "answer": 0,
+      "explanation": "A simple sentence has just one subject and one predicate.",
+      "keywords": [{ "sunbath": "የፀሐይ መታጠቢያ" }]
+    },
+    {
+      "id": 8,
+      "question": "Read the sentence and choose the answer that identifies the type of sentence:\n Before the sun rises, she runs two miles or exercises.",
+      "choice": [
+        "Simple sentence",
+        "Complex sentence",
+        "Compound sentence",
+        "compound-complex sentence"
+      ],
+      "answer": 1,
+      "explanation": "A complex sentence has one main clause and one or more subordinate clauses.",
+      "keywords": []
+    },
+    {
+      "id": 9,
+      "question": "A sentence with two or more independent, or main, clauses with two ideas of equal importance is called a",
+      "choice": [
+        "Simple sentence",
+        "Complex sentence",
+        "Compound sentence",
+        "compound-complex sentence"
+      ],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 10,
+      "question": "Identify the sentence type.\nAfter school Christopher fed the snakes and Matthew looked after the guinea pigs.",
+      "choice": [
+        "Simple sentence",
+        "Complex sentence",
+        "Compound sentence",
+        "compound-complex sentence"
+      ],
+      "answer": 2,
+      "explanation": "A compound sentence has two or more coordinate clauses.",
+      "keywords": [{ "snakes": "እባቦች" }, { "pigs": "አሳማዎች" }]
+    }
+  ]
+}

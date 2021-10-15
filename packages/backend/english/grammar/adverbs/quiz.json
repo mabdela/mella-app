@@ -1,0 +1,136 @@
+{
+  "topic_id":"113",
+  "questions": [
+    {
+      "id": 1,
+      "question": "Select the adverb in the sentence.\n Emily worked briefly on her report.",
+      "choice": ["report", "briefly", "worked", "her"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 2,
+      "question": "Select the adverb in the sentence.\n Darren accidentally deleted three hours of homework with one click.",
+      "choice": ["deleted", "homework", "accidentally", "with"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 3,
+      "question": "Select the adverb in the sentence. We went to the beach yesterday.",
+      "choice": ["yesterday", "went", "beach", "We"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 4,
+      "question": "Select the adverb in the sentence.\n The kayak was speeding wildly through the rapids.",
+      "choice": ["through", "kayak", "was", "wildly"],
+      "answer": 3,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 5,
+      "question": "Select the adverb in the sentence.\n My brother always picks on me.",
+      "choice": ["brother", "picks", "always", "on"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": []
+    },
+    {
+      "id": 6,
+      "question": "Adverbs modify:",
+      "choice": [
+        "nouns",
+        "nouns and pronouns",
+        "only adjectives and verbs",
+        "adjectives, verbs, and other adverbs"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [
+        {
+          "modify": "ቀይር"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "question": "Adverbs answer all of the following questions EXCEPT:",
+      "choice": [
+        "Where? When? How? To what extent?",
+        "When? How often? How long?",
+        "Where? When? How? How often? To what extent?",
+        "How often? Who that be? How much? To what extent?"
+      ],
+      "answer": 3,
+      "explanation": "",
+      "keywords": [
+        {
+          "EXCEPT": "በስተቀር"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "question": "The correct comparative form of the adverb 'quickly' is:",
+      "choice": ["quicker", "quickest", "more quickly", "quicklier"],
+      "answer": 2,
+      "explanation": "",
+      "keywords": [
+        {
+          "quick": "ፈጣን"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "question": "Complete the following sentence with the correct interrogative adverb:\n ________________ do birds fly south for the winter? (reason)",
+      "choice": ["Why", "How", "Where", "When"],
+      "answer": 0,
+      "explanation": "",
+      "keywords": [
+        {
+          "interrogative": "የሚጠይቅ"
+        },
+        {
+          "fly": "መብረር"
+        },
+        {
+          "winter": "ክረምት"
+        },
+        {
+          "birds": "ወፎች"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "question": "Complete the following sentence with the correct adverb:\n The two brothers are ________________ talented in the performing arts.",
+      "choice": ["as", "equally", "as equally", "no"],
+      "answer": 1,
+      "explanation": "",
+      "keywords": [
+        {
+          "correct": "ትክክል"
+        },
+        {
+          "brothers": "ወንድሞች"
+        },
+        {
+          "talented": "ተሰጥኦ ያለው"
+        },
+        {
+          "performing": "በማከናወን ላይ"
+        },
+        {
+          "arts": "ጥበባት"
+        }
+      ]
+    }
+  ]
+}
