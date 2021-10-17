@@ -45,13 +45,13 @@ func SetupRouter() *gin.Engine {
 			protected.GET("/userinfo/:user_id", user.FetchUserInfo)
 			protected.POST("/update_quiz_info", contents.UpdateQuizInfo)
 			protected.POST("/quiz_info", contents.QuizInfo)
-			
+
 		}
 	}
 	//************ admin *************
 	adminApi := r.Group("/admin")
 	{
-		ProtectedAdmin := adminApi.Group("/protected")
+		ProtectedAdmin := adminApi.Group("/protected").Use(middlewares.AdminAuth())
 		{
 			ProtectedAdmin.GET("/all_users", admin.GetAllUsers)
 			ProtectedAdmin.GET("/user_by_email/:email", admin.GetUserByEmail)
@@ -65,7 +65,8 @@ func SetupRouter() *gin.Engine {
 		}
 		publicAdmin := adminApi.Group("/public")
 		{
-			publicAdmin.POST("login", admin.AdminLogin)
+			publicAdmin.POST("/login", admin.AdminLogin)
+			publicAdmin.POST("/logout", admin.Logout)
 		}
 	}
 	// *****************************

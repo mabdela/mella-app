@@ -64,7 +64,7 @@ func AdminLogin(c *gin.Context) {
 		return
 	}
 	jwtWrapper := auth.JwtWrapper{
-		SecretKey:       "verysecretkey",
+		SecretKey:       "adminsecretekey",
 		Issuer:          "AuthService",
 		ExpirationHours: 24,
 	}
@@ -142,4 +142,21 @@ func ChangePassword(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{"message": "password updated"})
+}
+
+func Logout(c *gin.Context) {
+
+	cookie := http.Cookie{
+		Name:     "jwt",
+		Path:     "/",
+		HttpOnly: true,
+		MaxAge:   -1,
+	}
+
+	http.SetCookie(c.Writer, &cookie)
+
+	c.JSON(http.StatusOK, gin.H{
+		"msg": "Successfully logged out user",
+	})
+
 }

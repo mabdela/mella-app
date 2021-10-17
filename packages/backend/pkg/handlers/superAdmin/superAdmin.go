@@ -12,6 +12,8 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+var adminArray []admin.AdminModel
+
 func CreateAdmin(c *gin.Context) {
 	var admin admin.AdminModel
 	c.BindJSON(&admin)
@@ -40,7 +42,24 @@ func CreateAdmin(c *gin.Context) {
 		c.JSON(http.StatusForbidden, gin.H{"message": "acount exists"})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "successfully added"})
+	//return
+
+	filter := bson.M{}
+	cursor, err := collection.Find(ctx, filter)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		cursor.Decode(&admin)
+		adminArray = append(adminArray, admin)
+	}
+	cursor.Close(ctx)
+	c.JSON(http.StatusOK, adminArray)
 }
 
 //uses email address to delete admins
@@ -79,6 +98,7 @@ func AllAdmins(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError, gin.H{})
 			return
 		}
+		admins.Password = ""
 		adminsArray = append(adminsArray, admins)
 	}
 	c.JSON(http.StatusOK, adminsArray)

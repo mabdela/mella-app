@@ -33,7 +33,6 @@ func TestGetAllUsers(t *testing.T) {
 
 	err = json.Unmarshal(w.Body.Bytes(), &actualResult)
 	assert.NoError(t, err)
-
 }
 
 func TestGetUserByEmail(t *testing.T) {
