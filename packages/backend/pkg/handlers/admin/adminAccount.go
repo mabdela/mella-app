@@ -11,6 +11,7 @@ import (
 	"github.com/mabdela/mella/pkg/auth"
 	"github.com/mabdela/mella/pkg/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -21,9 +22,10 @@ type AdminLoginPayload struct {
 type LoginResponse struct {
 	Token string `json:"token"`
 	Name  string `json:"name"`
+	ID    string `json:"_id" bson:"_id,omitempty"`
 }
 type passwordChangePayload struct {
-	Email       string `json:"email"`
+	Id          string `json:"id"`
 	OldPassword string `json:"oldPassword"`
 	NewPassword string `json:"newPassword"`
 }
@@ -93,6 +95,7 @@ func AdminLogin(c *gin.Context) {
 	tokenResponse := LoginResponse{
 		Name:  adminModel.FirstName,
 		Token: signedToken,
+		ID:    adminModel.ID.Hex(),
 	}
 	// fmt.Println(tokenResponse)
 	c.JSON(http.StatusOK, tokenResponse)
@@ -102,10 +105,12 @@ func ChangePassword(c *gin.Context) {
 	//this should only be available for an admin for his acount only
 	var payload passwordChangePayload
 	c.BindJSON(&payload)
-
 	collection := models.DB.Database("mella").Collection("admin")
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
-	err := collection.FindOne(ctx, bson.M{"email": payload.Email}).Decode(&adminModel)
+	id, _ := primitive.ObjectIDFromHex(payload.Id)
+	filter := bson.M{"_id": id}
+	err := collection.FindOne(ctx, filter).Decode(&adminModel)
+	fmt.Println(adminModel)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{})
@@ -121,8 +126,7 @@ func ChangePassword(c *gin.Context) {
 		return
 	}
 	//change password
-	filter := bson.M{"email": payload.Email}
-	//correct the hashing
+
 	err = payload.HashPassword(payload.NewPassword)
 	if err != nil {
 		log.Println(err.Error())
@@ -132,7 +136,6 @@ func ChangePassword(c *gin.Context) {
 		c.Abort()
 		return
 	}
-	fmt.Println(payload)
 	change := bson.M{"$set": bson.M{"password": payload.NewPassword}}
 	_, err = collection.UpdateOne(ctx, filter, change)
 	if err != nil {
@@ -140,8 +143,9 @@ func ChangePassword(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{"message": "password updated"})
+	//return
+	collection.FindOne(ctx, filter).Decode(&adminModel)
+	c.JSON(http.StatusOK, adminModel)
 }
 
 func Logout(c *gin.Context) {

@@ -14,8 +14,8 @@ import (
 
 func TestLogin(t *testing.T) {
 	user := AdminLoginPayload{
-		Email:    "test@gmail.com",
-		Password: "passme",
+		Email:    "admin@gmail.com",
+		Password: "newpassword",
 	}
 
 	payload, err := json.Marshal(&user)
@@ -40,7 +40,7 @@ func TestLogin(t *testing.T) {
 
 func TestAdminLoginInvalidCredentials(t *testing.T) {
 	user := AdminLoginPayload{
-		Email:    "wrongemail@email.com",
+		Email:    "admin@gmail.com",
 		Password: "invalid",
 	}
 

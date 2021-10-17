@@ -74,7 +74,16 @@ func DeleteAdmin(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{"message": "admin deleted"})
+	// return
+	cursor, _ := collection.Find(ctx, bson.M{})
+	defer cursor.Close(ctx)
+	var admin admin.AdminModel
+	for cursor.Next(ctx) {
+		cursor.Decode(&admin)
+		adminArray = append(adminArray, admin)
+	}
+	cursor.Close(ctx)
+	c.JSON(http.StatusOK, adminArray)
 }
 
 func AllAdmins(c *gin.Context) {

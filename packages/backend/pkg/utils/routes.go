@@ -45,6 +45,8 @@ func SetupRouter() *gin.Engine {
 			protected.GET("/userinfo/:user_id", user.FetchUserInfo)
 			protected.POST("/update_quiz_info", contents.UpdateQuizInfo)
 			protected.POST("/quiz_info", contents.QuizInfo)
+			protected.PUT("/update_comment", contents.UpdateComment)
+			protected.PUT("/update_user_info", user.UpdateUser)
 
 		}
 	}

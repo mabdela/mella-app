@@ -41,3 +41,29 @@ func FetchUserInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, user_respnse)
 
 }
+
+type UserUpdatePayload struct {
+	FirstName string `json:"firstname"`
+	LastName  string `json:"lastname"`
+	Id        string `json:"id"`
+}
+
+func UpdateUser(c *gin.Context) {
+	var payload UserUpdatePayload
+	c.BindJSON(&payload)
+
+	update := bson.M{"$set": bson.M{"firstname": payload.FirstName, "lastname": payload.LastName}}
+	collection := models.DB.Database("mella").Collection("users")
+	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	id, _ := primitive.ObjectIDFromHex(payload.Id)
+	_, err := collection.UpdateByID(ctx, id, update)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+	// return
+	var user models.UserResponse
+	collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+	c.JSON(http.StatusOK, user)
+}
