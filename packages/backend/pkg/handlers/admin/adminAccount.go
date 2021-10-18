@@ -53,7 +53,7 @@ func AdminLogin(c *gin.Context) {
 	err := collection.FindOne(ctx, bson.M{"email": payload.Email}).Decode(&adminModel)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusNoContent, "invalid user credentials")
 		return
 	}
 	err = adminModel.CheckPassword(payload.Password)
