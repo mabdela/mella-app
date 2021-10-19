@@ -1,0 +1,29 @@
+name: Go
+
+on:
+  push:
+    branches: [ dev-integration ]
+  pull_request:
+    branches: [ dev-integration ]
+
+jobs:
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      working-directory: ./packages/backend
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Go
+      uses: actions/setup-go@v2
+      with:
+        go-version: 1.17
+
+    - name: Build
+      working-directory: ${{env.working-directory}}
+      run: go build -v ./...
+
+    - name: Test
+      working-directory: ${{env.working-directory}}
+      run: go test -v ./...
