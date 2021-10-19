@@ -2,6 +2,7 @@ package superadmin
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -10,6 +11,7 @@ import (
 	"github.com/mabdela/mella/pkg/handlers/admin"
 	"github.com/mabdela/mella/pkg/models"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var adminArray []admin.AdminModel
@@ -64,11 +66,13 @@ func CreateAdmin(c *gin.Context) {
 
 //uses email address to delete admins
 func DeleteAdmin(c *gin.Context) {
-	email := c.Param("email")
+	key := c.Param("id")
+	id, _ := primitive.ObjectIDFromHex(key)
 	collection := models.DB.Database("mella").Collection("admin")
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
 
-	_, err := collection.DeleteOne(ctx, bson.M{"email": email})
+	_, err := collection.DeleteOne(ctx, bson.M{"_id": id})
+	fmt.Println(id)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{})
@@ -110,5 +114,55 @@ func AllAdmins(c *gin.Context) {
 		admins.Password = ""
 		adminsArray = append(adminsArray, admins)
 	}
+	c.JSON(http.StatusOK, adminsArray)
+}
+
+func GetAdminByEmail(c *gin.Context) {
+	var admins admin.AdminModel
+	key := c.Param("email")
+	filter := bson.M{"email": key}
+	collection := models.DB.Database("mella").Collection("admin")
+	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	err := collection.FindOne(ctx, filter).Decode(&admins)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+	c.JSON(http.StatusOK, admins)
+}
+
+// type NamePayload struct {
+// 	FirstName string `json:"firstname"`
+// 	LastName  string `json:"lastname"`
+// }
+
+func GetAdminByName(c *gin.Context) {
+	// var payload NamePayload
+	// c.BindJSON(&payload)
+	name := c.Param("name")
+	var admins admin.AdminModel
+	var adminsArray []admin.AdminModel
+	filter := bson.M{"firstname": name}
+	collection := models.DB.Database("mella").Collection("admin")
+	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	cursor, err := collection.Find(ctx, filter)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "no acount found"})
+		return
+	}
+	defer cursor.Close(ctx)
+	for cursor.Next(ctx) {
+		err := cursor.Decode(&admins)
+		if err != nil {
+			log.Println(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{})
+			return
+		}
+		admins.Password = ""
+		adminsArray = append(adminsArray, admins)
+	}
+	cursor.Close(ctx)
 	c.JSON(http.StatusOK, adminsArray)
 }

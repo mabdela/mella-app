@@ -77,7 +77,9 @@ func SetupRouter() *gin.Engine {
 	{
 		super.GET("/all_admin", superadmin.AllAdmins)
 		super.POST("/add_admin", superadmin.CreateAdmin)
-		super.DELETE("/delete_admin/:email", superadmin.DeleteAdmin)
+		super.DELETE("/delete_admin/:id", superadmin.DeleteAdmin)
+		super.GET("/admin_by_email/:email", superadmin.GetAdminByEmail)
+		super.GET("/admin_by_name/:name", superadmin.GetAdminByName)
 	}
 	//******************
 	english := r.Group("/english").Use(middlewares.Authz())
