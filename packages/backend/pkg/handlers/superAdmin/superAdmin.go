@@ -51,7 +51,7 @@ func CreateAdmin(c *gin.Context) {
 
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
 		return
 	}
 	defer cursor.Close(ctx)
@@ -75,7 +75,7 @@ func DeleteAdmin(c *gin.Context) {
 	fmt.Println(id)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
 		return
 	}
 	// return
@@ -99,7 +99,7 @@ func AllAdmins(c *gin.Context) {
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "notfound"})
 		return
 	}
 	defer cursor.Close(ctx)
@@ -108,7 +108,7 @@ func AllAdmins(c *gin.Context) {
 		err := cursor.Decode(&admins)
 		if err != nil {
 			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
 			return
 		}
 		admins.Password = ""
@@ -124,9 +124,10 @@ func GetAdminByEmail(c *gin.Context) {
 	collection := models.DB.Database("mella").Collection("admin")
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
 	err := collection.FindOne(ctx, filter).Decode(&admins)
+
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
 		return
 	}
 	c.JSON(http.StatusOK, admins)
@@ -138,8 +139,7 @@ func GetAdminByEmail(c *gin.Context) {
 // }
 
 func GetAdminByName(c *gin.Context) {
-	// var payload NamePayload
-	// c.BindJSON(&payload)
+
 	name := c.Param("name")
 	var admins admin.AdminModel
 	var adminsArray []admin.AdminModel
@@ -147,17 +147,22 @@ func GetAdminByName(c *gin.Context) {
 	collection := models.DB.Database("mella").Collection("admin")
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
 	cursor, err := collection.Find(ctx, filter)
+	fmt.Println(cursor)
 	if err != nil {
 		log.Println(err.Error())
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "no acount found"})
 		return
 	}
 	defer cursor.Close(ctx)
+	if cursor.RemainingBatchLength() == 0 {
+		c.JSON(http.StatusInternalServerError, "no content")
+		return
+	}
 	for cursor.Next(ctx) {
 		err := cursor.Decode(&admins)
 		if err != nil {
 			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
 			return
 		}
 		admins.Password = ""
