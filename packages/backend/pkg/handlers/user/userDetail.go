@@ -32,14 +32,13 @@ func FetchUserInfo(c *gin.Context) {
 		log.Println(err.Error())
 	}
 
-	var user_respnse models.UserResponse
-	user_respnse.Email = user.Email
-	user_respnse.Firstname = user.Firstname
-	user_respnse.Lastname = user.Lastname
-	user_respnse.ID = user.ID
+	var userResponse models.UserResponse
+	userResponse.Email = user.Email
+	userResponse.Firstname = user.Firstname
+	userResponse.Lastname = user.Lastname
+	userResponse.ID = user.ID
 
-	c.JSON(http.StatusOK, user_respnse)
-
+	c.JSON(http.StatusOK, userResponse)
 }
 
 type UserUpdatePayload struct {
@@ -59,7 +58,7 @@ func UpdateUser(c *gin.Context) {
 	_, err := collection.UpdateByID(ctx, id, update)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "not updated"})
 		return
 	}
 	// return
@@ -67,3 +66,5 @@ func UpdateUser(c *gin.Context) {
 	collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
 	c.JSON(http.StatusOK, user)
 }
+
+

@@ -56,6 +56,7 @@ func AdminLogin(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"msg": "invalid user credentials",
 		})
+
 		return
 	}
 	err = adminModel.CheckPassword(payload.Password)

@@ -82,7 +82,7 @@ func SetupRouter() *gin.Engine {
 		super.GET("/admin_by_name/:name", superadmin.GetAdminByName)
 	}
 	//******************
-	english := r.Group("/english")
+	english := r.Group("/english").Use(middlewares.Authz())
 	{
 		english.GET("/outline", contents.GetOutline)
 		english.GET("/quiz/:quiz_id", contents.GetQuiz)
