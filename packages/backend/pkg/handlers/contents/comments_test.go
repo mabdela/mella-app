@@ -69,7 +69,7 @@ func TestLoadComments(t *testing.T) {
 	c.Params = []gin.Param{
 		{
 			Key:   "comment_id",
-			Value: "615da9b5442599cebe83bf72",
+			Value: "616f1c83767fd6b340901564",
 		},
 	}
 	c.Request = request

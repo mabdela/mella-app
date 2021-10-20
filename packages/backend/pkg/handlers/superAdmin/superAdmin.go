@@ -133,10 +133,6 @@ func GetAdminByEmail(c *gin.Context) {
 	c.JSON(http.StatusOK, admins)
 }
 
-// type NamePayload struct {
-// 	FirstName string `json:"firstname"`
-// 	LastName  string `json:"lastname"`
-// }
 
 func GetAdminByName(c *gin.Context) {
 
