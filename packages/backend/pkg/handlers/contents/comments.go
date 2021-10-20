@@ -3,6 +3,7 @@ package contents
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -198,7 +199,9 @@ func UpdateLike(c *gin.Context) {
 	var ctx, _ = context.WithTimeout(context.Background(), 20*time.Second)
 	count, err := collection.CountDocuments(ctx, find)
 	if err != nil {
-		fmt.Println(err.Error())
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
 	}
 
 	if count != 0 { //this is when the user is allready in the likes list on that comment
@@ -245,4 +248,30 @@ func DeleteComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "server has counterd error while deleting"})
 	}
 	c.JSON(http.StatusOK, gin.H{"comment_id": comment_id})
+}
+
+type commentUpdatePayload struct {
+	CommentId  string `json:"commentId"`
+	UpdateText string `json:"updateText"`
+}
+
+func UpdateComment(c *gin.Context) {
+	var payload commentUpdatePayload
+	c.BindJSON(&payload)
+
+	id, _ := primitive.ObjectIDFromHex(payload.CommentId)
+	update := bson.M{"$set": bson.M{"content": payload.UpdateText}}
+	collection := models.DB.Database("mella").Collection("comment")
+	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+
+	_, err := collection.UpdateByID(ctx, id, update)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{})
+		return
+	}
+	// return
+	var comment models.CommentsLoad
+	collection.FindOne(ctx, bson.M{"_id": id}).Decode(&comment)
+	c.JSON(http.StatusOK, comment)
 }

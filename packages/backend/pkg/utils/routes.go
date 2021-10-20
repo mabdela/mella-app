@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/mabdela/mella/pkg/handlers/admin"
 	"github.com/mabdela/mella/pkg/handlers/contents"
+	superadmin "github.com/mabdela/mella/pkg/handlers/superAdmin"
 	"github.com/mabdela/mella/pkg/handlers/user"
 	"github.com/mabdela/mella/pkg/middlewares"
 )
@@ -16,7 +17,7 @@ func SetupRouter() *gin.Engine {
 
 	r.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
-		AllowOrigins:     []string{"http://localhost:3000","http://localhost:3001", "http://localhost:8080", "https://facebook.com"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "https://facebook.com"},
 		AllowHeaders:     []string{"Content-type", "*"},
 		AllowCredentials: true,
 	}))
@@ -44,12 +45,15 @@ func SetupRouter() *gin.Engine {
 			protected.GET("/userinfo/:user_id", user.FetchUserInfo)
 			protected.POST("/update_quiz_info", contents.UpdateQuizInfo)
 			protected.POST("/quiz_info", contents.QuizInfo)
+			protected.PUT("/update_comment", contents.UpdateComment)
+			protected.PUT("/update_user_info", user.UpdateUser)
+
 		}
 	}
 	//************ admin *************
 	adminApi := r.Group("/admin")
 	{
-		ProtectedAdmin := adminApi.Group("/protected")
+		ProtectedAdmin := adminApi.Group("/protected").Use(middlewares.AdminAuth())
 		{
 			ProtectedAdmin.GET("/all_users", admin.GetAllUsers)
 			ProtectedAdmin.GET("/user_by_email/:email", admin.GetUserByEmail)
@@ -59,15 +63,26 @@ func SetupRouter() *gin.Engine {
 			ProtectedAdmin.PUT("/delete_quiz", admin.DeleteQuiz)
 			ProtectedAdmin.DELETE("/delete_comment/:comment_id", admin.RemoveComment)
 			ProtectedAdmin.PUT("/update_quiz", admin.ModifyQuiz)
+			ProtectedAdmin.PUT("/change_password", admin.ChangePassword)
 		}
 		publicAdmin := adminApi.Group("/public")
 		{
-			publicAdmin.POST("login", admin.AdminLogin)
-			publicAdmin.POST("signup", admin.CreateAdmin)
+			publicAdmin.POST("/login", admin.AdminLogin)
+			publicAdmin.POST("/logout", admin.Logout)
 		}
 	}
 	// *****************************
-	english := r.Group("/english").Use(middlewares.Authz())
+	//********super admin
+	super := r.Group("/superadmin")
+	{
+		super.GET("/all_admin", superadmin.AllAdmins)
+		super.POST("/add_admin", superadmin.CreateAdmin)
+		super.DELETE("/delete_admin/:id", superadmin.DeleteAdmin)
+		super.GET("/admin_by_email/:email", superadmin.GetAdminByEmail)
+		super.GET("/admin_by_name/:name", superadmin.GetAdminByName)
+	}
+	//******************
+	english := r.Group("/english")
 	{
 		english.GET("/outline", contents.GetOutline)
 		english.GET("/quiz/:quiz_id", contents.GetQuiz)

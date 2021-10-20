@@ -1,13 +1,17 @@
 package admin
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"go.mongodb.org/mongo-driver/bson/primitive"
+	"golang.org/x/crypto/bcrypt"
+)
 
 type AdminModel struct {
-	Email     string `json:"email" bson:"email"`
-	Username  string `username:"email" bson:"username"`
-	Password  string `json:"password" bson:"password"`
-	FirstName string `json:"firstname" bson:"firstname"`
-	LastName  string `json:"lastname" bson:"lastname"`
+	ID        primitive.ObjectID `json:"_id" bson:"_id,omitempty"`
+	Email     string             `json:"email" bson:"email"`
+	Username  string             `username:"email" bson:"username"`
+	Password  string             `json:"password" bson:"password"`
+	FirstName string             `json:"firstname" bson:"firstname"`
+	LastName  string             `json:"lastname" bson:"lastname"`
 }
 
 func (adminModel *AdminModel) HashPassword(password string) error {
