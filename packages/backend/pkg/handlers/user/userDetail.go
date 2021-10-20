@@ -66,3 +66,5 @@ func UpdateUser(c *gin.Context) {
 	collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
 	c.JSON(http.StatusOK, user)
 }
+
+

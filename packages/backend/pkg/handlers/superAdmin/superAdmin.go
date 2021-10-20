@@ -133,6 +133,7 @@ func GetAdminByEmail(c *gin.Context) {
 	c.JSON(http.StatusOK, admins)
 }
 
+
 func GetAdminByName(c *gin.Context) {
 
 	name := c.Param("name")
