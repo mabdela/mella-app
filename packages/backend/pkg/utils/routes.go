@@ -55,7 +55,7 @@ func SetupRouter() *gin.Engine {
 		{
 			ProtectedAdmin.GET("/all_users", admin.GetAllUsers)
 			ProtectedAdmin.GET("/user_by_email/:email", admin.GetUserByEmail)
-			ProtectedAdmin.GET("user_by_id/:id", admin.GetUserById)
+			ProtectedAdmin.GET("/user_by_id/:id", admin.GetUserById)
 			ProtectedAdmin.DELETE("/user_by_email/:email", admin.DeleteUserByEmail)
 			ProtectedAdmin.DELETE("/user_by_id/:id", admin.DeleteUserById)
 			ProtectedAdmin.PUT("/delete_quiz", admin.DeleteQuiz)

@@ -20,7 +20,7 @@ func Authz() gin.HandlerFunc {
 		log.Println(clientToken.Name)
 
 		if clientToken.Value == "" {
-			c.JSON(http.StatusForbidden, "No Authorization header provided")
+			c.JSON(http.StatusForbidden, gin.H{"msg":"No Authorization header provided"})
 			c.Abort()
 			return
 		}
@@ -32,7 +32,7 @@ func Authz() gin.HandlerFunc {
 
 		claims, err := jwtWrapper.ValidateToken(clientToken.Value)
 		if err != nil {
-			c.JSON(http.StatusUnauthorized, err.Error())
+			c.JSON(http.StatusUnauthorized, gin.H{"msg":err.Error()})
 			c.Abort()
 			return
 		}
@@ -54,7 +54,7 @@ func AdminAuth() gin.HandlerFunc {
 		log.Println(clientToken.Name)
 
 		if clientToken.Value == "" {
-			c.JSON(http.StatusForbidden, "No Authorization header provided")
+			c.JSON(http.StatusForbidden, gin.H{"msg":"No Authorization header provided"})
 			c.Abort()
 			return
 		}
