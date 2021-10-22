@@ -62,6 +62,7 @@ func SetupRouter() *gin.Engine {
 			ProtectedAdmin.DELETE("/delete_comment/:comment_id", admin.RemoveComment)
 			ProtectedAdmin.PUT("/update_quiz", admin.ModifyQuiz)
 			ProtectedAdmin.PUT("/change_password", admin.ChangePassword)
+
 		}
 		publicAdmin := adminApi.Group("/public")
 		{
@@ -81,11 +82,10 @@ func SetupRouter() *gin.Engine {
 	}
 	//******************
 
-	english := r.Group("/english").Use(middlewares.Authz())
+	english := r.Group("/english")
 	{
 		english.GET("/outline", contents.GetOutline)
 		english.GET("/quiz/:quiz_id", contents.GetQuiz)
-
 	}
 
 	r.POST("/updatelike", contents.UpdateLike)               //change the route by /api/protected/updatelike
