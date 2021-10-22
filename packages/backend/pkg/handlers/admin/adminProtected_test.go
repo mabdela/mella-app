@@ -34,15 +34,14 @@ func TestGetAllUsers(t *testing.T) {
 	err = json.Unmarshal(w.Body.Bytes(), &actualResult)
 	assert.NoError(t, err)
 }
-
 func TestGetUserByEmail(t *testing.T) {
 
 	var actualResult models.UserResponse
 
 	expected_user := models.UserResponse{
-		Firstname: "For",
-		Lastname:  "TestCase",
-		Email:     "donotdelete@gmail.com",
+		Firstname: "DoNot",
+		Lastname:  "Delete",
+		Email:     "donotdelte@gmail.com",
 	}
 	request, err := http.NewRequest("GET", "http://localhost:8080/admin/protected/user_by_email/:email", nil)
 	w := httptest.NewRecorder()
@@ -52,7 +51,7 @@ func TestGetUserByEmail(t *testing.T) {
 	c.Params = []gin.Param{
 		{
 			Key:   "email",
-			Value: "donotdelete@gmail.com",
+			Value: "donotdelte@gmail.com",
 		},
 	}
 	assert.NoError(t, err)
@@ -79,9 +78,9 @@ func TestGetUserById(t *testing.T) {
 	var actualResult models.UserResponse
 
 	expected_user := models.UserResponse{
-		Firstname: "For",
-		Lastname:  "TestCase",
-		Email:     "donotdelete@gmail.com",
+		Firstname: "DoNot",
+		Lastname:  "Delete",
+		Email:     "donotdelte@gmail.com",
 	}
 
 	request, err := http.NewRequestWithContext(context.Background(), "GET", "http://localhost:8080/admin/protected/user_by_id/:id", nil)
@@ -93,7 +92,7 @@ func TestGetUserById(t *testing.T) {
 	c.Params = []gin.Param{
 		{
 			Key:   "id",
-			Value: "6167f3d4d54d016b9a268f2a",
+			Value: "61730597550a7ccef516f4d5",
 		},
 	}
 	c.Request = request
@@ -113,7 +112,7 @@ func TestGetUserById(t *testing.T) {
 	assert.Equal(t, expected_user.Lastname, actualResult.Lastname)
 
 }
-
+/*
 func TestDeleteUserByEmail(t *testing.T) {
 
 	var actualResult models.UserResponse
@@ -141,3 +140,4 @@ func TestDeleteUserByEmail(t *testing.T) {
 	err = json.Unmarshal(w.Body.Bytes(), &actualResult)
 	assert.NoError(t, err)
 }
+*/
