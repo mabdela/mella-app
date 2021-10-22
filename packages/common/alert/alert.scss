@@ -8,6 +8,12 @@
   }
 }
 
+.alert-admin {
+  position: 'fixed';
+  top: '70px';
+  width: '300px';
+}
+
 @media (min-width: 768px) {
   .alert-container {
     width: 340px !important;

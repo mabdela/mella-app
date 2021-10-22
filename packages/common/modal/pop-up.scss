@@ -1,0 +1,32 @@
+.editButton {
+  /* styles={{ margin: 2, backgroundColor: '#a5a0a0' }} */
+  margin-right: 10px;
+  background-color: #a5a0a0 !important;
+  outline: none !important;
+  border: none !important;
+  padding: 10px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.deleteButton {
+  margin-right: 10px;
+  background-color: rgba(236, 72, 72, 0.9) !important;
+  outline: none !important;
+  border: none !important;
+  padding: 10px 20px;
+  border-radius: 3px;
+  cursor: pointer;
+  color: #fff;
+}
+
+.modal {
+  width: 280px;
+}
+
+@media (min-width: 768px) {
+  .modal {
+    width: 400px !important;
+  }
+}

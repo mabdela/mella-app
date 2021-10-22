@@ -7,8 +7,9 @@
     "packages/*"
   ],
   "scripts": {
-    "frontend-mella": "cd packages/frontend-mella && yarn start",
-    "frontend-mella-admin": "cd packages/frontend-mella-admin && yarn start",
+    "mella": "cd packages/mella && yarn start",
+    "mella-admin": "cd packages/mella-admin && yarn start",
+    "mella-super-admin": "cd packages/mella-super-admin && yarn start",
     "backend": "cd packages/backend/cmd && go run main.go"
   }
 }

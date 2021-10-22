@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextField, InputAdornment, IconButton } from '@mui/material';
+import { TextField, InputAdornment, IconButton, Box } from '@mui/material';
 import { Lock, LockOpen } from '@mui/icons-material';
 import './text-field.scss';
 const textfield = ({
@@ -14,9 +14,10 @@ const textfield = ({
   isError,
   error,
   needmargin,
+  needBoxMargin,
 }) => {
   return (
-    <>
+    <Box sx={needBoxMargin ? { mb: 2 } : { mb: 0 }}>
       <TextField
         sx={needmargin ? { mb: 2 } : { mb: 0 }}
         error={isError}
@@ -43,7 +44,7 @@ const textfield = ({
         }
       />
       {isError && <span className="errors">{error}</span>}
-    </>
+    </Box>
   );
 };
 

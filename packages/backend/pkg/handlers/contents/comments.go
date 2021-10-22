@@ -200,7 +200,7 @@ func UpdateLike(c *gin.Context) {
 	count, err := collection.CountDocuments(ctx, find)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Error updating like count"})
 		return
 	}
 
