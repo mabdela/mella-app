@@ -17,7 +17,7 @@ func SetupRouter() *gin.Engine {
 
 	r.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "https://facebook.com"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "https://facebook.com"},
 		AllowHeaders:     []string{"Content-type", "*"},
 		AllowCredentials: true,
 	}))
@@ -33,7 +33,6 @@ func SetupRouter() *gin.Engine {
 			public.POST("/login", user.Login)
 			public.POST("/signup", user.Signup)
 			public.POST("/logout", user.Logout)
-
 		}
 		protected := api.Group("/protected").Use(middlewares.Authz())
 		{
@@ -47,7 +46,6 @@ func SetupRouter() *gin.Engine {
 			protected.POST("/quiz_info", contents.QuizInfo)
 			protected.PUT("/update_comment", contents.UpdateComment)
 			protected.PUT("/update_user_info", user.UpdateUser)
-
 		}
 	}
 	//************ admin *************

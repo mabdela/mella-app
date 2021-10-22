@@ -99,7 +99,7 @@ func AllAdmins(c *gin.Context) {
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "notfound"})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
 		return
 	}
 	defer cursor.Close(ctx)
@@ -108,7 +108,7 @@ func AllAdmins(c *gin.Context) {
 		err := cursor.Decode(&admins)
 		if err != nil {
 			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
 			return
 		}
 		admins.Password = ""
@@ -127,12 +127,11 @@ func GetAdminByEmail(c *gin.Context) {
 
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
 		return
 	}
 	c.JSON(http.StatusOK, admins)
 }
-
 
 func GetAdminByName(c *gin.Context) {
 
@@ -141,24 +140,28 @@ func GetAdminByName(c *gin.Context) {
 	var adminsArray []admin.AdminModel
 	filter := bson.M{"firstname": name}
 	collection := models.DB.Database("mella").Collection("admin")
-	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
 	cursor, err := collection.Find(ctx, filter)
-	fmt.Println(cursor)
+	fmt.Println("Cursor: ", cursor)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "no acount found"})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "No acount found"})
+		c.Abort()
 		return
 	}
 	defer cursor.Close(ctx)
 	if cursor.RemainingBatchLength() == 0 {
-		c.JSON(http.StatusInternalServerError, "no content")
+		c.JSON(http.StatusNotFound, gin.H{"msg": "No content"})
+		c.Abort()
 		return
 	}
 	for cursor.Next(ctx) {
+		log.Println("Looping through cursor")
 		err := cursor.Decode(&admins)
 		if err != nil {
 			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
+			c.Abort()
 			return
 		}
 		admins.Password = ""
