@@ -79,15 +79,15 @@ func TestAllAdmins(t *testing.T) {
 
 func TestDeleteAdmin(t *testing.T) {
 
-	request, err := http.NewRequest("DELETE", "http://localhost:8080/superadmin//delete_admin/:email", nil)
+	request, err := http.NewRequest("DELETE", "http://localhost:8080/superadmin/delete_admin/:id", nil)
 	w := httptest.NewRecorder()
 
 	c, _ := gin.CreateTestContext(w)
 
 	c.Params = []gin.Param{
 		{
-			Key:   "email",
-			Value: "test@gmail.com",
+			Key:   "id",
+			Value: "616fe9fe784d44b2e66a3836",
 		},
 	}
 	assert.NoError(t, err)
