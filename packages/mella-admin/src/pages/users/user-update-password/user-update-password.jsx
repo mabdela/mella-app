@@ -33,7 +33,7 @@ const UserUpdatePassword = () => {
   const dispatch = useDispatch();
   const message = useSelector(state => state.users.message);
   const error = useSelector(state => state.errors);
-  const id = useSelector(state => state.users.auth._id);
+  const id = useSelector(state => state.auth.auth._id);
 
   const [errors, setErrors] = useState({});
   const [isSubmitted, setisSubmitted] = useState(false);
@@ -91,7 +91,7 @@ const UserUpdatePassword = () => {
   const { currentPassword, newPassword, confirmPassword } = userCredential;
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
-      {Object.values(message).length > 0 && (
+      {message > 0 && (
         <CommonAlert
           message={message.message}
           state="success"
