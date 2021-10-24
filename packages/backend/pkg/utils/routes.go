@@ -17,7 +17,7 @@ func SetupRouter() *gin.Engine {
 
 	r.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:8080", "https://facebook.com"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "https://facebook.com"},
 		AllowHeaders:     []string{"Content-type", "*"},
 		AllowCredentials: true,
 	}))
@@ -33,7 +33,6 @@ func SetupRouter() *gin.Engine {
 			public.POST("/login", user.Login)
 			public.POST("/signup", user.Signup)
 			public.POST("/logout", user.Logout)
-
 		}
 		protected := api.Group("/protected").Use(middlewares.Authz())
 		{
@@ -47,23 +46,23 @@ func SetupRouter() *gin.Engine {
 			protected.POST("/quiz_info", contents.QuizInfo)
 			protected.PUT("/update_comment", contents.UpdateComment)
 			protected.PUT("/update_user_info", user.UpdateUser)
-
 		}
 	}
 	//************ admin *************
 	adminApi := r.Group("/admin")
 	{
-		ProtectedAdmin := adminApi.Group("/protected").Use(middlewares.AdminAuth())
+		ProtectedAdmin := adminApi.Group("/protected")
 		{
 			ProtectedAdmin.GET("/all_users", admin.GetAllUsers)
 			ProtectedAdmin.GET("/user_by_email/:email", admin.GetUserByEmail)
-			ProtectedAdmin.GET("user_by_id/:id", admin.GetUserById)
+			ProtectedAdmin.GET("/user_by_id/:id", admin.GetUserById)
 			ProtectedAdmin.DELETE("/user_by_email/:email", admin.DeleteUserByEmail)
 			ProtectedAdmin.DELETE("/user_by_id/:id", admin.DeleteUserById)
 			ProtectedAdmin.PUT("/delete_quiz", admin.DeleteQuiz)
 			ProtectedAdmin.DELETE("/delete_comment/:comment_id", admin.RemoveComment)
 			ProtectedAdmin.PUT("/update_quiz", admin.ModifyQuiz)
 			ProtectedAdmin.PUT("/change_password", admin.ChangePassword)
+			ProtectedAdmin.GET("/quiz/:quiz_id", contents.GetQuiz) //for fetching quizes on admin side
 		}
 		publicAdmin := adminApi.Group("/public")
 		{
@@ -83,11 +82,10 @@ func SetupRouter() *gin.Engine {
 	}
 	//******************
 
-	english := r.Group("/english").Use(middlewares.Authz())
+	english := r.Group("/english")
 	{
 		english.GET("/outline", contents.GetOutline)
 		english.GET("/quiz/:quiz_id", contents.GetQuiz)
-
 	}
 
 	r.POST("/updatelike", contents.UpdateLike)               //change the route by /api/protected/updatelike

@@ -109,6 +109,7 @@ func AddQuiz(c *gin.Context) {
 func DeleteQuiz(c *gin.Context) {
 	var deletePayload deletePayload
 	c.BindJSON(&deletePayload)
+	fmt.Println("delete payload ", deletePayload)
 	id, err := primitive.ObjectIDFromHex(deletePayload.ObjectId)
 	if err != nil {
 		log.Println(err.Error())
@@ -124,20 +125,25 @@ func DeleteQuiz(c *gin.Context) {
 	_, err = collection.UpdateOne(ctx, filter, unset) // make nil the value
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error while unseting"})
 		return
 	}
 	_, err = collection.UpdateOne(ctx, filter, pull) //pull all the nil values from array
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error while pulling"})
 		return
 	}
 	//then if the removed item is from the middle of the array we need to re arrange the question number
 	questionid := deletePayload.QuestionId //the Id to be deleted
 	previous := questionid - 1             //the index of deleted Item
 	i := previous
-	collection.FindOne(ctx, filter).Decode(&questions)
+	err = collection.FindOne(ctx, filter).Decode(&questions)
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
+		return
+	}
 	fmt.Println("length of array ", len(questions.Questions))
 	if deletePayload.QuestionId < len(questions.Questions)+1 {
 		fmt.Println("the item is in the middle of the array")

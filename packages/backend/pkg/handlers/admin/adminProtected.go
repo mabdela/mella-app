@@ -52,7 +52,7 @@ func GetUserByEmail(c *gin.Context) {
 	err := collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
 		return
 	}
 	c.JSON(http.StatusOK, user)

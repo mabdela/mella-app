@@ -15,12 +15,12 @@ import (
 func TestFetchUserDetail(t *testing.T) {
 
 	var actualResult models.User
-	id, _ := primitive.ObjectIDFromHex("614cd30673601af2d02407f5")
+	id, _ := primitive.ObjectIDFromHex("61730597550a7ccef516f4d5")
 	expected_user := models.User{
 		ID:        id,
-		Firstname: "Nigatu ",
-		Lastname:  "Paulos",
-		Email:     "nigatujeno@gmail.com",
+		Firstname: "DoNot",
+		Lastname:  "Delete",
+		Email:     "donotdelte@gmail.com",
 	}
 
 	request, err := http.NewRequest("GET", "http://localhost:8080/userinfo/:user_id", nil)
@@ -32,7 +32,7 @@ func TestFetchUserDetail(t *testing.T) {
 	c.Params = []gin.Param{
 		{
 			Key:   "user_id",
-			Value: "614cd30673601af2d02407f5",
+			Value: "61730597550a7ccef516f4d5",
 		},
 	}
 	c.Request = request
