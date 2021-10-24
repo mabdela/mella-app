@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Validation from 'src/component/input-validation/validation';
+import Validation from '@mono-repo/common/input-validation/quiz-validation';
 import { Select, MenuItem, InputLabel, FormControl, Box } from '@mui/material';
 import { hashData } from '../../data/data';
 
@@ -74,8 +74,18 @@ const QuizAdd = () => {
     };
     if (Object.keys(errors).length === 0 && isSubmitted) {
       dispatch(addQuizRequest(postData));
+      setQuizData({
+        question: '',
+        choiceA: '',
+        choiceB: '',
+        choiceC: '',
+        choiceD: '',
+        answer: '',
+        explanation: '',
+        topic: '',
+      });
     }
-  }, [dispatch, errors, isSubmitted, quizData]);
+  }, [dispatch, errors, isSubmitted]);
 
   useEffect(() => {
     dispatch(removeComment());

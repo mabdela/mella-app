@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Typography } from '@mui/material';
-import UpdateValidation from 'src/component/input-validation/update-validation';
+import UpdateValidation from '@mono-repo/common/input-validation/update-validation';
 import { makeStyles } from '@mui/styles';
 import { useDispatch } from 'react-redux';
 import { removeComment } from 'src/redux/comment/comment-action';

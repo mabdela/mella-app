@@ -1,21 +1,11 @@
-import { Box, Typography } from '@mui/material';
+import { Box } from '@mui/material';
 import UserList from '../../../component/users/user-list/user-list';
+import CommonTitle from '@mono-repo/common/title/title';
 
 const UsersListPage = () => {
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
-      <Typography
-        variant="h6"
-        gutterBottom
-        component="div"
-        sx={{
-          textAlign: { xs: 'start' },
-          width: { sm: '500px', md: '550px', xl: '800px' },
-          m: '60px auto 20px',
-        }}
-      >
-        All Users
-      </Typography>
+      <CommonTitle text="All Users" />
       <UserList />
     </Box>
   );

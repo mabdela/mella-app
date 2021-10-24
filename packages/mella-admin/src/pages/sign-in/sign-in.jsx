@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // material-ui components
 import { Checkbox, Button } from '@mui/material';
 //routes
-import { loginUserRequest } from 'src/redux/users/user-action';
+import { loginUserRequest } from 'src/redux/auth/auth-action';
 import { removeErrors } from '../../redux/error/error-actions';
 import CommonAlert from '@mono-repo/common/alert/alert';
 import CommonInput from '@mono-repo/common/text-field/text-field';

@@ -1,22 +1,13 @@
 import { userActionTypes } from './users-types';
 
 const initialState = {
-  auth: {},
   admins: [],
   admin: [],
-  message: {},
-  isAuthenticated: false,
+  message: null,
   loading: false,
 };
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case userActionTypes.LOGIN_USER:
-      return {
-        ...state,
-        auth: action.payload,
-        isAuthenticated: true,
-        loading: false,
-      };
     case userActionTypes.SET_SUPER_ADMIN_LOADING:
       return {
         ...state,
@@ -30,15 +21,23 @@ const userReducer = (state = initialState, action) => {
     case userActionTypes.ADD_ADMIN:
       return {
         ...state,
-        message: action.payload,
+        message: action.payload.message,
+        loading: false,
       };
     case userActionTypes.REMOVE_MESSAGE:
       return {
         ...state,
-        message: {},
+        message: null,
       };
 
     case userActionTypes.DELETE_ADMIN:
+      return {
+        ...state,
+        message: action.payload.message,
+        admins: state.admins.filter(admin => admin._id !== action.payload.id),
+        admin: state.admin.filter(admin => admin._id !== action.payload.id),
+        loading: false,
+      };
     case userActionTypes.GET_ADMIN:
       return {
         ...state,
@@ -54,10 +53,16 @@ const userReducer = (state = initialState, action) => {
         loading: false,
       };
 
-    case userActionTypes.REMOVE_ADMIN:
+    case userActionTypes.REMOVE_ADMINS:
       return {
         ...state,
         admins: [],
+        loading: false,
+      };
+    case userActionTypes.REMOVE_ADMIN:
+      return {
+        ...state,
+        admin: [],
         loading: false,
       };
 

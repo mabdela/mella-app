@@ -12,13 +12,11 @@ export const removeAdminLoading = () => ({
   type: userActionTypes.REMOVE_SUPER_ADMIN_LOADING,
 });
 
+export const removeAdmins = () => ({
+  type: userActionTypes.REMOVE_ADMINS,
+});
 export const removeAdmin = () => ({
   type: userActionTypes.REMOVE_ADMIN,
-});
-
-export const loginUser = user => ({
-  type: userActionTypes.LOGIN_USER,
-  payload: user,
 });
 
 export const getAdmin = admin => ({
@@ -41,17 +39,12 @@ export const searchAdminByEmail = email => ({
   payload: email,
 });
 
-export const deleteAdmin = admin => ({
+export const deleteAdmin = message => ({
   type: userActionTypes.DELETE_ADMIN,
-  payload: admin,
+  payload: message,
 });
 
 // action creators
-
-export const loginUserRequest = form => ({
-  type: userActionTypes.LOGING_USER,
-  payload: form,
-});
 
 export const addAdminRequest = adminData => ({
   type: userActionTypes.ADDING_ADMIN,

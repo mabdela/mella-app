@@ -20,7 +20,7 @@ const alert = ({ message, state, remove, name, admin }) => {
           ? {
               position: 'fixed',
               top: '70px',
-              width: '300px',
+              width: { xs: '250px', sm: '330px' },
               left: 0,
               right: 0,
               m: 'auto',

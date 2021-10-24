@@ -7,14 +7,13 @@ import {
   FormControlLabel,
   Radio,
   TextField,
-  Backdrop,
-  CircularProgress,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   getUserByEmailRequest,
   getUserByIdRequest,
+  removeMessage,
 } from '../../../redux/users/user-action';
 
 import PopUp from '../../modal/pop-up';
@@ -23,6 +22,9 @@ import CommonAlert from '@mono-repo/common/alert/alert';
 import { removeComment } from 'src/redux/comment/comment-action';
 import { removeQuiz } from 'src/redux/quizzes/quizzes-actions';
 import EditUser from 'src/component/edit-modal/edit-user';
+import CommonLoading from '@mono-repo/common/loading/loading';
+import CommonList from '@mono-repo/common/list-data/list-data';
+import { removeErrors } from 'src/redux/error/error-actions';
 
 const useStyles = makeStyles(theme => ({
   container: {
@@ -44,6 +46,7 @@ const UserSearch = () => {
   const users = useSelector(state => state.users.search);
   const loading = useSelector(state => state.users.loading);
   const errorMessage = useSelector(state => state.errors.message);
+  const message = useSelector(state => state.users.message);
 
   const [value, setValue] = useState('User Id');
   const [text, setText] = useState('');
@@ -79,6 +82,14 @@ const UserSearch = () => {
     setShowModal(false);
   };
 
+  const handleRemove = () => {
+    dispatch(removeErrors());
+  };
+
+  const handleRemoveMessage = () => {
+    dispatch(removeMessage());
+  };
+
   const searchUser = () => {
     value === 'Email'
       ? dispatch(getUserByEmailRequest(text))
@@ -96,8 +107,21 @@ const UserSearch = () => {
         className={classes.container}
         sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
       >
+        {message && (
+          <CommonAlert
+            message={message}
+            state="success"
+            admin={true}
+            remove={handleRemoveMessage}
+          />
+        )}
         {errorMessage && (
-          <CommonAlert message={errorMessage} state="error" admin={true} />
+          <CommonAlert
+            message={errorMessage}
+            state="error"
+            admin={true}
+            remove={handleRemove}
+          />
         )}
         <div className={classes.wrapper}>
           <FormControl component="fieldset">
@@ -119,11 +143,6 @@ const UserSearch = () => {
                 control={<Radio />}
                 label="Email"
               />
-              {/* <FormControlLabel
-                value="other"
-                control={<Radio />}
-                label="Other"
-              /> */}
             </RadioGroup>
           </FormControl>
           <Box sx={{ display: 'flex' }}>
@@ -140,113 +159,39 @@ const UserSearch = () => {
         </div>
       </Box>
 
-      {
-        loading && errorMessage === null ? (
-          <Backdrop
-            open={true}
-            sx={{
-              color: '#5874ad',
-              zIndex: '1200',
-              ml: { sm: '299px' },
-            }}
-          >
-            <CircularProgress color="inherit" />
-          </Backdrop>
-        ) : (
-          <>
-            {/*modal  */}
-            {open && (
-              <PopUp
-                open={open}
-                handleClose={handleClose}
-                id={id}
-                firstname={firstname}
-                lastname={lastname}
-              />
-            )}
+      {loading && errorMessage === null ? (
+        <CommonLoading />
+      ) : (
+        <>
+          {/*modal  */}
+          {open && (
+            <PopUp
+              open={open}
+              handleClose={handleClose}
+              id={id}
+              firstname={firstname}
+              lastname={lastname}
+            />
+          )}
 
-            {/* update */}
-            {showModal && (
-              <EditUser
-                handleClose={handleModalClose}
-                data={users.find(user => user._id === currentId)}
+          {/* update */}
+          {showModal && (
+            <EditUser
+              handleClose={handleModalClose}
+              data={users.find(user => user._id === currentId)}
+            />
+          )}
+          {users.length > 0 &&
+            users.map(user => (
+              <CommonList
+                key={user._id}
+                data={user}
+                handleEdit={handleModalOpen}
+                handleDelete={handleOpen}
               />
-            )}
-            {users.length > 0 &&
-              users.map(user => (
-                <Box
-                  className={classes.container}
-                  key={user._id}
-                  sx={{
-                    width: { sm: '500px', md: '550px', xl: '800px' },
-                    mb: 3,
-                  }}
-                >
-                  <div className={classes.wrapper}>
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: 'flex',
-                          marginBottom: '10px',
-                          fontSize: '20px',
-                          fontWeight: '600',
-                        }}
-                      >
-                        {user.firstname.charAt(0).toUpperCase() +
-                          user.firstname.slice(1)}{' '}
-                        {user.lastname.charAt(0).toUpperCase() +
-                          user.lastname.slice(1)}{' '}
-                      </Box>
-                      <span>
-                        <i
-                          onClick={() => handleModalOpen(user._id)}
-                          className="far fa-edit"
-                          style={{
-                            color: 'rgba(24,125,24,.7215686274509804)',
-                            cursor: 'pointer',
-                          }}
-                        ></i>
-                        <i
-                          onClick={() =>
-                            handleOpen(user._id, user.firstname, user.lastname)
-                          }
-                          className="far fa-trash-alt"
-                          style={{
-                            marginLeft: '15px',
-                            marginRight: '15px',
-                            color: 'rgba(236,72,72,.9)',
-                            cursor: 'pointer',
-                          }}
-                        ></i>
-                      </span>
-                    </Box>
-                    <div>{user.email}</div>
-                  </div>
-                </Box>
-              ))}
-          </>
-        )
-        // : (
-        //   <Typography
-        //     variant="h5"
-        //     gutterBottom
-        //     component="div"
-        //     sx={{
-        //       textAlign: { xs: 'start' },
-        //       width: { sm: '500px', md: '550px', xl: '800px' },
-        //       m: '10px auto 20px',
-        //     }}
-        //   >
-        //     No User found.
-        //   </Typography>
-        // )
-      }
+            ))}
+        </>
+      )}
     </>
   );
 };

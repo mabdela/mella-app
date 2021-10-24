@@ -1,9 +1,9 @@
 import { userActionTypes } from './users-types';
 
-export const loginUser = user => ({
-  type: userActionTypes.LOGIN_USER,
-  payload: user,
-});
+// export const loginUser = user => ({
+//   type: userActionTypes.LOGIN_USER,
+//   payload: user,
+// });
 
 export const removeMessage = () => ({
   type: userActionTypes.REMOVE_MESSAGE,
@@ -26,8 +26,9 @@ export const getUsers = users => ({
   payload: users,
 });
 
-export const removeUsers = () => ({
+export const removeUsers = removedUser => ({
   type: userActionTypes.REMOVE_USER,
+  payload: removedUser,
 });
 
 export const getUserByEmail = user => ({
@@ -45,11 +46,9 @@ export const updatePassword = updateData => ({
   payload: updateData,
 });
 
-// action creators
-
-export const loginUserRequest = form => ({
-  type: userActionTypes.LOGING_USER,
-  payload: form,
+export const addUser = addedUser => ({
+  type: userActionTypes.ADD_USER,
+  payload: addedUser,
 });
 
 export const getUsersRequest = () => ({
@@ -74,4 +73,9 @@ export const getUserByEmailRequest = email => ({
 export const updatePasswordRequest = data => ({
   type: userActionTypes.UPDATING_PASSWORD,
   payload: data,
+});
+
+export const addUserRequest = user => ({
+  type: userActionTypes.ADDING_USER,
+  payload: user,
 });

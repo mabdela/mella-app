@@ -13,7 +13,7 @@ import AdminSearch from './pages/admin-page/admin-search/admin-search';
 import SignIn from './pages/sign-in/sign-in';
 
 function App() {
-  const user = useSelector(state => state.users.isAuthenticated);
+  const user = useSelector(state => state.auth.isAuthenticated);
   return (
     <div style={{ display: 'flex' }}>
       <Router>
