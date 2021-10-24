@@ -91,7 +91,7 @@ const UserUpdatePassword = () => {
   const { currentPassword, newPassword, confirmPassword } = userCredential;
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
-      {message > 0 && (
+      {message && (
         <CommonAlert
           message={message.message}
           state="success"
