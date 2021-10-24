@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Box,
   FormControl,
@@ -7,25 +7,24 @@ import {
   FormControlLabel,
   Radio,
   TextField,
-  Backdrop,
-  CircularProgress,
-  Typography,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
-// import {
-//   getUserByEmailRequest,
-//   getUserByIdRequest,
-// } from '../../../redux/users/user-action';
-
 import PopUp from '../../../component/modal/pop-up';
 import CommonButton from '@mono-repo/common/button/button';
+import CommonTitle from '@mono-repo/common/title/title';
+import CommonLoading from '@mono-repo/common/loading/loading';
 import {
+  removeAdmins,
+  removeMessage,
   searchAdminByEmailRequest,
   searchAdminByNameRequest,
 } from 'src/redux/users/user-action';
+import CommonList from '@mono-repo/common/list-data/list-data';
+import CommonAlert from '@mono-repo/common/alert/alert';
+import { removeErrors } from '../../../redux/error/error-actions';
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles(() => ({
   container: {
     marginLeft: 'auto',
     marginRight: 'auto',
@@ -42,8 +41,12 @@ const useStyles = makeStyles(theme => ({
 const AdminSearch = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
+
   const users = useSelector(state => state.users.admin);
   const loading = useSelector(state => state.users.loading);
+  const message = useSelector(state => state.users.message);
+  const error = useSelector(state => state.errors);
+
   const [id, setId] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
@@ -53,11 +56,15 @@ const AdminSearch = () => {
 
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    dispatch(removeAdmins());
+  }, [dispatch]);
+
   const handleChange = event => {
     setValue(event.target.value);
   };
 
-  const handleOpen = (email, firstname, lastname) => {
+  const handleOpen = (id, firstname, lastname) => {
     setOpen(true);
     setId(id);
     setFirstname(firstname);
@@ -68,32 +75,44 @@ const AdminSearch = () => {
     setOpen(false);
   };
 
-  // check this out
+  const removeAlert = () => {
+    dispatch(removeMessage());
+  };
+
+  const removeError = () => {
+    dispatch(removeErrors());
+  };
 
   const searchUser = () => {
     value === 'Email'
       ? dispatch(searchAdminByEmailRequest(text))
       : dispatch(searchAdminByNameRequest(text));
   };
+
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
-      <Typography
-        variant="h6"
-        gutterBottom
-        component="div"
-        sx={{
-          textAlign: { xs: 'start' },
-          width: { sm: '500px', md: '550px', xl: '800px' },
-          m: '60px auto 20px',
-        }}
-      >
-        Search Admins
-      </Typography>
-      {/* <UserList /> */}
+      <CommonTitle text="Search Admins" />
+
       <Box
         className={classes.container}
         sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
       >
+        {message && (
+          <CommonAlert
+            message={message}
+            state="success"
+            admin={true}
+            remove={removeAlert}
+          />
+        )}
+        {error.message && (
+          <CommonAlert
+            message={error.message}
+            state="error"
+            admin={true}
+            remove={removeError}
+          />
+        )}
         <div className={classes.wrapper}>
           <FormControl component="fieldset">
             <FormLabel component="legend">Search By</FormLabel>
@@ -132,16 +151,7 @@ const AdminSearch = () => {
       </Box>
 
       {loading ? (
-        <Backdrop
-          open={true}
-          sx={{
-            color: '#5874ad',
-            zIndex: '1200',
-            ml: { md: '299px' },
-          }}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        <CommonLoading />
       ) : (
         <>
           {/*modal  */}
@@ -156,57 +166,12 @@ const AdminSearch = () => {
           )}
           {users.length > 0 &&
             users.map(user => (
-              <Box
-                className={classes.container}
+              <CommonList
                 key={user._id}
-                sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
-              >
-                <div className={classes.wrapper}>
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        marginBottom: '10px',
-                        fontSize: '20px',
-                        fontWeight: '600',
-                      }}
-                    >
-                      {user.firstname.charAt(0).toUpperCase() +
-                        user.firstname.slice(1)}{' '}
-                      {user.lastname.charAt(0).toUpperCase() +
-                        user.lastname.slice(1)}{' '}
-                    </Box>
-                    <span>
-                      <i
-                        className="far fa-edit"
-                        style={{
-                          color: 'rgba(24,125,24,.7215686274509804)',
-                          cursor: 'pointer',
-                        }}
-                      ></i>
-                      <i
-                        onClick={() =>
-                          handleOpen(user._id, user.firstname, user.lastname)
-                        }
-                        className="far fa-trash-alt"
-                        style={{
-                          marginLeft: '15px',
-                          marginRight: '15px',
-                          color: 'rgba(236,72,72,.9)',
-                          cursor: 'pointer',
-                        }}
-                      ></i>
-                    </span>
-                  </Box>
-                  <div>{user.email}</div>
-                </div>
-              </Box>
+                data={user}
+                // handleEdit={handleModalOpen}
+                handleDelete={handleOpen}
+              />
             ))}
         </>
       )}

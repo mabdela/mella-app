@@ -1,24 +1,15 @@
 import { userActionTypes } from './users-types';
 
 const initialState = {
-  auth: {},
   users: [],
   user: {},
   search: [],
-  isAuthenticated: false,
-  message: {},
+  message: null,
   loading: false,
 };
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case userActionTypes.LOGIN_USER:
-      return {
-        ...state,
-        auth: action.payload,
-        isAuthenticated: true,
-        loading: false,
-      };
     case userActionTypes.SET_USER_LOADING:
       return {
         ...state,
@@ -60,13 +51,27 @@ export const userReducer = (state = initialState, action) => {
       return {
         ...state,
         message: action.payload,
-        remove: true,
+        loading: false,
+      };
+
+    case userActionTypes.ADD_USER:
+      return {
+        ...state,
+        message: action.payload.message,
+        loading: false,
       };
 
     case userActionTypes.REMOVE_MESSAGE:
       return {
         ...state,
-        message: {},
+        message: null,
+      };
+    case userActionTypes.REMOVE_USER:
+      return {
+        ...state,
+        users: action.payload.users,
+        message: action.payload.message,
+        loading: false,
       };
 
     default:

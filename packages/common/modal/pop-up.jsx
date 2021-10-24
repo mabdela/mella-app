@@ -3,26 +3,6 @@ import { Modal, Box, Typography } from '@mui/material';
 import { useLocation } from 'react-router';
 import './pop-up.scss';
 
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  // bgcolor: 'background.paper',
-  bgcolor: '#cfdae5',
-  boxShadow:
-    'rgba(50; 50; 93; 0.25) 0px 50px 100px -20px; rgba(0; 0; 0;  0.30) 0px 30px 60px -30px',
-  borderRadius: '5px',
-  // border: '2px solid #000',
-  // boxShadow: 24,
-  p: 4,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  alignItems: 'center',
-  outline: 'none',
-};
-
 const PopUp = ({
   open,
   handleClose,
@@ -40,7 +20,7 @@ const PopUp = ({
     <>
       <div>
         <Modal open={open} onClose={handleClose} keepMounted>
-          <Box sx={style} className="modal">
+          <Box className="modal">
             <i
               className="fas fa-exclamation-circle"
               style={{
@@ -72,7 +52,8 @@ const PopUp = ({
              ${lastname.charAt(0).toUpperCase() + lastname.slice(1)} comment?`
                 : (location.pathname === '/users/users-list' ||
                     location.pathname === '/users/search' ||
-                    location.pathname === '/admin/admin-list') &&
+                    location.pathname === '/admin/admin-list' ||
+                    location.pathname === '/admin/search') &&
                   `Are you sure you want to permanently delete ${
                     firstname.charAt(0).toUpperCase() + firstname.slice(1)
                   }
@@ -94,7 +75,8 @@ const PopUp = ({
                     ? deleteUser
                     : location.pathname === '/comments/comment-list'
                     ? deleteComment
-                    : location.pathname === '/admin/admin-list'
+                    : location.pathname === '/admin/admin-list' ||
+                      location.pathname === '/admin/search'
                     ? deleteAdmin
                     : location.pathname === '/quizzes/quizzes-list'
                     ? deleteQuiz

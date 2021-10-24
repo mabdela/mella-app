@@ -4,12 +4,19 @@ import { Drawer, Box } from '@mui/material';
 
 import NavDrawer from '../nav-drawer/nav-drawer';
 import CommonAppBar from '@mono-repo/common/app-bar/app-bar';
+import { useDispatch } from 'react-redux';
+import { logoutUserRequest } from 'src/redux/auth/auth-action';
 
 const drawerWidth = 300;
 
 const Navigation = props => {
   const { window } = props;
+  const dispatch = useDispatch();
   const [showDrawer, setShowDrawer] = useState(false);
+
+  const handleLogout = () => {
+    dispatch(logoutUserRequest());
+  };
 
   const toggleDrawer = () => {
     setShowDrawer(!showDrawer);
@@ -19,7 +26,11 @@ const Navigation = props => {
 
   return (
     <Box sx={{ display: 'flex', md: { width: drawerWidth } }}>
-      <CommonAppBar click={toggleDrawer} text="Mella Admin Panel" />
+      <CommonAppBar
+        click={toggleDrawer}
+        text="Admin Panel"
+        handleLogout={handleLogout}
+      />
 
       <Box
         component="nav"

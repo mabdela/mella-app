@@ -1,5 +1,5 @@
 import React from 'react';
-import { AppBar, Toolbar, Typography, IconButton } from '@mui/material';
+import { AppBar, Toolbar, Typography, IconButton, Button } from '@mui/material';
 import { Menu } from '@mui/icons-material';
 
 import { makeStyles } from '@mui/styles';
@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
 
 const drawerWidth = 300;
 
-const appbar = ({ click, text }) => {
+const appbar = ({ click, text, handleLogout }) => {
   const classes = useStyles();
   return (
     <AppBar
@@ -47,11 +47,14 @@ const appbar = ({ click, text }) => {
         <Typography
           variant="h6"
           component="div"
-          sx={{ flexGrow: 1, textAlign: 'center', color: '#5874ad' }}
+          sx={{ flexGrow: 1, color: '#5874ad' }}
           className={classes.title}
         >
           {text}
         </Typography>
+        <Button sx={{ color: '#5874ad' }} onClick={() => handleLogout()}>
+          Logout
+        </Button>
       </Toolbar>
     </AppBar>
   );
