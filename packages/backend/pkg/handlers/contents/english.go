@@ -64,7 +64,7 @@ func GetQuiz(c *gin.Context) {
 	filter := bson.M{"topic_id": quiz_id}
 
 	collection := db.Database("mella").Collection("quizes")
-	// ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+
 	count, err := collection.CountDocuments(context.Background(), filter)
 
 	if err != nil {
@@ -74,7 +74,11 @@ func GetQuiz(c *gin.Context) {
 	fmt.Println(count)
 	if count >= 1 {
 		fmt.Println("quiz with this id is allready in the database.........")
-		collection.FindOne(context.Background(), bson.M{"topic_id": quiz_id}).Decode(&quiz)
+		err := collection.FindOne(context.Background(), bson.M{"topic_id": quiz_id}).Decode(&quiz)
+		if err != nil {
+			log.Println(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
+		}
 		fmt.Println("the quiz ", quiz)
 
 	} else {

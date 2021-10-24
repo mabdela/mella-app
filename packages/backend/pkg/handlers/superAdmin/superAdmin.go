@@ -81,7 +81,7 @@ func DeleteAdmin(c *gin.Context) {
 	} else {
 		_, err := collection.DeleteOne(ctx, bson.M{"_id": id})
 		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "Internal error"})
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "Internal server error"})
 			c.Abort()
 			return
 		}
@@ -98,7 +98,7 @@ func DeleteAdmin(c *gin.Context) {
 		cursor.Close(ctx)
 	*/
 
-	c.JSON(http.StatusOK, gin.H{
+	c.JSON(http.StatusOK , gin.H{
 		"firstname": deletedUser.FirstName,
 		"lastname":  deletedUser.LastName,
 		"_id":       deletedUser.ID,
@@ -134,7 +134,7 @@ func AllAdmins(c *gin.Context) {
 
 func GetAdminByEmail(c *gin.Context) {
 	var admins admin.AdminModel
-	var adminsArray []admin.AdminModel
+	
 	key := c.Param("email")
 	filter := bson.M{"email": key}
 	collection := models.DB.Database("mella").Collection("admin")
@@ -145,8 +145,8 @@ func GetAdminByEmail(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
 		return
 	}
-	adminsArray = append(adminsArray, admins)
-	c.JSON(http.StatusOK, adminsArray)
+	
+	c.JSON(http.StatusOK, admins)
 }
 
 func GetAdminByName(c *gin.Context) {

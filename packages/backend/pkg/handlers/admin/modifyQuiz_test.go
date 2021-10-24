@@ -11,7 +11,7 @@ import (
 	"github.com/mabdela/mella/pkg/models"
 	"github.com/stretchr/testify/assert"
 )
-
+/*
 func TestAddQuiz(t *testing.T) {
 
 	var actualResult models.Questions
@@ -52,7 +52,7 @@ func TestAddQuiz(t *testing.T) {
 	assert.Equal(t, importedQ.Explanation, actualResult.Questions[lastindex].Explanation)
 	assert.Equal(t, importedQ.Keywords, actualResult.Questions[lastindex].Keywords)
 }
-
+*/
 func TestUpdateLike(t *testing.T) {
 
 	var actualResult models.Questions
