@@ -2,31 +2,14 @@ import { call, put } from 'redux-saga/effects';
 import { apiData } from '../api/api';
 import { setErrors } from '../error/error-actions';
 import {
+  addUser,
   getUserByEmail,
   getUserById,
   getUsers,
-  loginUser,
   removeUsers,
   updatePassword,
 } from './user-action';
 import { userActionTypes } from './users-types';
-
-export function* loginEndUserSaga(action) {
-  try {
-    yield put({ type: userActionTypes.SET_USER_LOADING });
-    const loginUserData = yield call(
-      apiData,
-      // `${URL.BASE_URL}/api/public/login`,
-      `${process.env.REACT_APP_ADMIN_LOGIN}`,
-      action.payload,
-      'POST'
-    );
-    // console.log(loginUserData);
-    yield put(loginUser(loginUserData));
-  } catch (error) {
-    yield put(setErrors(error));
-  }
-}
 
 export function* getUsersSaga() {
   try {
@@ -54,7 +37,11 @@ export function* removeUserSaga(action) {
       'DELETE'
     );
 
-    yield put(removeUsers(users));
+    console.log(users);
+
+    yield put(
+      removeUsers({ users: users, message: 'User Delete Successfully!' })
+    );
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -62,30 +49,30 @@ export function* removeUserSaga(action) {
 
 export function* searchByEmailSaga(action) {
   try {
-    yield put({ type: userActionTypes.SET_USER_LOADING });
     const user = yield call(
       apiData,
       `${process.env.REACT_APP_USERS_BY_EMAIL}/${action.payload}`,
       null,
       'GET'
     );
+    yield put({ type: userActionTypes.SET_USER_LOADING });
 
     yield put(getUserByEmail(user));
   } catch (error) {
+    console.log(error);
     yield put(setErrors(error));
   }
 }
 
 export function* searchByIdSaga(action) {
   try {
-    console.log(action.payload);
-    yield put({ type: userActionTypes.SET_USER_LOADING });
     const user = yield call(
       apiData,
       `${process.env.REACT_APP_USERS_BY_ID}/${action.payload}`,
       null,
       'GET'
     );
+    yield put({ type: userActionTypes.SET_USER_LOADING });
 
     yield put(getUserById(user));
   } catch (error) {
@@ -104,6 +91,21 @@ export function* updatePasswordSaga(action) {
     );
 
     yield put(updatePassword({ message: 'Password successfully updated!' }));
+  } catch (error) {
+    yield put(setErrors(error));
+  }
+}
+
+export function* addUserSaga(action) {
+  try {
+    yield put({ type: userActionTypes.SET_USER_LOADING });
+    // yield call(
+    //   apiData,
+    //   `${process.env.REACT_APP_ADD_USER}`,
+    //   action.payload,
+    //   'POST'
+    // );
+    yield put(addUser({ message: 'User Successfully added!' }));
   } catch (error) {
     yield put(setErrors(error));
   }

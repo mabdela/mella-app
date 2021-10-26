@@ -23,6 +23,20 @@
 
 .modal {
   width: 280px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #cfdae5;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 50px 100px -20px;
+  // rgba(0, 0, 0, 0.30) 0px 30px 60px -30px;
+  border-radius: 5px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  outline: none;
 }
 
 @media (min-width: 768px) {

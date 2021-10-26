@@ -1,23 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import UserValidation from '@mono-repo/common/input-validation/user-validation';
-import {
-  //  Button,
-  Box,
-  // Alert,
-} from '@mui/material';
+import Validation from '@mono-repo/common/input-validation/user-validation';
+import { Box } from '@mui/material';
 import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import CommonInput from '@mono-repo/common/text-field/text-field';
 import CommonButton from '@mono-repo/common/button/button';
 import CommonAlert from '@mono-repo/common/alert/alert';
 import CommonTitle from '@mono-repo/common/title/title';
-import {
-  addAdminRequest,
-  removeAdmin,
-  removeAdmins,
-  removeMessage,
-} from 'src/redux/users/user-action';
-import { removeErrors } from 'src/redux/error/error-actions';
+import { removeMessage } from '../../../redux/users/user-action';
+// import { addUserRequest } from 'src/redux/users/user-action';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -33,11 +24,10 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const AdminAdd = () => {
+const UserAdd = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const successMessage = useSelector(state => state.users.message);
-  const errorMessage = useSelector(state => state.errors.message);
 
   const [showText, setHandleShowText] = useState(false);
   const [userCredential, setUserCredential] = useState({
@@ -50,17 +40,15 @@ const AdminAdd = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  useEffect(() => {
-    dispatch(removeAdmins());
-    dispatch(removeAdmin());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(removeAdmin());
+  // }, [dispatch]);
 
   useEffect(() => {
-    const { firstname, lastname, email, password } = userCredential;
-    if (Object.values(errors).length === 0 && isSubmitted) {
-      dispatch(
-        addAdminRequest({ firstname, lastname, email, password, Username: '' })
-      );
+    // const { firstname, lastname, email, password } = userCredential;
+    if (Object.keys(errors).length === 0 && isSubmitted) {
+      // dispatch(
+      // addUserRequest({ firstname, lastname, email, password, Username: '' }));
       setUserCredential({
         firstname: '',
         lastname: '',
@@ -83,7 +71,7 @@ const AdminAdd = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    setErrors(UserValidation(userCredential));
+    setErrors(Validation(userCredential));
     setIsSubmitted(true);
   };
 
@@ -91,16 +79,11 @@ const AdminAdd = () => {
     dispatch(removeMessage());
   };
 
-  const removeError = () => {
-    dispatch(removeErrors());
-  };
-
   const { firstname, lastname, confirmPassword, email, password } =
     userCredential;
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
-      <CommonTitle text="Add Admin" />
-      {/* <UserList /> */}
+      <CommonTitle text="Add User" />
 
       <Box
         className={classes.container}
@@ -112,14 +95,6 @@ const AdminAdd = () => {
             state="success"
             admin={true}
             remove={remove}
-          />
-        )}
-        {errorMessage && (
-          <CommonAlert
-            message={errorMessage}
-            state="error"
-            admin={true}
-            remove={removeError}
           />
         )}
         <div className={classes.wrapper}>
@@ -181,7 +156,7 @@ const AdminAdd = () => {
             />
           </form>
           <CommonButton
-            text="Add Admin"
+            text="Add User"
             isFilled={true}
             click={handleSubmit}
             center
@@ -192,4 +167,4 @@ const AdminAdd = () => {
   );
 };
 
-export default AdminAdd;
+export default UserAdd;

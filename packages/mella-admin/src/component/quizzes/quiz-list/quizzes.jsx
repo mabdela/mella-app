@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  Box,
-  Backdrop,
-  CircularProgress,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-} from '@mui/material';
+import { Box, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 import { makeStyles } from '@mui/styles';
 import { hashData } from '../../data/data';
@@ -19,7 +11,8 @@ import {
 import { deleteUsers } from '../../../redux/users/user-action';
 import CommonButton from '@mono-repo/common/button/button';
 import { removeComment } from 'src/redux/comment/comment-action';
-
+import CommonLoading from '@mono-repo/common/loading/loading';
+import QuizData from '../../quiz-list-data/quiz-list-data';
 const useStyles = makeStyles(() => ({
   container: {
     marginLeft: 'auto',
@@ -124,103 +117,19 @@ const Quizzes = () => {
       <>
         {/*modal  */}
         {open && <PopUp open={open} handleClose={handleClose} id={id} />}
-        {
-          loading === true ? (
-            <Backdrop
-              open={true}
-              sx={{
-                color: '#5874ad',
-                zIndex: '1200',
-                ml: { sm: '299px' },
-              }}
-            >
-              <CircularProgress color="inherit" />
-            </Backdrop>
-          ) : (
-            quizzes.length > 0 &&
-            quizzes.map((quiz, index) => (
-              <Box
-                className={classes.container}
-                key={quiz.id}
-                sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
-              >
-                <div
-                  style={{
-                    backgroundColor: 'hsla(0,0%,100%,.6)',
-                    padding: '16px',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        display: 'flex',
-                        marginBottom: '10px',
-                        fontSize: '20px',
-                        fontWeight: '600',
-                        width: '650px',
-                      }}
-                    >
-                      {index + 1} {'. '} {quiz.question}
-                    </Box>
-                    <span>
-                      <i
-                        className="far fa-edit"
-                        style={{
-                          color: 'rgba(24,125,24,.7215686274509804)',
-                          cursor: 'pointer',
-                        }}
-                      ></i>
-                      <i
-                        onClick={() => handleOpen(quiz.id)}
-                        className="far fa-trash-alt"
-                        style={{
-                          marginLeft: '15px',
-                          marginRight: '15px',
-                          color: 'rgba(236,72,72,.9)',
-                          cursor: 'pointer',
-                        }}
-                      ></i>
-                    </span>
-                  </Box>
-                  <div>
-                    {quiz.choice.map((choose, index) => (
-                      <div key={index} style={{ marginBottom: '5px' }}>
-                        <span>{String.fromCharCode(65 + index)}</span>
-                        {'. '}
-                        <span>{choose}</span>
-                      </div>
-                    ))}
-                  </div>
-                  <div style={{ marginBottom: '5px' }}>
-                    Answer: {String.fromCharCode(65 + quiz.answer)}
-                  </div>
-                  <div>Explanation: {quiz.explanation}</div>
-                  {/* format="DD/MM/YYYY" */}
-                </div>
-              </Box>
-            ))
-          )
-          //  : (
-          //   <Typography
-          //     variant="h5"
-          //     gutterBottom
-          //     component="div"
-          //     sx={{
-          //       textAlign: { xs: 'start' },
-          //       width: { sm: '500px', md: '550px', xl: '800px' },
-          //       m: '10px auto 20px',
-          //     }}
-          //   >
-          //     No Quiz found.
-          //   </Typography>
-          // )
-        }
+        {loading === true ? (
+          <CommonLoading />
+        ) : (
+          quizzes.length > 0 &&
+          quizzes.map((quiz, index) => (
+            <QuizData
+              key={quiz.id}
+              quiz={quiz}
+              index={index}
+              handleDelete={handleOpen}
+            />
+          ))
+        )}
       </>
     </>
   );

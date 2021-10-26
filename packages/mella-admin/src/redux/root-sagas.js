@@ -1,4 +1,6 @@
 import { all, takeLatest } from 'redux-saga/effects';
+import { loginEndUserSaga, logoutUserSaga } from './auth/auth-sagas';
+import { authActionType } from './auth/auth-types';
 import { deleteCommentSaga, getCommentsSaga } from './comment/comment-sagas';
 import { commentActionType } from './comment/comment-type';
 import {
@@ -9,8 +11,10 @@ import {
 import { quizzesActionTypes } from './quizzes/quizzes-type';
 
 import {
+  addUserSaga,
   getUsersSaga,
-  loginEndUserSaga,
+  // loginEndUserSaga,
+  // logoutUserSaga,
   removeUserSaga,
   searchByEmailSaga,
   searchByIdSaga,
@@ -20,13 +24,19 @@ import { userActionTypes } from './users/users-types';
 
 function* rootSaga() {
   yield all([
+    // auth
+    takeLatest(authActionType.LOGING_USER, loginEndUserSaga),
+    takeLatest(authActionType.LOGING_OUT_USER, logoutUserSaga),
+
     // users
-    takeLatest(userActionTypes.LOGING_USER, loginEndUserSaga),
+    // takeLatest(userActionTypes.LOGING_USER, loginEndUserSaga),
     takeLatest(userActionTypes.GET_USERS_REQUEST, getUsersSaga),
     takeLatest(userActionTypes.REMOVE_USER_REQUEST, removeUserSaga),
     takeLatest(userActionTypes.SEARCHING_BY_EMAIL, searchByEmailSaga),
     takeLatest(userActionTypes.SEARCHING_BY_ID, searchByIdSaga),
     takeLatest(userActionTypes.UPDATING_PASSWORD, updatePasswordSaga),
+    takeLatest(userActionTypes.ADDING_USER, addUserSaga),
+    // takeLatest(userActionTypes.LOGING_OUT_USER, logoutUserSaga),
 
     // comment
     takeLatest(commentActionType.GETING_COMMENT, getCommentsSaga),

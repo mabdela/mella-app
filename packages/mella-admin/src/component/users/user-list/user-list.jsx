@@ -1,45 +1,31 @@
 import { useEffect, useState } from 'react';
-import { Box, Backdrop, CircularProgress } from '@mui/material';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { makeStyles } from '@mui/styles';
 import {
   getUsersRequest,
-  removeUserLoading,
+  removeMessage,
 } from '../../../redux/users/user-action';
 import PopUp from '../../modal/pop-up';
 import { removeComment } from '../../../redux/comment/comment-action';
 import { removeQuiz } from '../../../redux/quizzes/quizzes-actions';
 import EditUser from 'src/component/edit-modal/edit-user';
-
-const useStyles = makeStyles(theme => ({
-  container: {
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    boxShadow: '0 7px 29px 0 rgb(100 100 111 / 20%)',
-    backgroundColor: '#4267b2',
-    borderRadius: '5px',
-  },
-  wrapper: {
-    padding: '15px',
-    backgroundColor: 'hsla(0,0%,100%,.6)',
-  },
-  text: {
-    marginBottom: '10px',
-  },
-}));
+import CommonLoading from '@mono-repo/common/loading/loading';
+import CommonList from '@mono-repo/common/list-data/list-data';
+import CommonAlert from '@mono-repo/common/alert/alert';
+import { removeErrors } from 'src/redux/error/error-actions';
 
 const UserList = () => {
-  const classes = useStyles();
   const dispatch = useDispatch();
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
-  const [isClicked, setIsClicked] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [currentId, setCurrentId] = useState('');
+
+  const message = useSelector(state => state.users.message);
+  const error = useSelector(state => state.errors.message);
 
   const handleOpen = (id, firstname, lastname) => {
     setOpen(true);
@@ -56,23 +42,9 @@ const UserList = () => {
 
   useEffect(() => {
     dispatch(getUsersRequest());
-    setIsClicked(false);
     dispatch(removeComment());
     dispatch(removeQuiz());
   }, [dispatch]);
-
-  useEffect(() => {
-    let timer =
-      isClicked &&
-      setTimeout(
-        () => dispatch(removeUserLoading(), setIsClicked(false)),
-        9000
-      );
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [dispatch, isClicked]);
 
   const handleModalOpen = id => {
     setShowModal(true);
@@ -83,21 +55,37 @@ const UserList = () => {
     setShowModal(false);
   };
 
+  const remove = () => {
+    dispatch(removeMessage());
+  };
+
+  const removeError = () => {
+    dispatch(removeErrors());
+  };
+
   return (
     <>
       {loading ? (
-        <Backdrop
-          open={true}
-          sx={{
-            color: '#5874ad',
-            zIndex: '1200',
-            ml: { sm: '299px' },
-          }}
-        >
-          <CircularProgress color="inherit" />
-        </Backdrop>
+        <CommonLoading />
       ) : (
         <>
+          {message && (
+            <CommonAlert
+              message={message}
+              state="success"
+              admin={true}
+              remove={remove}
+            />
+          )}
+
+          {error && (
+            <CommonAlert
+              message={error}
+              state="error"
+              admin={true}
+              remove={removeError}
+            />
+          )}
           {/*modal  */}
           {open && (
             <PopUp
@@ -117,60 +105,15 @@ const UserList = () => {
             />
           )}
 
-          {users.map(user => (
-            <Box
-              className={classes.container}
-              key={user._id}
-              sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
-            >
-              <div className={classes.wrapper}>
-                <Box
-                  sx={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      marginBottom: '10px',
-                      fontSize: '20px',
-                      fontWeight: '600',
-                    }}
-                  >
-                    {user.firstname.charAt(0).toUpperCase() +
-                      user.firstname.slice(1)}{' '}
-                    {user.lastname.charAt(0).toUpperCase() +
-                      user.lastname.slice(1)}{' '}
-                  </Box>
-                  <span>
-                    <i
-                      className="far fa-edit"
-                      onClick={() => handleModalOpen(user._id)}
-                      style={{
-                        color: 'rgba(24,125,24,.7215686274509804)',
-                        cursor: 'pointer',
-                      }}
-                    ></i>
-                    <i
-                      onClick={() =>
-                        handleOpen(user._id, user.firstname, user.lastname)
-                      }
-                      className="far fa-trash-alt"
-                      style={{
-                        marginLeft: '15px',
-                        marginRight: '15px',
-                        color: 'rgba(236,72,72,.9)',
-                        cursor: 'pointer',
-                      }}
-                    ></i>
-                  </span>
-                </Box>
-                <div>{user.email}</div>
-              </div>
-            </Box>
-          ))}
+          {users.length > 0 &&
+            users.map(user => (
+              <CommonList
+                key={user._id}
+                data={user}
+                handleEdit={handleModalOpen}
+                handleDelete={handleOpen}
+              />
+            ))}
         </>
       )}
     </>
