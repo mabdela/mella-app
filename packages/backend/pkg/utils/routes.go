@@ -34,7 +34,7 @@ func SetupRouter() *gin.Engine {
 			public.POST("/signup", user.Signup)
 			public.POST("/logout", user.Logout)
 		}
-		protected := api.Group("/protected").Use(middlewares.Authz())
+		protected := api.Group("/protected")
 		{
 			protected.GET("/profile", user.Profile)
 			protected.POST("/comment", contents.AddComments)
@@ -64,6 +64,7 @@ func SetupRouter() *gin.Engine {
 			ProtectedAdmin.PUT("/change_password", admin.ChangePassword)
 			ProtectedAdmin.GET("/quiz/:quiz_id", contents.GetQuiz) //for fetching quizes on admin side
 			ProtectedAdmin.POST("/add_user", admin.InviteUser)     //for inviting new user
+			// ProtectedAdmin.POST("/add_quiz", admin.AddQuiz)     //for inviting new user
 		}
 		publicAdmin := adminApi.Group("/public")
 		{
@@ -83,7 +84,7 @@ func SetupRouter() *gin.Engine {
 	}
 	//******************
 
-	english := r.Group("/english").Use(middlewares.Authz())
+	english := r.Group("/english")
 	{
 		english.GET("/outline", contents.GetOutline)
 		english.GET("/quiz/:quiz_id", contents.GetQuiz)

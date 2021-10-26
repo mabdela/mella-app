@@ -4,6 +4,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import {
   getUsersRequest,
   removeMessage,
+  removeSearchUser,
 } from '../../../redux/users/user-action';
 import PopUp from '../../modal/pop-up';
 import { removeComment } from '../../../redux/comment/comment-action';
@@ -44,6 +45,7 @@ const UserList = () => {
     dispatch(getUsersRequest());
     dispatch(removeComment());
     dispatch(removeQuiz());
+    dispatch(removeSearchUser());
   }, [dispatch]);
 
   const handleModalOpen = id => {
@@ -65,27 +67,27 @@ const UserList = () => {
 
   return (
     <>
+      {message && (
+        <CommonAlert
+          message={message}
+          state="success"
+          admin={true}
+          remove={remove}
+        />
+      )}
+
+      {error && (
+        <CommonAlert
+          message={error}
+          state="error"
+          admin={true}
+          remove={removeError}
+        />
+      )}
       {loading ? (
         <CommonLoading />
       ) : (
         <>
-          {message && (
-            <CommonAlert
-              message={message}
-              state="success"
-              admin={true}
-              remove={remove}
-            />
-          )}
-
-          {error && (
-            <CommonAlert
-              message={error}
-              state="error"
-              admin={true}
-              remove={removeError}
-            />
-          )}
           {/*modal  */}
           {open && (
             <PopUp

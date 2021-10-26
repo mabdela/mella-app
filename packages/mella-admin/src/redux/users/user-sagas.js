@@ -8,6 +8,7 @@ import {
   getUsers,
   removeUsers,
   updatePassword,
+  updateUser,
 } from './user-action';
 import { userActionTypes } from './users-types';
 
@@ -37,10 +38,11 @@ export function* removeUserSaga(action) {
       'DELETE'
     );
 
-    console.log(users);
-
     yield put(
-      removeUsers({ users: users, message: 'User Delete Successfully!' })
+      removeUsers({
+        id: users.id,
+        message: `${users.firstname} Deleted Successfully!`,
+      })
     );
   } catch (error) {
     yield put(setErrors(error));
@@ -96,16 +98,37 @@ export function* updatePasswordSaga(action) {
   }
 }
 
+//////
+
 export function* addUserSaga(action) {
   try {
     yield put({ type: userActionTypes.SET_USER_LOADING });
-    // yield call(
-    //   apiData,
-    //   `${process.env.REACT_APP_ADD_USER}`,
-    //   action.payload,
-    //   'POST'
-    // );
+    yield call(
+      apiData,
+      `${process.env.REACT_APP_SIGN_UP}`,
+      action.payload,
+      'POST'
+    );
+
     yield put(addUser({ message: 'User Successfully added!' }));
+  } catch (error) {
+    yield put(setErrors(error));
+  }
+}
+
+export function* updateUserSaga(action) {
+  try {
+    const updatedUser = yield call(
+      apiData,
+      `${process.env.REACT_APP_UPDATE_USERS}`,
+      action.payload,
+      'PUT'
+    );
+    yield put({ type: userActionTypes.SET_USER_LOADING });
+
+    yield put(
+      updateUser({ user: updatedUser, message: `User Successfully Updated!` })
+    );
   } catch (error) {
     yield put(setErrors(error));
   }

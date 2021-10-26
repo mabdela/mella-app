@@ -3,8 +3,11 @@ import './edit.scss';
 import { Box, Typography } from '@mui/material';
 import CommonButton from '@mono-repo/common/button/button';
 import CommonInput from '@mono-repo/common/text-field/text-field';
+import { useDispatch } from 'react-redux';
+import { updateUserRequest } from 'src/redux/users/user-action';
 
 const EditUser = ({ handleClose, data }) => {
+  const dispatch = useDispatch();
   const [firstname, setFirstName] = useState(
     data.firstname ? data.firstname : ''
   );
@@ -12,6 +15,8 @@ const EditUser = ({ handleClose, data }) => {
   const [email, setEmail] = useState(data.email ? data.email : '');
 
   const handleClick = () => {
+    // email should be sent too
+    dispatch(updateUserRequest({ id: data._id, firstname, lastname, email }));
     handleClose();
   };
   const closeModal = () => {

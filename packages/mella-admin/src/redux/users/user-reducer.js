@@ -1,3 +1,4 @@
+import { authActionType } from '../auth/auth-types';
 import { userActionTypes } from './users-types';
 
 const initialState = {
@@ -10,6 +11,19 @@ const initialState = {
 
 export const userReducer = (state = initialState, action) => {
   switch (action.type) {
+    case authActionType.LOGOUT_USER:
+      return {
+        ...state,
+        users: [],
+        user: {},
+        search: [],
+      };
+
+    case userActionTypes.REMOVE_SEARCH_USER:
+      return {
+        ...state,
+        search: [],
+      };
     case userActionTypes.SET_USER_LOADING:
       return {
         ...state,
@@ -69,7 +83,22 @@ export const userReducer = (state = initialState, action) => {
     case userActionTypes.REMOVE_USER:
       return {
         ...state,
-        users: action.payload.users,
+        users: state.users.filter(user => user._id !== action.payload.id),
+        search: state.search.filter(search => search._id !== action.payload.id),
+        message: action.payload.message,
+        loading: false,
+      };
+
+    case userActionTypes.UPDATE_USER:
+      const indexToUpdate = state.users.findIndex(
+        user => user._id === action.payload.user._id
+      );
+      return {
+        users: [
+          ...state.users.slice(0, indexToUpdate),
+          action.payload.user,
+          ...state.users.slice(indexToUpdate + 1),
+        ],
         message: action.payload.message,
         loading: false,
       };

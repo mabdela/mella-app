@@ -5,7 +5,9 @@ import { makeStyles } from '@mui/styles';
 import { useDispatch } from 'react-redux';
 import { removeComment } from 'src/redux/comment/comment-action';
 import {
+  deleteUsers,
   removeMessage,
+  removeSearchUser,
   updatePasswordRequest,
 } from 'src/redux/users/user-action';
 import { useSelector } from 'react-redux';
@@ -54,12 +56,20 @@ const UserUpdatePassword = () => {
           newPassword,
         })
       );
+
+      setUserCredential({
+        currentPassword: '',
+        newPassword: '',
+        confirmPassword: '',
+      });
     }
-  }, [errors, isSubmitted, userCredential, dispatch, id]);
+  }, [errors, isSubmitted, dispatch, id]);
 
   useEffect(() => {
     dispatch(removeComment());
     dispatch(removeQuiz());
+    dispatch(removeSearchUser());
+    dispatch(deleteUsers());
   }, [dispatch]);
 
   const handleChange = e => {
@@ -139,24 +149,24 @@ const UserUpdatePassword = () => {
             <CommonInput
               isError={errors.newPassword ? true : false}
               label="Enter your new password"
-              type="password"
               name="newPassword"
               value={newPassword}
               onChange={handleChange}
               error={errors.newPassword}
+              inputProps={true}
+              handleIcon={handleIconClick}
+              showText={showText}
               needBoxMargin
             />
 
             <CommonInput
               isError={errors.confirmPassword ? true : false}
               label="Confirm your password"
+              type="password"
               name="confirmPassword"
               value={confirmPassword}
               onChange={handleChange}
               error={errors.confirmPassword}
-              inputProps={true}
-              handleIcon={handleIconClick}
-              showText={showText}
               needBoxMargin
             />
           </form>

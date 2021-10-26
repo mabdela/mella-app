@@ -6,13 +6,19 @@ import { hashData } from '../../data/data';
 import PopUp from '../../modal/pop-up';
 import {
   getQuizRequest,
-  removeQuizLoading,
+  removeMessage,
 } from '../../../redux/quizzes/quizzes-actions';
-import { deleteUsers } from '../../../redux/users/user-action';
+import {
+  deleteUsers,
+  removeSearchUser,
+} from '../../../redux/users/user-action';
 import CommonButton from '@mono-repo/common/button/button';
 import { removeComment } from 'src/redux/comment/comment-action';
 import CommonLoading from '@mono-repo/common/loading/loading';
 import QuizData from '../../quiz-list-data/quiz-list-data';
+import EditQuiz from 'src/component/edit-modal/edit-quiz';
+import CommonAlert from '@mono-repo/common/alert/alert';
+import { removeErrors } from 'src/redux/error/error-actions';
 const useStyles = makeStyles(() => ({
   container: {
     marginLeft: 'auto',
@@ -32,43 +38,51 @@ const Quizzes = () => {
   const dispatch = useDispatch();
   const quizzes = useSelector(state => state.quizzes.quizzes);
   const loading = useSelector(state => state.quizzes.loading);
-  const users = useSelector(state => state.users.users);
-  const comments = useSelector(state => state.comments.comments);
+  const message = useSelector(state => state.quizzes.message);
+  const error = useSelector(state => state.errors.message);
 
   const [open, setOpen] = useState(false);
-  const [id, setId] = useState('');
-  const [isClicked, setIsClicked] = useState(false);
+  // const [id, setId] = useState('');
+  const [topicId, setTopicId] = useState('');
+  const [questionId, setQuestionId] = useState('');
+  const [showModal, setShowModal] = useState(false);
+  const [currentId, setCurrentId] = useState('');
 
   useEffect(() => {
-    users.length > 0 && dispatch(deleteUsers());
-    comments.length > 0 && dispatch(removeComment());
-  }, [dispatch, users, comments]);
+    dispatch(deleteUsers());
+    dispatch(removeComment());
+    dispatch(removeSearchUser());
+  }, [dispatch]);
 
-  useEffect(() => {
-    let timer =
-      isClicked &&
-      setTimeout(
-        () => dispatch(removeQuizLoading(), setIsClicked(false)),
-        9000
-      );
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [dispatch, isClicked]);
-
-  const handleOpen = (id, firstname, lastname) => {
+  const handleOpen = (topicId, questionId) => {
     setOpen(true);
-    setId(id);
+    setTopicId(topicId);
+    setQuestionId(questionId);
+    // setId(id);
   };
 
   const handleClose = () => {
     setOpen(false);
   };
+  const handleModalOpen = quizId => {
+    setShowModal(true);
+    setCurrentId(quizId);
+  };
+
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
 
   const handleQuiz = () => {
     dispatch(getQuizRequest(topic));
-    setIsClicked(true);
+  };
+
+  const remove = () => {
+    dispatch(removeMessage());
+  };
+
+  const removeError = () => {
+    dispatch(removeErrors());
   };
 
   const [topic, setTopic] = useState('');
@@ -78,6 +92,23 @@ const Quizzes = () => {
         className={classes.container}
         sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
       >
+        {message && (
+          <CommonAlert
+            message={message}
+            state="success"
+            admin={true}
+            remove={remove}
+          />
+        )}
+
+        {error && (
+          <CommonAlert
+            message={error}
+            state="error"
+            admin={true}
+            remove={removeError}
+          />
+        )}
         <div className={classes.wrapper}>
           <FormControl
             required
@@ -114,19 +145,37 @@ const Quizzes = () => {
           />
         </div>
       </Box>
+
       <>
         {/*modal  */}
-        {open && <PopUp open={open} handleClose={handleClose} id={id} />}
+        {open && (
+          <PopUp
+            open={open}
+            handleClose={handleClose}
+            topicId={topicId}
+            questionId={questionId}
+          />
+        )}
+        {/* update */}
+        {showModal && (
+          <EditQuiz
+            handleClose={handleModalClose}
+            data={quizzes.find(quiz => quiz.id === currentId)}
+            topic={topic}
+          />
+        )}
         {loading === true ? (
           <CommonLoading />
         ) : (
           quizzes.length > 0 &&
           quizzes.map((quiz, index) => (
             <QuizData
-              key={quiz.id}
+              key={index}
               quiz={quiz}
+              topic={topic}
               index={index}
               handleDelete={handleOpen}
+              handleEdit={handleModalOpen}
             />
           ))
         )}

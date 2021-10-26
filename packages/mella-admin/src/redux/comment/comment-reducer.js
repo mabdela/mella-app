@@ -1,12 +1,19 @@
+import { authActionType } from '../auth/auth-types';
 import { commentActionType } from './comment-type';
 
 const initialState = {
   comments: [],
+  message: null,
   loading: false,
 };
 
 export const commentReducer = (state = initialState, action) => {
   switch (action.type) {
+    case authActionType.LOGOUT_USER:
+      return {
+        ...state,
+        comments: [],
+      };
     case commentActionType.SET_COMMENT_LOADING:
       return {
         ...state,
@@ -31,6 +38,7 @@ export const commentReducer = (state = initialState, action) => {
         comments: state.comments.filter(
           comment => comment.comment_id !== action.payload.comment_id
         ),
+        message: action.payload.message,
         loading: false,
       };
 
@@ -41,6 +49,12 @@ export const commentReducer = (state = initialState, action) => {
         loading: false,
       };
 
+    case commentActionType.REMOVE_COMMENT_MESSAGE:
+      return {
+        ...state,
+        message: null,
+        loading: false,
+      };
     default:
       return state;
   }

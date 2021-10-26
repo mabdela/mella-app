@@ -11,6 +11,7 @@ import {
 import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
+  deleteUsers,
   getUserByEmailRequest,
   getUserByIdRequest,
   removeMessage,
@@ -58,6 +59,12 @@ const UserSearch = () => {
 
   const [open, setOpen] = useState(false);
 
+  useEffect(() => {
+    dispatch(removeComment());
+    dispatch(deleteUsers());
+    dispatch(removeQuiz());
+  }, [dispatch]);
+
   const handleChange = event => {
     setValue(event.target.value);
   };
@@ -95,11 +102,6 @@ const UserSearch = () => {
       ? dispatch(getUserByEmailRequest(text))
       : dispatch(getUserByIdRequest(text));
   };
-
-  useEffect(() => {
-    dispatch(removeComment());
-    dispatch(removeQuiz());
-  }, [dispatch]);
 
   return (
     <>
