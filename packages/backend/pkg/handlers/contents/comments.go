@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -55,7 +56,15 @@ func AddComments(c *gin.Context) {
 	}
 
 	var loadresponse models.CommentsLoad
-	collection.FindOne(ctx, bson.M{"_id": result.InsertedID}).Decode(&loadresponse)
+	err = collection.FindOne(ctx, bson.M{"_id": result.InsertedID}).Decode(&loadresponse)
+	if err != nil {
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
+		return
+	}
 	var user models.User
 	user_id, err := primitive.ObjectIDFromHex(loadresponse.UserId)
 	if err != nil {
@@ -143,7 +152,12 @@ func LoadCommentsWithTopic(c *gin.Context) {
 	var ctx, _ = context.WithTimeout(context.Background(), 20*time.Second)
 	cursor, err := collection.Find(ctx, filter)
 	if err != nil {
-		fmt.Println(err.Error())
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
+		return
 	}
 	defer cursor.Close(ctx)
 
@@ -249,7 +263,7 @@ func DeleteComment(c *gin.Context) {
 	var ctx, _ = context.WithTimeout(context.Background(), 20*time.Second)
 	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "server has counterd error while deleting"})
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "error while deleting"})
 	}
 	c.JSON(http.StatusOK, gin.H{"comment id": comment_id})
 }
@@ -266,7 +280,7 @@ func UpdateComment(c *gin.Context) {
 	_, err := collection.UpdateByID(ctx, id, update)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error while updating"})
 		return
 	}
 	// return

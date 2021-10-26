@@ -76,8 +76,12 @@ func GetQuiz(c *gin.Context) {
 		fmt.Println("quiz with this id is allready in the database.........")
 		err := collection.FindOne(context.Background(), bson.M{"topic_id": quiz_id}).Decode(&quiz)
 		if err != nil {
-			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
+			if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+				c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+			}
+			return
 		}
 
 	} else {
@@ -179,7 +183,7 @@ func GetQuiz(c *gin.Context) {
 		if err != nil {
 			log.Println(err)
 
-			c.JSON(http.StatusInternalServerError, err.Error())
+			c.JSON(http.StatusNotFound, gin.H{"msg":"Not found"})
 
 			c.Abort()
 

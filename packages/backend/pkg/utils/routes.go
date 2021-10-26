@@ -34,7 +34,7 @@ func SetupRouter() *gin.Engine {
 			public.POST("/signup", user.Signup)
 			public.POST("/logout", user.Logout)
 		}
-		protected := api.Group("/protected").Use(middlewares.Authz())
+		protected := api.Group("/protected") //.Use(middlewares.Authz())
 		{
 			protected.GET("/profile", user.Profile)
 			protected.POST("/comment", contents.AddComments)
@@ -51,7 +51,7 @@ func SetupRouter() *gin.Engine {
 	//************ admin *************
 	adminApi := r.Group("/admin")
 	{
-		ProtectedAdmin := adminApi.Group("/protected").Use(middlewares.AdminAuth())
+		ProtectedAdmin := adminApi.Group("/protected") //.Use(middlewares.AdminAuth())
 		{
 			ProtectedAdmin.GET("/all_users", admin.GetAllUsers)
 			ProtectedAdmin.GET("/user_by_email/:email", admin.GetUserByEmail)

@@ -22,8 +22,11 @@ func GetAllUsers(c *gin.Context) {
 	var userResponse []models.UserResponse
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
-		fmt.Println(err.Error())
-		c.JSON(http.StatusNotFound, gin.H{})
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	defer cursor.Close(ctx)
@@ -32,8 +35,11 @@ func GetAllUsers(c *gin.Context) {
 
 		err := cursor.Decode(&user)
 		if err != nil {
-			fmt.Println(err.Error())
-			c.JSON(http.StatusNotFound, gin.H{})
+			if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+				c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+			}
 			return
 		}
 
@@ -72,8 +78,11 @@ func GetUserById(c *gin.Context) {
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
 	err = collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusNotFound, gin.H{})
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	c.JSON(http.StatusOK, user)
@@ -108,7 +117,7 @@ func DeleteUserByEmail(c *gin.Context) {
 	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg":"error while deleting"})
 		return
 	}
 	//here we need to delete comments asociated with the user
@@ -177,7 +186,7 @@ func RemoveComment(c *gin.Context) {
 	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg":"error while deleting"})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"comment id": doc_id})
