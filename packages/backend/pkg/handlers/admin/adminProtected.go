@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -22,7 +23,7 @@ func GetAllUsers(c *gin.Context) {
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
 		fmt.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusNotFound, gin.H{})
 		return
 	}
 	defer cursor.Close(ctx)
@@ -32,7 +33,7 @@ func GetAllUsers(c *gin.Context) {
 		err := cursor.Decode(&user)
 		if err != nil {
 			fmt.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{})
+			c.JSON(http.StatusNotFound, gin.H{})
 			return
 		}
 
@@ -52,7 +53,7 @@ func GetUserByEmail(c *gin.Context) {
 	err := collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
+		c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
 		return
 	}
 	c.JSON(http.StatusOK, user)
@@ -72,16 +73,20 @@ func GetUserById(c *gin.Context) {
 	err = collection.FindOne(ctx, filter).Decode(&user)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusNotFound, gin.H{})
 		return
 	}
 	c.JSON(http.StatusOK, user)
 }
 
 //delete user by user email
+type deleteResponse struct {
+	Id        string `json:"id"`
+	FirstName string `json:"firstname"`
+}
+
 func DeleteUserByEmail(c *gin.Context) {
-	var user models.User
-	var userArray []models.User
+
 	key := c.Param("email")
 
 	collection := models.DB.Database("mella").Collection("users")
@@ -93,7 +98,11 @@ func DeleteUserByEmail(c *gin.Context) {
 	err := collection.FindOne(ctx, filter).Decode(&userInfo)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		if strings.Contains(err.Error(), "no document") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	_, err = collection.DeleteOne(ctx, filter)
@@ -105,36 +114,18 @@ func DeleteUserByEmail(c *gin.Context) {
 	//here we need to delete comments asociated with the user
 	filterForComments := bson.M{"userId": userInfo.ID.Hex()}
 	commentCollection := models.DB.Database("mella").Collection("comment")
-	_, err = commentCollection.DeleteMany(ctx, filterForComments)
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+	commentCollection.DeleteMany(ctx, filterForComments)
+	//return object
+	deleteRes := deleteResponse{
+		Id:        userInfo.ID.Hex(),
+		FirstName: userInfo.Firstname,
 	}
-	cursor, err := collection.Find(ctx, bson.M{})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	defer cursor.Close(ctx)
-
-	for cursor.Next(ctx) {
-
-		err := cursor.Decode(&user)
-		if err != nil {
-			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{})
-			return
-		}
-		userArray = append(userArray, user)
-	}
-	c.JSON(http.StatusOK, userArray)
-
+	c.JSON(http.StatusOK, deleteRes)
 }
 
 //delete by user id
 func DeleteUserById(c *gin.Context) {
 	var user models.User
-	var userArray []models.User
 	key := c.Param("id")
 	docID, err := primitive.ObjectIDFromHex(key)
 	if err != nil {
@@ -144,34 +135,31 @@ func DeleteUserById(c *gin.Context) {
 	filter := bson.M{"_id": docID}
 	collection := models.DB.Database("mella").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	err = collection.FindOne(ctx, filter).Decode(&user)
+	if err != nil {
+		log.Println(err.Error())
+		if strings.Contains(err.Error(), "no document") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
+		return
+	}
 	_, err = collection.DeleteOne(ctx, filter)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.AbortWithStatus(http.StatusInternalServerError)
 		return
 	}
 	filterForComments := bson.M{"userId": key}
 	commentCollection := models.DB.Database("mella").Collection("comment")
 	commentCollection.DeleteMany(ctx, filterForComments)
 	//return object
-	cursor, err := collection.Find(ctx, bson.M{})
-	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
-		return
+	deleteRes := deleteResponse{
+		Id:        user.ID.Hex(),
+		FirstName: user.Firstname,
 	}
-	defer cursor.Close(ctx)
-
-	for cursor.Next(ctx) {
-		err := cursor.Decode(&user)
-		if err != nil {
-			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{})
-			return
-		}
-		userArray = append(userArray, user)
-	}
-	c.JSON(http.StatusOK, userArray)
+	c.JSON(http.StatusOK, deleteRes)
 }
 
 func RemoveComment(c *gin.Context) {
@@ -192,5 +180,46 @@ func RemoveComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{})
 		return
 	}
-	c.JSON(http.StatusOK, doc_id)
+	c.JSON(http.StatusOK, gin.H{"comment id": doc_id})
+}
+
+//invite user api(not done)
+func InviteUser(c *gin.Context) {
+	var user models.User
+	err := c.ShouldBindJSON(&user)
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"msg": "invalid json",
+		})
+		c.Abort()
+		return
+	}
+
+	err = user.HashPassword(user.Password)
+
+	if err != nil {
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "error hashing password",
+		})
+		c.Abort()
+		return
+	}
+	var exists string
+	err, exists = user.CreateUserRecord()
+	if err != nil {
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{
+			"msg": "error creating user",
+		})
+		c.Abort()
+		return
+	}
+	if exists != "" {
+		c.JSON(http.StatusForbidden, gin.H{"msg": exists})
+		return
+	} else {
+		c.JSON(http.StatusOK, user)
+	}
 }
