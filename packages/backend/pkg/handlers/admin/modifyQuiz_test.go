@@ -11,6 +11,7 @@ import (
 	"github.com/mabdela/mella/pkg/models"
 	"github.com/stretchr/testify/assert"
 )
+
 /*
 func TestAddQuiz(t *testing.T) {
 
@@ -53,11 +54,12 @@ func TestAddQuiz(t *testing.T) {
 	assert.Equal(t, importedQ.Keywords, actualResult.Questions[lastindex].Keywords)
 }
 */
-func TestUpdateLike(t *testing.T) {
+func TestModifyQuiz(t *testing.T) {
 
-	var actualResult models.Questions
+	var actualResult models.Question
 	question := questionPayload{
-		ObId:        "614cd27873601af2d02407ef",
+
+		TopicId:     "101",
 		Id:          11,
 		Question:    "test update",
 		Choice:      []string{"a", "b", "c", "d"},
@@ -83,12 +85,12 @@ func TestUpdateLike(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 
-	err = json.Unmarshal(w.Body.Bytes(), &actualResult.Questions)
+	err = json.Unmarshal(w.Body.Bytes(), &actualResult)
 	assert.NoError(t, err)
 
-	assert.Equal(t,question.Answer,actualResult.Questions[10].Answer)
-	assert.Equal(t,question.Choice,actualResult.Questions[10].Choice)
-	assert.Equal(t,question.Explanation,actualResult.Questions[10].Explanation)
-	assert.Equal(t,question.Id,actualResult.Questions[10].Id)
-	assert.Equal(t,question.Question,actualResult.Questions[10].Question)
+	assert.Equal(t, question.Answer, actualResult.Answer)
+	assert.Equal(t, question.Choice, actualResult.Choice)
+	assert.Equal(t, question.Explanation, actualResult.Explanation)
+	assert.Equal(t, question.Id, actualResult.Id)
+	assert.Equal(t, question.Question, actualResult.Question)
 }

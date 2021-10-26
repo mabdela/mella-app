@@ -50,20 +50,25 @@ type UserUpdatePayload struct {
 func UpdateUser(c *gin.Context) {
 	var payload UserUpdatePayload
 	c.BindJSON(&payload)
-
+	key,_:=primitive.ObjectIDFromHex(payload.Id)
+	filter:=bson.M{"_id":key}
 	update := bson.M{"$set": bson.M{"firstname": payload.FirstName, "lastname": payload.LastName}}
 	collection := models.DB.Database("mella").Collection("users")
 	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
-	id, _ := primitive.ObjectIDFromHex(payload.Id)
-	_, err := collection.UpdateByID(ctx, id, update)
+	
+	_, err := collection.UpdateOne(ctx, filter, update)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "not updated"})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "something is wrong NOT UPDATED"})
 		return
 	}
 	// return
 	var user models.UserResponse
-	collection.FindOne(ctx, bson.M{"_id": id}).Decode(&user)
+	err=collection.FindOne(ctx, bson.M{"_id": key}).Decode(&user)
+	if err!=nil{
+		c.AbortWithStatus(http.StatusNotFound)
+		return
+	}
 	c.JSON(http.StatusOK, user)
 }
 

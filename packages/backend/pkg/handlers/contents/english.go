@@ -79,7 +79,6 @@ func GetQuiz(c *gin.Context) {
 			log.Println(err.Error())
 			c.JSON(http.StatusInternalServerError, gin.H{"msg": "not found"})
 		}
-		fmt.Println("the quiz ", quiz)
 
 	} else {
 		fmt.Println("the quiz doesn't exist in the database.........")

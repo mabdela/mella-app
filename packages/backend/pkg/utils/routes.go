@@ -51,7 +51,7 @@ func SetupRouter() *gin.Engine {
 	//************ admin *************
 	adminApi := r.Group("/admin")
 	{
-		ProtectedAdmin := adminApi.Group("/protected")
+		ProtectedAdmin := adminApi.Group("/protected").Use(middlewares.AdminAuth())
 		{
 			ProtectedAdmin.GET("/all_users", admin.GetAllUsers)
 			ProtectedAdmin.GET("/user_by_email/:email", admin.GetUserByEmail)
@@ -63,6 +63,7 @@ func SetupRouter() *gin.Engine {
 			ProtectedAdmin.PUT("/update_quiz", admin.ModifyQuiz)
 			ProtectedAdmin.PUT("/change_password", admin.ChangePassword)
 			ProtectedAdmin.GET("/quiz/:quiz_id", contents.GetQuiz) //for fetching quizes on admin side
+			ProtectedAdmin.POST("/add_user", admin.InviteUser)     //for inviting new user
 		}
 		publicAdmin := adminApi.Group("/public")
 		{
@@ -82,7 +83,7 @@ func SetupRouter() *gin.Engine {
 	}
 	//******************
 
-	english := r.Group("/english")
+	english := r.Group("/english").Use(middlewares.Authz())
 	{
 		english.GET("/outline", contents.GetOutline)
 		english.GET("/quiz/:quiz_id", contents.GetQuiz)

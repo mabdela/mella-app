@@ -22,6 +22,10 @@ type CommentInfo struct { //to take information about the comment to be modified
 	UserId    string `json:"userId"`
 	CommentId string `json:"commentId"`
 }
+type commentUpdatePayload struct {
+	CommentId  string `json:"commentId"`
+	UpdateText string `json:"updateText"`
+}
 
 func AddComments(c *gin.Context) {
 
@@ -247,12 +251,7 @@ func DeleteComment(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "server has counterd error while deleting"})
 	}
-	c.JSON(http.StatusOK, gin.H{"comment_id": comment_id})
-}
-
-type commentUpdatePayload struct {
-	CommentId  string `json:"commentId"`
-	UpdateText string `json:"updateText"`
+	c.JSON(http.StatusOK, gin.H{"comment id": comment_id})
 }
 
 func UpdateComment(c *gin.Context) {
