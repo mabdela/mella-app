@@ -7,8 +7,14 @@ import CommonInput from '@mono-repo/common/text-field/text-field';
 import CommonButton from '@mono-repo/common/button/button';
 import CommonAlert from '@mono-repo/common/alert/alert';
 import CommonTitle from '@mono-repo/common/title/title';
-import { removeMessage } from '../../../redux/users/user-action';
-// import { addUserRequest } from 'src/redux/users/user-action';
+import {
+  deleteUsers,
+  removeMessage,
+  removeSearchUser,
+} from '../../../redux/users/user-action';
+import { removeComment } from 'src/redux/comment/comment-action';
+import { removeQuiz } from 'src/redux/quizzes/quizzes-actions';
+import { addUserRequest } from 'src/redux/users/user-action';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -40,15 +46,19 @@ const UserAdd = () => {
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  // useEffect(() => {
-  //   dispatch(removeAdmin());
-  // }, [dispatch]);
+  useEffect(() => {
+    dispatch(removeSearchUser());
+    dispatch(removeComment());
+    dispatch(removeQuiz());
+    dispatch(deleteUsers());
+  }, [dispatch]);
 
   useEffect(() => {
-    // const { firstname, lastname, email, password } = userCredential;
+    const { firstname, lastname, email, password } = userCredential;
     if (Object.keys(errors).length === 0 && isSubmitted) {
-      // dispatch(
-      // addUserRequest({ firstname, lastname, email, password, Username: '' }));
+      dispatch(
+        addUserRequest({ firstname, lastname, email, password, Username: '' })
+      );
       setUserCredential({
         firstname: '',
         lastname: '',

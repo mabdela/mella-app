@@ -17,7 +17,6 @@ export function* registerEndUserSaga(action) {
   try {
     const registerUserData = yield call(
       apiData,
-      // `${URL.BASE_URL}/api/public/signup`,
       `${process.env.REACT_APP_SIGN_UP}`,
       action.payload.formData,
       'POST'
@@ -34,7 +33,6 @@ export function* loginEndUserSaga(action) {
   try {
     const loginUserData = yield call(
       apiData,
-      // `${URL.BASE_URL}/api/public/login`,
       `${process.env.REACT_APP_LOG_IN}`,
       action.payload,
       'POST'
@@ -49,7 +47,6 @@ export function* loginFacebookSaga(action) {
   try {
     const loginUserData = yield call(
       apiData,
-      // `${URL.BASE_URL}/api/public/login`,
       `${process.env.REACT_APP_FACEBOOK_SIGNIN}`,
       action.payload,
       'POST'
@@ -64,7 +61,6 @@ export function* loginGoogleSaga(action) {
   try {
     const loginUserData = yield call(
       apiData,
-      // `${URL.BASE_URL}/api/public/login`,
       `${process.env.REACT_APP_GOOGLE_SIGNIN}`,
       action.payload,
       'POST'
@@ -78,13 +74,7 @@ export function* loginGoogleSaga(action) {
 
 export function* logoutEndUserSaga() {
   try {
-    yield call(
-      apiData,
-      // `${URL.BASE_URL}/api/public/logout`,
-      `${process.env.REACT_APP_LOG_OUT}`,
-      null,
-      'POST'
-    );
+    yield call(apiData, `${process.env.REACT_APP_LOG_OUT}`, null, 'POST');
     yield put(logoutUser());
   } catch (error) {
     yield put(setErrors(error));
@@ -95,7 +85,6 @@ export function* addEndUserCommentSaga(action) {
   try {
     const comment = yield call(
       apiData,
-      // `${URL.BASE_URL}/comment`,
       `${process.env.REACT_APP_ADD_COMMENT}`,
       action.payload,
       'POST'
@@ -110,7 +99,6 @@ export function* getEndUserCommentsSaga(action) {
   try {
     const comments = yield call(
       apiData,
-      // `${URL.BASE_URL}/comments/${action.payload}`,
       `${process.env.REACT_APP_GET_COMMENT_BY_COMMENT_ID}/${action.payload}`,
       null,
       'GET'
@@ -125,7 +113,6 @@ export function* deleteEndUserCommentSaga(action) {
   try {
     const comments = yield call(
       apiData,
-      // `${URL.BASE_URL}/comment/${action.payload}`,
       `${process.env.REACT_APP_DELETE_COMMENT_BY_COMMENT_ID}/${action.payload}`,
       null,
       'DELETE'
@@ -140,7 +127,6 @@ export function* updateEndUserLikeSaga(action) {
   try {
     const likeData = yield call(
       apiData,
-      // `${URL.BASE_URL}/updatelike`,
       `${process.env.REACT_APP_UPDATE_LIKE}`,
       action.payload,
       'POST'

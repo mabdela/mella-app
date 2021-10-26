@@ -13,7 +13,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CommentList = ({ comment, handleEdit, handleDelete }) => {
+const CommentList = ({ comment, handleDelete }) => {
   const classes = useStyles();
   return (
     <Box
@@ -48,14 +48,6 @@ const CommentList = ({ comment, handleEdit, handleDelete }) => {
               comment.lastname.slice(1)}{' '}
           </Box>
           <span>
-            <i
-              className="far fa-edit"
-              onClick={() => handleEdit(comment.comment_id)}
-              style={{
-                color: 'rgba(24,125,24,.7215686274509804)',
-                cursor: 'pointer',
-              }}
-            ></i>
             <i
               onClick={() =>
                 handleDelete(

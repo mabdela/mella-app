@@ -12,7 +12,7 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const QuizListData = ({ quiz, handleDelete, index }) => {
+const QuizListData = ({ quiz, handleDelete, handleEdit, index, topic }) => {
   const classes = useStyles();
   return (
     <Box
@@ -38,21 +38,22 @@ const QuizListData = ({ quiz, handleDelete, index }) => {
               marginBottom: '10px',
               fontSize: '20px',
               fontWeight: '600',
-              width: '650px',
             }}
           >
             {index + 1} {'. '} {quiz.question}
           </Box>
-          <span>
+          <span style={{ display: 'flex' }}>
             <i
+              onClick={() => handleEdit(quiz.id)}
               className="far fa-edit"
               style={{
                 color: 'rgba(24,125,24,.7215686274509804)',
                 cursor: 'pointer',
+                marginLeft: '15px',
               }}
             ></i>
             <i
-              onClick={() => handleDelete(quiz.id)}
+              onClick={() => handleDelete(topic, quiz.id)}
               className="far fa-trash-alt"
               style={{
                 marginLeft: '15px',

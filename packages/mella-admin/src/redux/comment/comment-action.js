@@ -5,6 +5,9 @@ export const setLoading = () => ({
 export const removeLoading = () => ({
   type: commentActionType.REMOVE_COMMENT_LOADING,
 });
+export const removeCommentMessage = () => ({
+  type: commentActionType.REMOVE_COMMENT_MESSAGE,
+});
 
 export const getComment = comment => ({
   type: commentActionType.GET_COMMENT,
