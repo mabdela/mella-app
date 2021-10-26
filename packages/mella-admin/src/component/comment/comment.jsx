@@ -5,15 +5,15 @@ import { makeStyles } from '@mui/styles';
 import { hashData } from '../data/data';
 import {
   getCommentRequest,
-  removeLoading,
+  removeCommentMessage,
 } from '../../redux/comment/comment-action';
 import { removeQuiz } from '../../redux/quizzes/quizzes-actions';
-import { deleteUsers } from '../../redux/users/user-action';
+import { deleteUsers, removeSearchUser } from '../../redux/users/user-action';
 import PopUp from '../modal/pop-up';
 import CommonButton from '@mono-repo/common/button/button';
-import EditComment from '../edit-modal/edit-comment';
 import CommonLoading from '@mono-repo/common/loading/loading';
-import CommentList from '../comment-list-data/comment-list-data';
+import CommonList from '../comment-list-data/comment-list-data';
+import CommonAlert from '@mono-repo/common/alert/alert';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -34,15 +34,13 @@ const Comment = () => {
   const dispatch = useDispatch();
   const comments = useSelector(state => state.comments.comments);
   const loading = useSelector(state => state.comments.loading);
+  const message = useSelector(state => state.comments.message);
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
-  const [isClicked, setIsClicked] = useState(false);
   const [topic, setTopic] = useState('');
-  const [showModal, setShowModal] = useState(false);
-  const [currentId, setCurrentId] = useState('');
 
   const handleOpen = (id, firstname, lastname) => {
     setOpen(true);
@@ -57,31 +55,17 @@ const Comment = () => {
 
   const handleComment = () => {
     dispatch(getCommentRequest(topic));
-    setIsClicked(true);
   };
 
-  const handleModalClose = () => {
-    setShowModal(false);
-  };
-
-  const handleModalOpen = id => {
-    setShowModal(true);
-    setCurrentId(id);
-  };
   useEffect(() => {
     dispatch(removeQuiz());
     dispatch(deleteUsers());
+    dispatch(removeSearchUser());
   }, [dispatch]);
 
-  useEffect(() => {
-    let timer =
-      isClicked &&
-      setTimeout(() => dispatch(removeLoading(), setIsClicked(false)), 9000);
-
-    return () => {
-      clearTimeout(timer);
-    };
-  }, [dispatch, isClicked]);
+  const remove = () => {
+    dispatch(removeCommentMessage());
+  };
 
   return (
     <>
@@ -89,6 +73,14 @@ const Comment = () => {
         className={classes.container}
         sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
       >
+        {message && (
+          <CommonAlert
+            message={message}
+            state="success"
+            admin={true}
+            remove={remove}
+          />
+        )}
         <div className={classes.wrapper}>
           <FormControl
             required
@@ -137,22 +129,14 @@ const Comment = () => {
           />
         )}
 
-        {/* update */}
-        {showModal && (
-          <EditComment
-            handleClose={handleModalClose}
-            data={comments.find(comment => comment.comment_id === currentId)}
-          />
-        )}
         {loading ? (
           <CommonLoading />
         ) : (
           comments.length > 0 &&
           comments.map(comment => (
-            <CommentList
+            <CommonList
               key={comment.comment_id}
               comment={comment}
-              handleEdit={handleModalOpen}
               handleDelete={handleOpen}
             />
           ))

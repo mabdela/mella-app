@@ -7,7 +7,6 @@ const UserSearchPage = () => {
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
       <CommonTitle text="Search Users" />
-      {/* <UserList /> */}
       <UserSearch />
     </Box>
   );

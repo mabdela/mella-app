@@ -10,7 +10,6 @@ export function* getEndUserQuizSaga(action) {
     yield put({ type: maincontentTypes.QUIZ_LOADING });
     const quiz = yield call(
       apiData,
-      // `${URL.BASE_URL}/english/quiz/${action.payload.topic_id}`,
       `${process.env.REACT_APP_QUIZ_BY_TOPIC_ID}/${action.payload.topic_id}`,
       null,
       'GET'
@@ -23,7 +22,6 @@ export function* getEndUserQuizSaga(action) {
 
     const selected = yield call(
       apiData,
-      // `${URL.BASE_URL}/quiz_info`,
       `${process.env.REACT_APP_QUIZ_INFO}`,
       selectedData,
       'POST'
@@ -40,7 +38,6 @@ export function* updateEndUserSelectedQuizSaga(action) {
   try {
     const quiz = yield call(
       apiData,
-      // `${URL.BASE_URL}/update_quiz_info`,
       `${process.env.REACT_APP_UPDATE_QUIZ_INFO}`,
       action.payload,
       'POST'

@@ -1,10 +1,5 @@
 import { userActionTypes } from './users-types';
 
-// export const loginUser = user => ({
-//   type: userActionTypes.LOGIN_USER,
-//   payload: user,
-// });
-
 export const removeMessage = () => ({
   type: userActionTypes.REMOVE_MESSAGE,
 });
@@ -15,6 +10,10 @@ export const setLoading = () => ({
 
 export const removeUserLoading = () => ({
   type: userActionTypes.REMOVE_USER_LOADING,
+});
+
+export const removeSearchUser = () => ({
+  type: userActionTypes.REMOVE_SEARCH_USER,
 });
 
 export const deleteUsers = () => ({
@@ -51,6 +50,12 @@ export const addUser = addedUser => ({
   payload: addedUser,
 });
 
+export const updateUser = updatedUser => ({
+  type: userActionTypes.UPDATE_USER,
+  payload: updatedUser,
+});
+//
+
 export const getUsersRequest = () => ({
   type: userActionTypes.GET_USERS_REQUEST,
 });
@@ -77,5 +82,10 @@ export const updatePasswordRequest = data => ({
 
 export const addUserRequest = user => ({
   type: userActionTypes.ADDING_USER,
+  payload: user,
+});
+
+export const updateUserRequest = user => ({
+  type: userActionTypes.UPDATING_USER,
   payload: user,
 });

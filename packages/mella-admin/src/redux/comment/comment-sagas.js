@@ -30,7 +30,12 @@ export function* deleteCommentSaga(action) {
       'DELETE'
     );
 
-    yield put(deleteComment(commentId));
+    yield put(
+      deleteComment({
+        comment_id: commentId.comment_id,
+        message: 'Comment Deleted Successfully!',
+      })
+    );
   } catch (error) {
     yield put(setErrors(error));
   }

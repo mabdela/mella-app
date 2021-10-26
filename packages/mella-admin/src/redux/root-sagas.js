@@ -7,6 +7,7 @@ import {
   addQuizSaga,
   deleteQuizSaga,
   getQuizzesSaga,
+  updateQuizSaga,
 } from './quizzes/quizzes-sagas';
 import { quizzesActionTypes } from './quizzes/quizzes-type';
 
@@ -19,6 +20,7 @@ import {
   searchByEmailSaga,
   searchByIdSaga,
   updatePasswordSaga,
+  updateUserSaga,
 } from './users/user-sagas';
 import { userActionTypes } from './users/users-types';
 
@@ -29,14 +31,13 @@ function* rootSaga() {
     takeLatest(authActionType.LOGING_OUT_USER, logoutUserSaga),
 
     // users
-    // takeLatest(userActionTypes.LOGING_USER, loginEndUserSaga),
     takeLatest(userActionTypes.GET_USERS_REQUEST, getUsersSaga),
     takeLatest(userActionTypes.REMOVE_USER_REQUEST, removeUserSaga),
     takeLatest(userActionTypes.SEARCHING_BY_EMAIL, searchByEmailSaga),
     takeLatest(userActionTypes.SEARCHING_BY_ID, searchByIdSaga),
     takeLatest(userActionTypes.UPDATING_PASSWORD, updatePasswordSaga),
     takeLatest(userActionTypes.ADDING_USER, addUserSaga),
-    // takeLatest(userActionTypes.LOGING_OUT_USER, logoutUserSaga),
+    takeLatest(userActionTypes.UPDATING_USER, updateUserSaga),
 
     // comment
     takeLatest(commentActionType.GETING_COMMENT, getCommentsSaga),
@@ -46,6 +47,7 @@ function* rootSaga() {
     takeLatest(quizzesActionTypes.GETING_QUIZ, getQuizzesSaga),
     takeLatest(quizzesActionTypes.ADDING_QUIZ, addQuizSaga),
     takeLatest(quizzesActionTypes.DELETING_QUIZ, deleteQuizSaga),
+    takeLatest(quizzesActionTypes.UPDATING_QUIZ, updateQuizSaga),
   ]);
 }
 

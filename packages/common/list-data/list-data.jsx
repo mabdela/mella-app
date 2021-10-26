@@ -18,7 +18,6 @@ const useStyles = makeStyles(theme => ({
 
 const ListData = ({ data, handleEdit, handleDelete, message, remove }) => {
   const classes = useStyles();
-  console.log(message);
   return (
     <Box
       className={classes.container}

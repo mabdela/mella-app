@@ -7,7 +7,6 @@ export function* getEndUserItemsSaga() {
   try {
     const items = yield call(
       apiData,
-      // `${URL.BASE_URL}/english/outline`,
       `${process.env.REACT_APP_GET_OUTLINE}`,
       null,
       'GET'

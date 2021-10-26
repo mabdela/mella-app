@@ -28,6 +28,10 @@ export const deleteQuiz = quiz => ({
   type: quizzesActionTypes.DELETE_QUIZ,
   payload: quiz,
 });
+export const updateQuiz = quiz => ({
+  type: quizzesActionTypes.UPDATE_QUIZ,
+  payload: quiz,
+});
 
 //
 export const getQuizRequest = topicId => ({
@@ -41,5 +45,9 @@ export const addQuizRequest = quizData => ({
 });
 export const deleteQuizRequest = quizData => ({
   type: quizzesActionTypes.DELETING_QUIZ,
+  payload: quizData,
+});
+export const updateQuizRequest = quizData => ({
+  type: quizzesActionTypes.UPDATING_QUIZ,
   payload: quizData,
 });

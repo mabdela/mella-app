@@ -7,14 +7,19 @@ import { makeStyles } from '@mui/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   addQuizRequest,
+  removeMessage,
   removeQuiz,
   // removeMessage,
 } from '../../../redux/quizzes/quizzes-actions';
-import { deleteUsers } from '../../../redux/users/user-action';
+import {
+  deleteUsers,
+  removeSearchUser,
+} from '../../../redux/users/user-action';
 import CommonAlert from '@mono-repo/common/alert/alert';
 import CommonButton from '@mono-repo/common/button/button';
 import CommonInput from '@mono-repo/common/text-field/text-field';
 import { removeComment } from 'src/redux/comment/comment-action';
+import { removeErrors } from 'src/redux/error/error-actions';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -34,11 +39,8 @@ const QuizAdd = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const successMessage = useSelector(state => state.quizzes.message);
+  const error = useSelector(state => state.errors.message);
   const [isSubmitted, setIsSubmitted] = useState(false);
-
-  // const removeError = () => {
-  //   dispatch(removeMessage());
-  // };
 
   const [quizData, setQuizData] = useState({
     question: '',
@@ -54,22 +56,17 @@ const QuizAdd = () => {
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
-    const {
-      question,
-      choiceA,
-      choiceB,
-      choiceC,
-      choiceD,
-      answer,
-      explanation,
-      topic,
-    } = quizData;
     const postData = {
-      topic_id: topic,
+      topic_id: quizData.topic,
       question,
-      choice: [`${choiceA}`, `${choiceB}`, `${choiceC}`, `${choiceD}`],
-      answer: parseInt(answer.toUpperCase().charCodeAt(0) - 65),
-      explanation,
+      choice: [
+        `${quizData.choiceA}`,
+        `${quizData.choiceB}`,
+        `${quizData.choiceC}`,
+        `${quizData.choiceD}`,
+      ],
+      answer: parseInt(quizData.answer.toUpperCase().charCodeAt(0) - 65),
+      explanation: quizData.explanation,
       keywords: [],
     };
     if (Object.keys(errors).length === 0 && isSubmitted) {
@@ -91,28 +88,13 @@ const QuizAdd = () => {
     dispatch(removeComment());
     dispatch(removeQuiz());
     dispatch(deleteUsers());
+    dispatch(removeSearchUser());
   }, [dispatch]);
 
   const handleSubmit = e => {
     e.preventDefault();
     setErrors(Validation(quizData));
     setIsSubmitted(true);
-
-    // await axios
-    //   .post('http://localhost:5000/', postData)
-    //   .then(res => console.log(res.data))
-    //   .catch(error => console.log(error.message));
-
-    setQuizData({
-      question: '',
-      choiceA: '',
-      choiceB: '',
-      choiceC: '',
-      choiceD: '',
-      answer: '',
-      explanation: '',
-      topic: '',
-    });
   };
 
   const handleChange = e => {
@@ -120,6 +102,13 @@ const QuizAdd = () => {
     setQuizData({ ...quizData, [name]: value });
   };
 
+  const remove = () => {
+    dispatch(removeMessage());
+  };
+
+  const removeError = () => {
+    dispatch(removeErrors());
+  };
   const answers = ['A', 'B', 'C', 'D'];
 
   const {
@@ -138,13 +127,24 @@ const QuizAdd = () => {
       className={classes.container}
       sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
     >
-      {successMessage.message && (
+      {successMessage && (
         <CommonAlert
-          message={successMessage.message}
+          message={successMessage}
           state="success"
           admin={true}
+          remove={remove}
         />
       )}
+
+      {error && (
+        <CommonAlert
+          message={error}
+          state="error"
+          admin={true}
+          remove={removeError}
+        />
+      )}
+
       <div className={classes.wrapper}>
         <FormControl required variant="outlined" fullWidth margin="normal">
           <InputLabel id="Topic">Topic</InputLabel>

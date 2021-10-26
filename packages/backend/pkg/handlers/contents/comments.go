@@ -251,7 +251,7 @@ func DeleteComment(c *gin.Context) {
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "server has counterd error while deleting"})
 	}
-	c.JSON(http.StatusOK, gin.H{"comment id": comment_id})
+	c.JSON(http.StatusOK, gin.H{"comment_id": comment_id})
 }
 
 func UpdateComment(c *gin.Context) {
