@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -115,8 +116,11 @@ func ChangePassword(c *gin.Context) {
 	err := collection.FindOne(ctx, filter).Decode(&adminModel)
 	fmt.Println(adminModel)
 	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	err = adminModel.CheckPassword(payload.OldPassword)
@@ -143,7 +147,7 @@ func ChangePassword(c *gin.Context) {
 	_, err = collection.UpdateOne(ctx, filter, change)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg":"error while updating"})
 		return
 	}
 	//return

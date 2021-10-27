@@ -51,7 +51,7 @@ func SetupRouter() *gin.Engine {
 	//************ admin *************
 	adminApi := r.Group("/admin")
 	{
-		ProtectedAdmin := adminApi.Group("/protected").Use(middlewares.AdminAuth())
+		ProtectedAdmin := adminApi.Group("/protected") //.Use(middlewares.AdminAuth())
 		{
 			ProtectedAdmin.GET("/all_users", admin.GetAllUsers)
 			ProtectedAdmin.GET("/user_by_email/:email", admin.GetUserByEmail)

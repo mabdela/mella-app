@@ -3,6 +3,7 @@ package contents
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -55,7 +56,9 @@ func UpdateQuizInfo(c *gin.Context) {
 
 	_, err := collection.UpdateOne(ctx, filter, update)
 	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "InternalServerError"})
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "error while updating"})
+		return
 	}
 
 	collection.FindOne(ctx, filter).Decode(&quizInfo)

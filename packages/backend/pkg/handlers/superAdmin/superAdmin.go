@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -37,7 +38,7 @@ func CreateAdmin(c *gin.Context) {
 		_, err := collection.InsertOne(ctx, admin)
 		if err != nil {
 			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{})
+			c.JSON(http.StatusConflict, gin.H{"msg":"Not Inserted"})
 			return
 		}
 	} else {
@@ -49,8 +50,11 @@ func CreateAdmin(c *gin.Context) {
 	cursor, err := collection.Find(ctx, filter)
 
 	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	defer cursor.Close(ctx)
@@ -160,9 +164,11 @@ func GetAdminByName(c *gin.Context) {
 	cursor, err := collection.Find(ctx, filter)
 	fmt.Println("Cursor: ", cursor)
 	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "No acount found"})
-		c.Abort()
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	defer cursor.Close(ctx)
@@ -175,9 +181,11 @@ func GetAdminByName(c *gin.Context) {
 		log.Println("Looping through cursor")
 		err := cursor.Decode(&admins)
 		if err != nil {
-			log.Println(err.Error())
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
-			c.Abort()
+			if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+				c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+			} else {
+				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+			}
 			return
 		}
 		admins.Password = ""

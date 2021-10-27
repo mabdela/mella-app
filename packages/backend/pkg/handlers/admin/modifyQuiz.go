@@ -134,7 +134,7 @@ func ModifyQuiz(c *gin.Context) {
 	var questionPay questionPayload
 	c.BindJSON(&questionPay)
 	fmt.Println("question ", questionPay)
-	// quiz_id, err := primitive.ObjectIDFromHex(question.ObId)
+	
 	filter := bson.M{"topic_id": questionPay.TopicId}
 	questionIndex := "questions." + strconv.Itoa(questionPay.Id-1)
 
@@ -152,7 +152,7 @@ func ModifyQuiz(c *gin.Context) {
 	_, err := collection.UpdateOne(ctx, filter, change)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{})
+		c.JSON(http.StatusInternalServerError, gin.H{"msg":"error while deleting"})
 		return
 	}
 	//return object
