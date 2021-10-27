@@ -9,7 +9,7 @@ import (
 	"github.com/mabdela/mella/pkg/handlers/contents"
 	superadmin "github.com/mabdela/mella/pkg/handlers/superAdmin"
 	"github.com/mabdela/mella/pkg/handlers/user"
-	"github.com/mabdela/mella/pkg/middlewares"
+	//"github.com/mabdela/mella/pkg/middlewares"
 )
 
 func SetupRouter() *gin.Engine {

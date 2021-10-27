@@ -22,6 +22,7 @@ export function* getEndUserItemsSaga() {
 
     yield put(getItems({ items, newMap }));
   } catch (error) {
+    
     yield put(setErrors(error));
   }
 }
