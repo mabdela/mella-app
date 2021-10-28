@@ -31,7 +31,7 @@ func CreateAdmin(c *gin.Context) {
 		return
 	}
 	collection := models.DB.Database("mella").Collection("admin")
-	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 50*time.Second)
 
 	count, _ := collection.CountDocuments(ctx, bson.M{"email": admin.Email})
 	if count < 1 {
@@ -113,12 +113,15 @@ func AllAdmins(c *gin.Context) {
 	var admins admin.AdminModel
 
 	collection := models.DB.Database("mella").Collection("admin")
-	ctx, _ := context.WithTimeout(context.Background(), 20*time.Second)
+	ctx, _ := context.WithTimeout(context.Background(), 50*time.Second)
 
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
-		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	defer cursor.Close(ctx)
@@ -146,7 +149,11 @@ func GetAdminByEmail(c *gin.Context) {
 	err := collection.FindOne(ctx, filter).Decode(&admins)
 	if err != nil {
 		log.Println(err.Error())
-		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
+		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
+		} else {
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
+		}
 		return
 	}
 	
