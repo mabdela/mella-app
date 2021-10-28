@@ -16,21 +16,13 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ListData = ({ data, handleEdit, handleDelete, message, remove }) => {
+const ListData = ({ data, handleEdit, handleDelete }) => {
   const classes = useStyles();
   return (
     <Box
       className={classes.container}
       sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
     >
-      {message && (
-        <CommonAlert
-          message={message}
-          state="success"
-          admin={true}
-          remove={remove}
-        />
-      )}
       <div className={classes.wrapper}>
         <Box
           sx={{

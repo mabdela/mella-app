@@ -7,6 +7,7 @@ import PopUp from '../../modal/pop-up';
 import {
   getQuizRequest,
   removeMessage,
+  removeQuizLoading,
 } from '../../../redux/quizzes/quizzes-actions';
 import {
   deleteUsers,
@@ -54,6 +55,16 @@ const Quizzes = () => {
     dispatch(removeSearchUser());
   }, [dispatch]);
 
+  useEffect(() => {
+    let timer =
+      loading &&
+      message &&
+      setTimeout(() => dispatch(removeQuizLoading()), 100);
+    return () => {
+      clearTimeout(timer);
+    };
+  }, [loading, dispatch, message]);
+
   const handleOpen = (topicId, questionId) => {
     setOpen(true);
     setTopicId(topicId);
@@ -96,8 +107,8 @@ const Quizzes = () => {
           <CommonAlert
             message={message}
             state="success"
-            admin={true}
             remove={remove}
+            admin={true}
           />
         )}
 
@@ -105,8 +116,8 @@ const Quizzes = () => {
           <CommonAlert
             message={error}
             state="error"
-            admin={true}
             remove={removeError}
+            admin={true}
           />
         )}
         <div className={classes.wrapper}>

@@ -103,8 +103,8 @@ const UserAdd = () => {
           <CommonAlert
             message={successMessage}
             state="success"
-            admin={true}
             remove={remove}
+            admin={true}
           />
         )}
         <div className={classes.wrapper}>

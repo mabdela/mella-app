@@ -1,8 +1,19 @@
 import React, { useEffect } from 'react';
 import { Alert } from '@mui/material';
-import './alert.scss';
 
-const alert = ({ message, state, remove, name, admin }) => {
+import { makeStyles } from '@mui/styles';
+
+const useStyles = makeStyles(theme => ({
+  container: {
+    position: 'fixed',
+    top: '70px',
+    right: 0,
+    margin: 'auto',
+  },
+}));
+
+const alert = ({ message, state, remove, admin }) => {
+  const classes = useStyles();
   useEffect(() => {
     let timer = message && setTimeout(() => remove(), 2000);
     return () => {
@@ -14,18 +25,14 @@ const alert = ({ message, state, remove, name, admin }) => {
     <Alert
       variant="filled"
       severity={state}
-      className={name}
+      className={classes.container}
       sx={
         admin
           ? {
-              position: 'fixed',
-              top: '70px',
+              left: { xs: 0, md: '299px' },
               width: { xs: '250px', sm: '330px' },
-              left: 0,
-              right: 0,
-              m: 'auto',
             }
-          : {}
+          : { left: 0, width: { xs: '250px', sm: '330px' } }
       }
     >
       {message}

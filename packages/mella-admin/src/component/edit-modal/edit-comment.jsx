@@ -22,8 +22,10 @@ const EditComment = ({ handleClose, data }) => {
       className="edit-container"
       sx={{
         width: { sm: '400px' },
-        ml: { xs: '10px !important', sm: 'auto !important' },
-        mr: { xs: '10px !important', sm: 'auto !important' },
+        transform: {
+          xs: 'translate(-50%, -50%)',
+          md: 'translate(-16%, -50%);',
+        },
       }}
     >
       <Typography variant="h6" className="edit-title" sx={{ mb: 3 }}>

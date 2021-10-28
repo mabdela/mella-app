@@ -14,7 +14,13 @@ export function* getCommentsSaga(action) {
       'GET'
     );
 
-    yield put(getComment(comments));
+    yield put(
+      getComment(
+        comments === null
+          ? { comment: comments, message: 'No Comment Found!' }
+          : { comment: comments, message: null }
+      )
+    );
   } catch (error) {
     yield put(setErrors(error));
   }

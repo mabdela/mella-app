@@ -5,6 +5,8 @@ import { quizzesActionTypes } from './quizzes-type';
 import { addQuiz, deleteQuiz, getQuiz, updateQuiz } from './quizzes-actions';
 
 export function* getQuizzesSaga(action) {
+  yield put({ type: quizzesActionTypes.SET_QUIZ_LOADING });
+
   try {
     const quizzes = yield call(
       apiData,
@@ -13,9 +15,13 @@ export function* getQuizzesSaga(action) {
       'GET'
     );
 
-    yield put({ type: quizzesActionTypes.SET_QUIZ_LOADING });
-
-    yield put(getQuiz(quizzes));
+    yield put(
+      getQuiz(
+        quizzes === null
+          ? { quizzes: quizzes, message: 'No Quiz Found!' }
+          : { quizzes: quizzes, message: '' }
+      )
+    );
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -40,15 +46,12 @@ export function* addQuizSaga(action) {
 export function* deleteQuizSaga(action) {
   try {
     yield put({ type: quizzesActionTypes.SET_QUIZ_LOADING });
-    console.log(action.payload);
     const quizzes = yield call(
       apiData,
       `${process.env.REACT_APP_DELETE_QUIZ}`,
       action.payload,
       'PUT'
     );
-
-    console.log(quizzes);
 
     yield put(deleteQuiz(quizzes));
   } catch (error) {

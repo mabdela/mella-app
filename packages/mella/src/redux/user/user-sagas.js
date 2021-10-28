@@ -62,11 +62,17 @@ export function* loginGoogleSaga(action) {
     const loginUserData = yield call(
       apiData,
       `${process.env.REACT_APP_GOOGLE_SIGNIN}`,
-      action.payload,
+      action.payload.profileObj,
       'POST'
     );
-    console.log(action.payload);
-    yield put(loginGoogle(loginUserData));
+    const { tokenId, profileObj, googleId } = loginUserData;
+
+    console.log(tokenId, profileObj, googleId);
+    yield put(
+      loginGoogle({
+        user: { token: tokenId, name: profileObj.givenName, _id: googleId },
+      })
+    );
   } catch (error) {
     yield put(setErrors(error));
   }

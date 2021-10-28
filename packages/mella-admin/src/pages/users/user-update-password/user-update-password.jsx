@@ -34,7 +34,7 @@ const UserUpdatePassword = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const message = useSelector(state => state.users.message);
-  const error = useSelector(state => state.errors);
+  const error = useSelector(state => state.errors.message);
   const id = useSelector(state => state.auth.auth._id);
 
   const [errors, setErrors] = useState({});
@@ -105,17 +105,17 @@ const UserUpdatePassword = () => {
         <CommonAlert
           message={message.message}
           state="success"
-          admin={true}
           remove={removeSuccess}
+          admin={true}
         />
       )}
 
-      {error.message && (
+      {error && (
         <CommonAlert
-          message={error.message}
+          message={error}
           state="error"
-          admin={true}
           remove={removeError}
+          admin={true}
         />
       )}
       <Typography

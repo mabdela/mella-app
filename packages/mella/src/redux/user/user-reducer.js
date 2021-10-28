@@ -11,11 +11,16 @@ export const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case userTypes.LOGIN_USER:
     case userTypes.FACEBOOK_LOGIN:
-    case userTypes.GOOGLE_LOGIN:
       return {
         ...state,
         isAuthenticated: true,
         user: action.payload,
+      };
+    case userTypes.GOOGLE_LOGIN:
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload.user,
       };
 
     case userTypes.REGISTER_USER:

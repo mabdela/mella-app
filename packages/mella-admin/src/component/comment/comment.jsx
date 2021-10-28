@@ -77,8 +77,8 @@ const Comment = () => {
           <CommonAlert
             message={message}
             state="success"
-            admin={true}
             remove={remove}
+            admin={true}
           />
         )}
         <div className={classes.wrapper}>
