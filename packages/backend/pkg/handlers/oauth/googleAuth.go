@@ -1,4 +1,4 @@
-package auth
+package oauth
 
 import (
 	"context"
@@ -14,25 +14,21 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
-func FacebookOauth(c *gin.Context) {
-	// fmt.Println("inside facebook")
-	type Payload struct {
-		Email     string `json:"email" bson:"email"`
-		FirstName string `json:"first_name" bson:"first_name"`
-		LastName  string `json:"last_name" bson:"last_name"`
-	}
+func GoogleOauth(c *gin.Context) {
+	// fmt.Println("inside googleOauth")
+	
 	var payload Payload
 	c.BindJSON(&payload)
-	fmt.Println("facebook payload ", payload)
+	fmt.Println("payload ", payload)
 	filter := bson.M{"email": payload.Email}
-	collection := models.DB.Database("mella").Collection("facebook")
+	collection := models.DB.Database("mella").Collection("google")
 	ctx, _ := context.WithTimeout(context.Background(), time.Second*20)
 	count, _ := collection.CountDocuments(ctx, filter)
 	if count < 1 {
 		collection.InsertOne(ctx, payload)
 		//no file with this email
 	} else {
-		fmt.Println("User alredy exists")
+		fmt.Println("this user allredy exists")
 		//file exsits
 	}
 	jwtWrapper := auth.JwtWrapper{
@@ -71,3 +67,4 @@ func FacebookOauth(c *gin.Context) {
 	c.JSON(http.StatusOK, tokenResponse)
 
 }
+

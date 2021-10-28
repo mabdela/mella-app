@@ -53,7 +53,7 @@ func AdminAuth() gin.HandlerFunc {
 
 		log.Println(clientToken.Name)
 
-		if clientToken.Value == "" {
+		if clientToken.Value == "" { //if the cookie is empty
 			c.JSON(http.StatusForbidden, gin.H{"msg":"No Authorization header provided"})
 			c.Abort()
 			return

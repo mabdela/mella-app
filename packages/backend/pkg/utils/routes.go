@@ -9,7 +9,7 @@ import (
 	"github.com/mabdela/mella/pkg/handlers/contents"
 	superadmin "github.com/mabdela/mella/pkg/handlers/superAdmin"
 	"github.com/mabdela/mella/pkg/handlers/user"
-	//"github.com/mabdela/mella/pkg/middlewares"
+	"github.com/mabdela/mella/pkg/handlers/oauth"
 )
 
 func SetupRouter() *gin.Engine {
@@ -33,7 +33,10 @@ func SetupRouter() *gin.Engine {
 			public.POST("/login", user.Login)
 			public.POST("/signup", user.Signup)
 			public.POST("/logout", user.Logout)
+			public.POST("/google",oauth.GoogleOauth)
+			public.POST("/facebook",oauth.FacebookOauth)
 		}
+
 		protected := api.Group("/protected")
 		{
 			protected.GET("/profile", user.Profile)
@@ -64,7 +67,7 @@ func SetupRouter() *gin.Engine {
 			ProtectedAdmin.PUT("/change_password", admin.ChangePassword)
 			ProtectedAdmin.GET("/quiz/:quiz_id", contents.GetQuiz) //for fetching quizes on admin side
 			ProtectedAdmin.POST("/add_user", admin.InviteUser)     //for inviting new user
-			// ProtectedAdmin.POST("/add_quiz", admin.AddQuiz)     //for inviting new user
+			ProtectedAdmin.POST("/add_quiz", admin.AddQuiz)     
 		}
 		publicAdmin := adminApi.Group("/public")
 		{
