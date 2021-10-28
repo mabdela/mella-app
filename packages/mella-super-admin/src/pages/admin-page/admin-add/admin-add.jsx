@@ -110,16 +110,16 @@ const AdminAdd = () => {
           <CommonAlert
             message={successMessage}
             state="success"
-            admin={true}
             remove={remove}
+            admin={true}
           />
         )}
         {errorMessage && (
           <CommonAlert
             message={errorMessage}
             state="error"
-            admin={true}
             remove={removeError}
+            admin={true}
           />
         )}
         <div className={classes.wrapper}>

@@ -113,16 +113,16 @@ const UserSearch = () => {
           <CommonAlert
             message={message}
             state="success"
-            admin={true}
             remove={handleRemoveMessage}
+            admin={true}
           />
         )}
         {errorMessage && (
           <CommonAlert
             message={errorMessage}
             state="error"
-            admin={true}
             remove={handleRemove}
+            admin={true}
           />
         )}
         <div className={classes.wrapper}>

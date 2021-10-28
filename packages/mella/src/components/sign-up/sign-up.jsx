@@ -14,7 +14,7 @@ import CommonLogo from '@mono-repo/common/logo/logo';
 
 const SignUp = () => {
   const dispatch = useDispatch();
-  const errorState = useSelector(state => state.error);
+  const errorState = useSelector(state => state.error.message);
   const [showText, setHandleShowText] = useState(false);
   const [userCredential, setUserCredential] = useState({
     firstname: '',
@@ -57,15 +57,8 @@ const SignUp = () => {
     userCredential;
   return (
     <div className="container">
-      {errorState.message && (
-        <div className="alert-container">
-          <CommonAlert
-            message={errorState.message}
-            state="error"
-            remove={removeAlert}
-            name="alert-error"
-          />
-        </div>
+      {errorState && (
+        <CommonAlert message={errorState} state="error" remove={removeAlert} />
       )}
       <div className="wrapper">
         <CommonLogo />

@@ -131,8 +131,8 @@ const QuizAdd = () => {
         <CommonAlert
           message={successMessage}
           state="success"
-          admin={true}
           remove={remove}
+          admin={true}
         />
       )}
 
@@ -140,8 +140,8 @@ const QuizAdd = () => {
         <CommonAlert
           message={error}
           state="error"
-          admin={true}
           remove={removeError}
+          admin={true}
         />
       )}
 

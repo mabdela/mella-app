@@ -6,7 +6,6 @@ import { loginGoogleRequest } from 'src/redux/user/user-action';
 const Google = () => {
   const dispatch = useDispatch();
   const responseGoogle = response => {
-    console.log(response);
     // console.log(response);
     // console.log(response.profileObj);
     // axios
@@ -17,7 +16,7 @@ const Google = () => {
     //   .catch(error => {
     //     console.log(error);
     //   });
-    dispatch(loginGoogleRequest(response.profileObj));
+    dispatch(loginGoogleRequest(response));
   };
 
   return (

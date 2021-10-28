@@ -12,10 +12,15 @@ import { Link, Route, useRouteMatch } from 'react-router-dom';
 import { logoutUserRequest } from '../../redux/user/user-action';
 import Routes from '../routing/routes';
 
+// common
+import CommonAlert from '@mono-repo/common/alert/alert';
+import { removeErrors } from 'src/redux/error/error-actions';
+
 const Dashboard = () => {
   const dispatch = useDispatch();
 
   const hiddenState = useSelector(state => state.sidebar.hidden);
+  const errorState = useSelector(state => state.error.message);
 
   const isMobile = useMediaQuery({ maxWidth: 767 });
   const isLaptop = useMediaQuery({ minWidth: 1200 });
@@ -24,9 +29,16 @@ const Dashboard = () => {
     dispatch(logoutUserRequest());
   };
 
+  const removeAlert = () => {
+    dispatch(removeErrors());
+  };
+
   let { url } = useRouteMatch();
   return (
     <div className="wrapper">
+      {errorState && (
+        <CommonAlert message={errorState} state="error" remove={removeAlert} />
+      )}
       <SideBar />
       <div className="main-content">
         <div

@@ -16,7 +16,7 @@ import CommonButton from '@mono-repo/common/button/button';
 import CommonLogo from '@mono-repo/common/logo/logo';
 
 const SignIn = () => {
-  const errorState = useSelector(state => state.errors);
+  const errorState = useSelector(state => state.errors.message);
   const dispatch = useDispatch();
 
   const [checked, setChecked] = useState(false);
@@ -52,15 +52,13 @@ const SignIn = () => {
   return (
     <div className="auth-content-container">
       <div className="container">
-        {errorState.message && (
-          <div className="alert">
-            <CommonAlert
-              message={errorState.message}
-              state="error"
-              remove={removeAlert}
-              name="alert-error"
-            />
-          </div>
+        {errorState && (
+          <CommonAlert
+            message={errorState}
+            state="error"
+            remove={removeAlert}
+            admin={true}
+          />
         )}
 
         <div className="wrapper">

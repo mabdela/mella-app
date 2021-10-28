@@ -47,7 +47,7 @@ const Comment = () => {
 
   return (
     <div className="comment-container">
-      {comments !== null && comments.length > 2 && (
+      {comments !== null && comments !== undefined && comments.length > 2 && (
         <div className="comment-number" onClick={showFiltered}>
           {clicked ? (
             <span>Hide Comments</span>
@@ -60,6 +60,7 @@ const Comment = () => {
         </div>
       )}{' '}
       {comments !== null &&
+        comments !== undefined &&
         comments
           .filter((_, index) => index < filterdNumber)
           .map((comment, index) => (

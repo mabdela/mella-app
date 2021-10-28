@@ -59,8 +59,8 @@ const AdminList = () => {
         <CommonAlert
           message={message}
           state="success"
-          admin={true}
           remove={handleRemoveMessage}
+          admin={true}
         />
       )}
 
@@ -68,8 +68,8 @@ const AdminList = () => {
         <CommonAlert
           message={error}
           state="error"
-          admin={true}
           remove={removeError}
+          admin={true}
         />
       )}
 

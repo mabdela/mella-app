@@ -10,6 +10,7 @@ import DashboardPage from './pages/dashboard/dashboard';
 import LandingPage from './pages/landing/landing';
 import Resume from './pages/resume/resume';
 import CommonNotFound from '@mono-repo/common/not-found/not-found';
+import Course from './pages/course/course';
 
 const App = () => {
   const user = useSelector(state => state.auth.isAuthenticated);
@@ -31,10 +32,16 @@ const App = () => {
         <Route exact path="/about" component={LandingPage} />
         <Route exact path="/news" component={LandingPage} />
         <Route exact path="/signup" component={LandingPage} />
-        <Route
+        {/* <Route
           path="/dashboard"
           component={() => (!user ? <Redirect to="/" /> : <DashboardPage />)}
+        /> */}
+        <Route path="/dashboard" component={DashboardPage} />
+        <Route
+          path="/course-list"
+          component={() => (!user ? <Redirect to="/" /> : <Course />)}
         />
+        {/* <Route exact path="/intro" component={Intro} /> */}
         <Route component={CommonNotFound} />
       </Switch>
     </Router>

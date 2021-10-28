@@ -45,7 +45,7 @@ const AdminSearch = () => {
   const users = useSelector(state => state.users.admin);
   const loading = useSelector(state => state.users.loading);
   const message = useSelector(state => state.users.message);
-  const error = useSelector(state => state.errors);
+  const error = useSelector(state => state.errors.message);
 
   const [id, setId] = useState('');
   const [firstname, setFirstname] = useState('');
@@ -101,16 +101,16 @@ const AdminSearch = () => {
           <CommonAlert
             message={message}
             state="success"
-            admin={true}
             remove={removeAlert}
+            admin={true}
           />
         )}
-        {error.message && (
+        {error && (
           <CommonAlert
-            message={error.message}
+            message={error}
             state="error"
-            admin={true}
             remove={removeError}
+            admin={true}
           />
         )}
         <div className={classes.wrapper}>

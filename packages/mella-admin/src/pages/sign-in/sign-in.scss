@@ -8,12 +8,6 @@
   padding: 0 10px;
   .container {
     width: 100%;
-    .alert {
-      position: fixed;
-      top: 65px;
-      width: 100%;
-      z-index: 20;
-    }
 
     .wrapper {
       display: flex;
@@ -56,9 +50,6 @@
     padding: 0 !important;
     .container {
       width: auto;
-      .alert {
-        width: 420px !important;
-      }
       .wrapper {
         width: 400px;
         .additional-info {

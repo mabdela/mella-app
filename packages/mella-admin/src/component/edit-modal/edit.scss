@@ -1,22 +1,7 @@
 .edit-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 30%;
-  padding: 16px;
-  background-color: #cfdae5;
-  box-shadow: 'rgba(50; 50; 93; 0.25) 0px 50px 100px -20px; rgba(0; 0; 0;  0.30) 0px 30px 60px -30px';
-  border-radius: 5px;
-  z-index: 1222;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.edit-quiz-container {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 10%;
+  position: fixed;
+  top: 50%;
+  left: 50%;
   padding: 16px;
   background-color: #cfdae5;
   box-shadow: 'rgba(50; 50; 93; 0.25) 0px 50px 100px -20px; rgba(0; 0; 0;  0.30) 0px 30px 60px -30px';

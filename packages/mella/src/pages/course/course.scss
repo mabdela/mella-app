@@ -1,0 +1,29 @@
+.course-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  margin-top: 55px;
+  // for chrome
+  scrollbar-color: #5874ad #f0f2f5;
+}
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background-color: #5874ad;
+  z-index: 1111;
+  background-clip: padding-box;
+}
+
+.course-wrapper {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  background-color: #f0f2f5;
+  flex-grow: 1;
+  .course-text-field {
+    margin: auto;
+  }
+}

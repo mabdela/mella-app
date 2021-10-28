@@ -13,7 +13,7 @@ import CommonInput from '@mono-repo/common/text-field/text-field';
 import { useDispatch } from 'react-redux';
 import { updateQuizRequest } from 'src/redux/quizzes/quizzes-actions';
 
-const EditQuiz = ({ data, handleClose, topic }) => {
+const EditQuiz = ({ data, handleClose, topic, open }) => {
   const dispatch = useDispatch();
   const [quizData, setQuizData] = useState({
     question: data.question ? data.question : '',
@@ -58,11 +58,13 @@ const EditQuiz = ({ data, handleClose, topic }) => {
     quizData;
   return (
     <Box
-      className="edit-quiz-container"
+      className="edit-container"
       sx={{
         width: { sm: '400px' },
-        ml: { xs: '10px !important', sm: 'auto !important' },
-        mr: { xs: '10px !important', sm: 'auto !important' },
+        transform: {
+          xs: 'translate(-50%, -50%)',
+          md: 'translate(-16%, -50%);',
+        },
       }}
     >
       <Typography variant="h6" className="edit-title" sx={{ mb: 3 }}>

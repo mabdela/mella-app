@@ -71,8 +71,8 @@ const UserList = () => {
         <CommonAlert
           message={message}
           state="success"
-          admin={true}
           remove={remove}
+          admin={true}
         />
       )}
 
@@ -80,8 +80,8 @@ const UserList = () => {
         <CommonAlert
           message={error}
           state="error"
-          admin={true}
           remove={removeError}
+          admin={true}
         />
       )}
       {loading ? (

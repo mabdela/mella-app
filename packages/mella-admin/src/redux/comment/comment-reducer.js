@@ -28,7 +28,8 @@ export const commentReducer = (state = initialState, action) => {
     case commentActionType.GET_COMMENT:
       return {
         ...state,
-        comments: action.payload || [],
+        comments: action.payload.comment || [],
+        message: action.payload.message,
         loading: false,
       };
 

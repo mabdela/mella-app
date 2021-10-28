@@ -17,7 +17,8 @@ export const quizzesReducers = (state = initialState, action) => {
     case quizzesActionTypes.GET_QUIZ:
       return {
         ...state,
-        quizzes: action.payload || [],
+        quizzes: action.payload.quizzes || [],
+        message: action.payload.message,
         loading: false,
       };
 
