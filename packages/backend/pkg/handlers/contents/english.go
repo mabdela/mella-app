@@ -16,24 +16,24 @@ import (
 )
 
 //to load the json outline file
-func loadOutlineJson() []byte {
+func loadOutlineJson() ([]byte, error) {
 
 	pwd, err := os.Getwd()
 	if err != nil {
 		log.Println(err)
 	}
-	pwd = strings.TrimRight(pwd, "cmd")
 	path := pwd + "\\english\\outline.json"
 
 	jsonFile, err := os.Open(path)
 	if err != nil {
 		log.Println(err)
+		return nil, err
 	}
 	log.Println("Successfully opened outline.json")
 	defer jsonFile.Close()
 	byteValue, _ := ioutil.ReadAll(jsonFile)
 
-	return byteValue
+	return byteValue, nil
 }
 
 // Intentially did not add the file to the database
@@ -42,7 +42,12 @@ func GetOutline(c *gin.Context) {
 
 	log.Println("Getting the outline")
 
-	byteValue := loadOutlineJson()
+	byteValue, err := loadOutlineJson()
+	if err != nil {
+		c.JSON(http.StatusNotFound, gin.H{"msg": err.Error()})
+		c.Abort()
+		return
+	}
 	var outline models.Outline
 	json.Unmarshal(byteValue, &outline)
 
@@ -165,7 +170,7 @@ func GetQuiz(c *gin.Context) {
 
 		default:
 			{
-				c.JSON(http.StatusNotFound, gin.H{})
+				c.JSON(http.StatusNotFound, gin.H{"msg": "Not Found"})
 				c.Abort()
 				return
 			}
@@ -183,7 +188,7 @@ func GetQuiz(c *gin.Context) {
 		if err != nil {
 			log.Println(err)
 
-			c.JSON(http.StatusNotFound, gin.H{"msg":"Not found"})
+			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
 
 			c.Abort()
 
