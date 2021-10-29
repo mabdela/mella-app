@@ -10,14 +10,14 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/samuael/Project/mellaye/pkg/admin"
-	"github.com/samuael/Project/mellaye/pkg/constants/model"
-	"github.com/samuael/Project/mellaye/pkg/constants/state"
-	"github.com/samuael/Project/mellaye/pkg/http/rest/auth"
-	"github.com/samuael/Project/mellaye/platforms/form"
-	"github.com/samuael/Project/mellaye/platforms/hash"
-	"github.com/samuael/Project/mellaye/platforms/helper"
-	"github.com/samuael/Project/mellaye/platforms/mail"
+	"github.com/mabdela/mella-backend/pkg/admin"
+	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/state"
+	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	"github.com/mabdela/mella-backend/platforms/form"
+	"github.com/mabdela/mella-backend/platforms/hash"
+	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-backend/platforms/mail"
 )
 
 // IAdminHandler interface

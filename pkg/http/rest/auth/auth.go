@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/samuael/Project/mellaye/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/model"
 )
 
 // Authenticator representing the Methods to be implemented by the authenticators

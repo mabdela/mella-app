@@ -7,10 +7,10 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/samuael/Project/mellaye/pkg/constants/model"
-	"github.com/samuael/Project/mellaye/pkg/constants/state"
-	"github.com/samuael/Project/mellaye/pkg/http/rest/auth"
-	"github.com/samuael/Project/mellaye/platforms/helper"
+	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/state"
+	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	"github.com/mabdela/mella-backend/platforms/helper"
 )
 
 type Rules interface {

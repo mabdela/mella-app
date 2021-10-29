@@ -3,8 +3,8 @@ package mongodb
 import (
 	"context"
 
-	"github.com/samuael/Project/mellaye/pkg/admin"
-	"github.com/samuael/Project/mellaye/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/admin"
+	"github.com/mabdela/mella-backend/pkg/constants/model"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

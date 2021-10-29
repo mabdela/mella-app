@@ -9,8 +9,8 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/julienschmidt/httprouter"
-	_ "github.com/samuael/Project/mellaye/api"
-	"github.com/samuael/Project/mellaye/pkg/http/rest/middleware"
+	_ "github.com/mabdela/mella-backend/api"
+	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
 )
 
 // Route returns an http handler for the api.

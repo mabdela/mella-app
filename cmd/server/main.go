@@ -5,11 +5,11 @@ import (
 	"os"
 	"sync"
 
-	"github.com/samuael/Project/mellaye/pkg/admin"
-	"github.com/samuael/Project/mellaye/pkg/http/rest"
-	"github.com/samuael/Project/mellaye/pkg/http/rest/auth"
-	"github.com/samuael/Project/mellaye/pkg/http/rest/middleware"
-	"github.com/samuael/Project/mellaye/pkg/storage/mongodb"
+	"github.com/mabdela/mella-backend/pkg/admin"
+	"github.com/mabdela/mella-backend/pkg/http/rest"
+	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
+	"github.com/mabdela/mella-backend/pkg/storage/mongodb"
 	"github.com/subosito/gotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 )

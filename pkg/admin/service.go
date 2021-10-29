@@ -3,7 +3,7 @@ package admin
 import (
 	"context"
 
-	"github.com/samuael/Project/mellaye/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/model"
 )
 
 // Interfaces to be implemented by the admin service instances
