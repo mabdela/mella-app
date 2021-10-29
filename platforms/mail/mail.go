@@ -26,7 +26,7 @@ var dpassword = `<!DOCTYPE html>
 <body>
     <h1 style="background-color:#006699";color:#fff >  Shambel Registrar  </h1>
     {{if .NewPassword}}
-		<p> Hi, According to your action in the Shambel Registrar System this email is used to register a User named {{.Fullname }} in the system .<br>
+		<p> Hi, According to your action in the Mellaye this email is used to register a User named {{.Fullname }} in the system .<br>
 		we have sent you a password to be used when login with <br>
 		If you think that this email is not yours , confirm that by clicking on the link below.
 		<a href="{{.HOST}}/api/deactivate/?email='{{.Email}}&password={{.Password}}'" > Not Mine </a>
@@ -38,7 +38,7 @@ var dpassword = `<!DOCTYPE html>
     <p> <i> Use this password to log in and change the password ASAP.</i> </p>
 	<p>  If this password doesn't work try to get a new password again using forgot password or Use the previous password if you still remember it.</p>
 	<hr>
-	<i> Shambel Drivers Training Institute Registrar System </i> 
+	<i> Mellaye </i> 
 	<hr>
 	</body>
 </html>`
@@ -53,12 +53,12 @@ var emailupdate = `<!DOCTYPE html>
 </head>
 <body>
     <h1 style="background-color:#006699";color:#fff >  Shambel Registrar  </h1>
-		<p> Hi, According to your action of email change in the Shambel Registrar System this email is used to identify a user named {{.Fullname }} in the system .<br>
+		<p> Hi, According to your action of email change in the Mellaye this email is used to identify a user named {{.Fullname }} in the system .<br>
 		If you think that this email is sent by fault, confirm that by clicking on the link below.
 		<a href="{{.HOST}}/api/deactivate/?email={{.Email}}&password={{.Password}}" > Not Mine </a>
 		</p>
 	<hr>
-	<i> Shambel Drivers Training Institute Registrar System </i> 
+	<i> Mellaye </i> 
 	<hr>
 	</body>
 </html>`

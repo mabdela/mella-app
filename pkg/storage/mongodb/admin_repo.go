@@ -23,8 +23,12 @@ func (repo *AdminRepo) ChangePassword(ctx context.Context) bool {
 	return false
 }
 
-func (repo *AdminRepo) DeleteAccountByEmail(context.Context) error            { return nil }
-func (repo *AdminRepo) CreateAdmin(ctx context.Context) (*model.Admin, error) { return nil, nil }
+func (repo *AdminRepo) DeleteAccountByEmail(context.Context) error { return nil }
+func (repo *AdminRepo) CreateAdmin(ctx context.Context) (*model.Admin, error) {
+	// admin :=
+
+	return nil, nil
+}
 func (repo *AdminRepo) AdminByID(ctx context.Context) (*model.Admin, error) {
 	return nil, nil
 }

@@ -72,8 +72,6 @@ func (adminhr *AdminHandler) AdminLogin(c *gin.Context) {
 	// LoginResponse ...
 	resp := &model.LoginResponse{}
 	resp.Success = false
-
-	// jdecode := json.NewDecoder(request.Body)
 	err := c.Bind(input)
 	if err != nil || input.Email == "" || input.Password == "" {
 		resp.Message = os.Getenv("INVALID_INPUT")

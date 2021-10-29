@@ -11,5 +11,5 @@ type Session struct {
 	ID       string
 	Email    string //
 	Password string //
-	Role     string //
+	Role     string //  state.SUPERADMIN , state.ADMIN , state.USER
 }

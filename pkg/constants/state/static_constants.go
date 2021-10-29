@@ -24,3 +24,16 @@ const (
 	// HOST
 	HOST = "http://192.168.1.7:8080"
 )
+
+const (
+	// ADMINS
+	ADMINS = "admins"
+	// COMMENTS ...
+	COMMENTS = "comments"
+	// USER ...
+	USERS = "users"
+	// QUIZS
+	QUIZS = "quizs"
+	// QUIZINFOS ...
+	QUIZINFOS = "quizinfos"
+)
