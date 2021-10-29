@@ -5,15 +5,6 @@ export const togglePane = () => ({
   type: sidebarTypes.TOGGLE_PANE,
 });
 
-// export const fetchContent = index => ({
-//   type: sidebarTypes.FETCH_CONTENT,
-//   payload: index,
-// });
-
-// export const fetchInitialSelectedQuestions = () => ({
-//   type: sidebarTypes.FETCH_INITIAL_SELECTED_QUESTIONS,
-// });
-
 export const fetchHighPrioritySidebar = () => ({
   type: sidebarTypes.FETCH_HIGH_PRIORITY,
 });
@@ -25,11 +16,6 @@ export const fetchSecondPrioritySidebar = () => ({
 export const fetchAllPriority = () => ({
   type: sidebarTypes.FETCH_ALL_PRIORITY,
 });
-
-// export const fetchHtmlData = htmlData => ({
-//   type: sidebarTypes.FETCH_HTML_DATA,
-//   payload: htmlData,
-// });
 
 export const hidePane = () => ({
   type: sidebarTypes.HIDE_PANE,

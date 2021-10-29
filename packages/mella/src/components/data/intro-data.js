@@ -7,26 +7,26 @@ export const introdata = [
   {
     image: '/images/history.jpg',
     name: 'History',
-    link: '/intro',
+    link: '/course-list',
   },
   {
     image: '/images/biology.png',
     name: 'Biology',
-    link: '/intro',
+    link: '/course-list',
   },
   {
     image: '/images/chemistry.jpg',
     name: 'Chemistry',
-    link: '/intro',
+    link: '/course-list',
   },
   {
     image: '/images/physics.jpg',
     name: 'Physics',
-    link: '/intro',
+    link: '/course-list',
   },
   {
     image: '/images/geography.jpg',
     name: 'Geography',
-    link: '/intro',
+    link: '/course-list',
   },
 ];
