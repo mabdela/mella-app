@@ -10,6 +10,7 @@ import (
 type IAdminService interface {
 	// AdminByEmail uses "email" string
 	AdminByEmail(ctx context.Context) (*model.Admin, error)
+	// ChangePassword uses "password" string and "admin_id" string to change a users password
 	ChangePassword(ctx context.Context) bool
 	DeleteAccountByEmail(context.Context) bool
 	CreateAdmin(context.Context) (*model.Admin, error)

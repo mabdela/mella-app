@@ -8,6 +8,7 @@ import (
 	"github.com/mabdela/mella-backend/pkg/constants/model/mongo_models"
 	"github.com/mabdela/mella-backend/pkg/constants/state"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -23,7 +24,18 @@ func NewAdminRepo(conn *mongo.Database) admin.IAdminRepo {
 }
 
 func (repo *AdminRepo) ChangePassword(ctx context.Context) bool {
-	return false
+	password := ctx.Value("password").(string)
+	adminID := ctx.Value("admin_id").(string)
+	adminoid, era := primitive.ObjectIDFromHex(adminID)
+	if era != nil {
+		return false
+	}
+	filter := bson.D{{"_id", adminoid}}
+	set := bson.D{{"$set", bson.D{{"password", password}}}}
+	if _, ero := repo.Conn.Collection(state.ADMINS).UpdateOne(ctx, filter, set); ero != nil {
+		return false
+	}
+	return true
 }
 
 func (repo *AdminRepo) DeleteAccountByEmail(context.Context) error { return nil }

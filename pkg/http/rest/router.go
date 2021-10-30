@@ -3,6 +3,7 @@ package rest
 import (
 	"log"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-contrib/cors"
@@ -22,14 +23,12 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler) *gin.Engine {
 		AllowCredentials: true,
 	}))
 	router.GET("/logout/", rules.Logout)
-	router.Group("/api")
+	router.POST("/api/login/", adminhandler.AdminLogin)
+	router.PUT("/api/admin/password/new/", rules.Authenticated(), adminhandler.ChangePassword)
+	router.Use(FilterDirectory(), rules.Authenticated())
 	{
-		router.POST("/login/", adminhandler.AdminLogin)
+		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
 	}
-	// router.Use(FilterDirectory(), rules.Authenticated())
-	// {
-	// 	router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
-	// }
 
 	return router
 }
@@ -40,7 +39,6 @@ func AccessControl(h httprouter.Handle) httprouter.Handle {
 		w.Header().Set("Access-Control-Allow-Origin", "*")
 		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, OPTIONS,PUT, DELETE")
 		w.Header().Set("Access-Control-Allow-Headers", "Origin, Content-Type")
-
 		if r.Method == "OPTIONS" {
 			return
 		}

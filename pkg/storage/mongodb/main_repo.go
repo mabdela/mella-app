@@ -3,6 +3,7 @@ package mongodb
 import (
 	"context"
 	"log"
+	"os"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -21,6 +22,6 @@ func ConnectMongoDB() *mongo.Database {
 		log.Println("Error WHILE PINGING ", era)
 		return nil
 	}
-	return client.Database("mellaye")
+	return client.Database(os.Getenv("DB_NAME"))
 	// return client.Database(os.Getenv("DB_NAME"))
 }
