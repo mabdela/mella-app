@@ -35,7 +35,6 @@ func main() {
 		}
 		log.Println("DB Connected ...")
 	})
-	// defer conn.Close()
 
 	authenticator := auth.NewAuthenticator()
 	rules := middleware.NewRules(authenticator)
