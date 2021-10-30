@@ -5,6 +5,7 @@ import (
 	"context"
 
 	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/model/mongo_models"
 	"github.com/mabdela/mella-backend/pkg/constants/state"
 	"github.com/mabdela/mella-backend/pkg/storage/mongodb"
 	"github.com/mabdela/mella-backend/platforms/helper"
@@ -24,8 +25,8 @@ func main() {
 		Password:   "$2a$10$TQW6xnGA6xntDzWU21fGg.7.ad8vgfWz7OYvQETIRD/BPrpuvUKvG",
 		Superadmin: true,
 	}
-
-	insert, _ := connect.Collection(state.ADMINS).InsertOne(context.TODO(), admin.GetInsertAdmin())
+	adminInsert := mongo_models.GetMAdmin(admin)
+	insert, _ := connect.Collection(state.ADMINS).InsertOne(context.TODO(), adminInsert)
 	oidstring := helper.ObjectIDFromInsertResult(insert)
 	admin.ID = oidstring
 

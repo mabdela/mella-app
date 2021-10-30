@@ -5,6 +5,9 @@ import (
 
 	"github.com/mabdela/mella-backend/pkg/admin"
 	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/model/mongo_models"
+	"github.com/mabdela/mella-backend/pkg/constants/state"
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -54,5 +57,14 @@ func (repo *AdminRepo) DeleteProfilePicture(ctx context.Context) error {
 
 // AdminByEmail is a method to get an admin instance using the email in the context.
 func (repo *AdminRepo) AdminByEmail(ctx context.Context) (*model.Admin, error) {
-	return nil, nil
+	email := ctx.Value("email").(string)
+	println(email)
+	filter := bson.D{{"email", email}}
+	adminInput := &mongo_models.MAdmin{}
+	if erro := repo.Conn.Collection(state.ADMINS).FindOne(ctx, filter).Decode(adminInput); erro == nil {
+		admin := adminInput.GetAdmin()
+		return admin, erro
+	} else {
+		return nil, erro
+	}
 }

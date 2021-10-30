@@ -3,7 +3,6 @@ package rest
 import (
 	"log"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/gin-contrib/cors"
@@ -23,10 +22,15 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler) *gin.Engine {
 		AllowCredentials: true,
 	}))
 	router.GET("/logout/", rules.Logout)
-	router.Use(FilterDirectory(), rules.Authenticated())
+	router.Group("/api")
 	{
-		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
+		router.POST("/login/", adminhandler.AdminLogin)
 	}
+	// router.Use(FilterDirectory(), rules.Authenticated())
+	// {
+	// 	router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
+	// }
+
 	return router
 }
 

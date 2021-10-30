@@ -8,14 +8,16 @@ import (
 
 // Interfaces to be implemented by the admin service instances
 type IAdminService interface {
+	// AdminByEmail uses "email" string
 	AdminByEmail(ctx context.Context) (*model.Admin, error)
 	ChangePassword(ctx context.Context) bool
 	DeleteAccountByEmail(context.Context) bool
 	CreateAdmin(context.Context) (*model.Admin, error)
+	// AdminByID uses ""
 	AdminByID(ctx context.Context) (*model.Admin, error)
+	// UpdateAdmin uses "admin" *model.Admin
 	UpdateAdmin(ctx context.Context) (*model.Admin, error)
-
-	// GetImageUrl  uses session in the context of the application to retrieve the user informationa
+	// GetImageUrl  uses the session (*model.Session) in the context of the application to retrieve the user informationa
 	GetImageUrl(ctx context.Context) string
 	// ChangeImageUrl uses 'image_url' and 'user_id' to modify the user's profile Picture.
 	ChangeImageUrl(ctx context.Context) bool

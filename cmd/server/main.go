@@ -2,6 +2,7 @@ package main
 
 import (
 	"html/template"
+	"log"
 	"os"
 	"sync"
 
@@ -28,10 +29,11 @@ func main() {
 	once.Do(func() {
 		// Instantiate Database Connection.
 		conn = mongodb.ConnectMongoDB()
-		if connError != nil {
+		if conn == nil {
+			log.Println("Unable to connect ...")
 			os.Exit(1)
 		}
-		templates = template.Must(template.ParseGlob(os.Getenv("PATH_TO_TEMPLATES") + "*.html"))
+		log.Println("DB Connected ...")
 	})
 	// defer conn.Close()
 

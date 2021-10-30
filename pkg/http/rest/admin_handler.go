@@ -180,7 +180,7 @@ func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 	var changesuccess bool
-	ctx = context.WithValue(ctx, "user_id", session.ID)
+	ctx = context.WithValue(ctx, "admin_id", session.ID)
 	hashed, era := hash.HashPassword(input.NewPassword)
 	if era != nil {
 		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
