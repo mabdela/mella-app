@@ -53,7 +53,7 @@ const Dashboard = () => {
         >
           {/* <div className="brand">Mella</div> */}
           <div className="nav-contents">
-            <Link to="/dashboard" style={{ textDecoration: 'none' }}>
+            <Link to="/course-list" style={{ textDecoration: 'none' }}>
               <img
                 src="/images/navlogo.png"
                 alt="MELLA"

@@ -7,6 +7,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Navigation from './component/navigation/navigation';
+import PrivateRoute from '@mono-repo/common/private-route/private-route';
 import CommentsList from './pages/comments/comments-list';
 import QuizAddPage from './pages/quizzes/quiz-add/quiz-add';
 import QuizzesList from './pages/quizzes/quiz-list/quizzes-list';
@@ -36,46 +37,47 @@ function App() {
         >
           <Toolbar />
           <Switch>
-            <Route
+            <PrivateRoute
+              user={user}
               exact
               path="/users/users-list"
-              component={() =>
-                !user ? <Redirect to="/" /> : <UsersListPage />
-              }
+              component={UsersListPage}
             />
-            <Route
+            <PrivateRoute
+              user={user}
               exact
               path="/users/search"
-              component={() =>
-                !user ? <Redirect to="/" /> : <UserSearchPage />
-              }
+              component={UserSearchPage}
             />
-            <Route
+            <PrivateRoute
+              user={user}
               exact
               path="/users/add"
-              component={() => (!user ? <Redirect to="/" /> : <UserAdd />)}
+              component={UserAdd}
             />
-            <Route
+            <PrivateRoute
+              user={user}
               exact
               path="/comments/comment-list"
-              component={() => (!user ? <Redirect to="/" /> : <CommentsList />)}
+              component={CommentsList}
             />
-            <Route
+            <PrivateRoute
+              user={user}
               exact
               path="/quizzes/quizzes-list"
-              component={() => (!user ? <Redirect to="/" /> : <QuizzesList />)}
+              component={QuizzesList}
             />
-            <Route
+            <PrivateRoute
+              user={user}
               exact
               path="/quizzes/add"
-              component={() => (!user ? <Redirect to="/" /> : <QuizAddPage />)}
+              component={QuizAddPage}
             />
-            <Route
+            <PrivateRoute
+              user={user}
               exact
               path="/users/update-password"
-              component={() =>
-                !user ? <Redirect to="/" /> : <UserUpdatePassword />
-              }
+              component={UserUpdatePassword}
             />
           </Switch>
         </Box>

@@ -101,18 +101,14 @@ const Quiz = () => {
           className="quiz-progress-bar"
           style={{
             width: `${
-              (selectedQuestions.filter(
-                choice => choice.clicked_choice === true
-              ).length /
+              (Math.floor(
+                selectedQuestions.filter(
+                  choice => choice.clicked_choice === true
+                ).length
+              ) /
                 quizState.length) *
               100
             }%`,
-            // width: `${
-            //   (selectedQuestions.filter(choice => choice.clicked_choice === true)
-            //     .length /
-            //     quizState.length) *
-            //   100
-            // }%`,
           }}
         ></div>
       ) : null}

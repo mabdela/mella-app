@@ -18,6 +18,7 @@ import { Button } from '@mui/material';
 import { useMediaQuery } from 'react-responsive';
 
 import { useLocation } from 'react-router';
+import { Link } from 'react-router-dom';
 
 const SideBar = () => {
   const [, setSearch] = useState('');
@@ -93,6 +94,13 @@ const SideBar = () => {
         className="input-container"
         onChange={handleChange}
       />
+      <Link to="/course-list">
+        <div className="categories-container">
+          <div className="categories" onClick={() => showActive(-1)}>
+            Explore Courses
+          </div>
+        </div>
+      </Link>
 
       {filteredCategories.length > 0 &&
         filteredCategories.map((data, index) => {

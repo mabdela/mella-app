@@ -10,7 +10,7 @@ const SubMenu = ({ data, handleSubNavClicked }) => {
   return (
     <>
       <div
-        className="categories-container "
+        className="categories-container"
         onClick={() =>
           data.Children.length
             ? data.Children && dispatch(showSubNav(data.id))

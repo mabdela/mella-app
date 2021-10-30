@@ -13,12 +13,7 @@ const CourseList = ({ course }) => {
               <img
                 src={data.image}
                 alt={data.name}
-                style={{
-                  width: '100%',
-                  height: 'auto',
-                  flexGrow: 1,
-                  borderRadius: '4px',
-                }}
+                className="course-card-image"
               />
               <h2 style={{ color: '#4267b2' }}>{data.name}</h2>
             </div>
