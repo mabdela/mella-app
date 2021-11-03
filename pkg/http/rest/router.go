@@ -25,6 +25,7 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler) *gin.Engine {
 	router.GET("/logout/", rules.Logout)
 	router.POST("/api/login/", adminhandler.AdminLogin)
 	router.PUT("/api/admin/password/new/", rules.Authenticated(), adminhandler.ChangePassword)
+	router.GET("/api/admin/password/forgot/", rules.Authenticated(), adminhandler.ForgotPassword)
 	router.Use(FilterDirectory(), rules.Authenticated())
 	{
 		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))

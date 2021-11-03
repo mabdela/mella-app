@@ -12,9 +12,11 @@ type IAdminService interface {
 	AdminByEmail(ctx context.Context) (*model.Admin, error)
 	// ChangePassword uses "password" string and "admin_id" string to change a users password
 	ChangePassword(ctx context.Context) bool
+	// DeleteAccountByEmail uses "email" string to delete an admin
 	DeleteAccountByEmail(context.Context) bool
+	// CreateAdmin uses "admin" *model.Admin to create a new Admin instance.
 	CreateAdmin(context.Context) (*model.Admin, error)
-	// AdminByID uses ""
+	// AdminByID uses "admin_id" stringto return an admin instance.
 	AdminByID(ctx context.Context) (*model.Admin, error)
 	// UpdateAdmin uses "admin" *model.Admin
 	UpdateAdmin(ctx context.Context) (*model.Admin, error)

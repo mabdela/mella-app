@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -201,7 +202,13 @@ func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-// Method ForgotPassword method GET
+/* ForgotPassword method GET
+Input
+{
+	"email" : "usersemail@gmail.com"
+}
+
+*/
 func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 	input := &struct {
 		Email string `json:"email"`
@@ -223,6 +230,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 		return
 	}
 	ctx = context.WithValue(ctx, "email", input.Email)
+	log.Println("The Email is ", input.Email)
 	admin, er := adminhr.AdminSer.AdminByEmail(ctx)
 	if admin != nil && er == nil {
 		password := helper.GenerateRandomString(5, helper.NUMBERS)
@@ -233,7 +241,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, respo)
 				return
 			}
-			ctx = context.WithValue(ctx, "user_id", admin.ID)
+			ctx = context.WithValue(ctx, "admin_id", admin.ID)
 			ctx = context.WithValue(ctx, "password", hashed)
 			changesuccess := adminhr.AdminSer.ChangePassword(ctx)
 			if !changesuccess {
