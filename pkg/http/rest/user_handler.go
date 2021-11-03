@@ -43,7 +43,8 @@ type UserHandler struct {
 // NewUserHandler returns a user handler instance for  the User taking the User service as a Parameter.
 func NewUserHandler(authenticator auth.Authenticator, ser user.IUserService) IUserHandler {
 	return &UserHandler{
-		Service: ser,
+		Service:       ser,
+		Authenticator: authenticator,
 	}
 }
 
@@ -153,13 +154,30 @@ func (userhandler *UserHandler) ChangePassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
+	if input.NewPassword == input.Oldpassword {
+		res.Message = "No Change was made!\n Please use a new password instead"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
 	if len(input.NewPassword) < 4 {
 		res.Message = "Password Length Must exceed 4 characters! "
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
-	var changesuccess bool
+	// Check whether the old password is correct.
 	ctx = context.WithValue(ctx, "user_id", session.ID)
+	if user, err := userhandler.Service.UserByID(ctx); err != nil || user == nil {
+		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+		res.Success = false
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	} else if !(hash.ComparePassword(user.Password, input.Oldpassword)) {
+		res.Message = "Incorrect old password."
+		res.Success = false
+		c.JSON(http.StatusForbidden, res)
+		return
+	}
+	var changesuccess bool
 	hashed, era := hash.HashPassword(input.NewPassword)
 	if era != nil {
 		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")

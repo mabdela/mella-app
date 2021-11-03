@@ -175,9 +175,27 @@ func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
+	if input.NewPassword == input.Oldpassword {
+		res.Message = "No Change was made!\n Please use a new password instead"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
 	if len(input.NewPassword) < 4 {
 		res.Message = "Password Length Must exceed 4 characters! "
 		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// Check whether the old password is correct.
+	ctx = context.WithValue(ctx, "admin_id", session.ID)
+	if user, err := adminhr.AdminSer.AdminByID(c.Request.Context()); err != nil || user == nil {
+		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+		res.Success = false
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	} else if !(hash.ComparePassword(user.Password, input.Oldpassword)) {
+		res.Message = "Incorrect old password."
+		res.Success = false
+		c.JSON(http.StatusForbidden, res)
 		return
 	}
 	var changesuccess bool
