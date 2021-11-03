@@ -56,10 +56,10 @@ func (repo *AdminRepo) GetImageUrl(ctx context.Context) (string, error) {
 	return "", nil
 }
 
-// ChangeImageUrl uses 'image_url' and 'user_id' to modify the user's profile Picture.
-func (repo *AdminRepo) ChangeImageUrl(ctx context.Context) error {
-	return nil
-}
+// // ChangeImageUrl uses 'image_url' and 'user_id' to modify the user's profile Picture.
+// func (repo *AdminRepo) ChangeImageUrl(ctx context.Context) error {
+// 	return nil
+// }
 
 // DeleteProfilePicture(ctx context.Context) error  uses the session in the context to get the user ID and profile
 // and delete the profile picture.
