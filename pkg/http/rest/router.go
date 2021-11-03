@@ -14,7 +14,7 @@ import (
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, adminhandler IAdminHandler) *gin.Engine {
+func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler) *gin.Engine {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
@@ -23,9 +23,26 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler) *gin.Engine {
 		AllowCredentials: true,
 	}))
 	router.GET("/logout/", rules.Logout)
-	router.POST("/api/login/", adminhandler.AdminLogin)
+	router.POST("/api/admin/login/", adminhandler.AdminLogin)
 	router.PUT("/api/admin/password/new/", rules.Authenticated(), adminhandler.ChangePassword)
 	router.GET("/api/admin/password/forgot/", rules.Authenticated(), adminhandler.ForgotPassword)
+	router.POST("/api/superadmin/new/", rules.Authenticated(), rules.Authorized(), adminhandler.CreateAdmin)
+	router.PUT("/api/admin/", rules.Authenticated(), rules.Authorized(), adminhandler.UpdateAdmin)
+	router.PUT("/api/admin/profile/img/", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
+	router.DELETE("/api/admin/profile/img/", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
+	router.DELETE("/api/admin/deactivate/", adminhandler.DeactivateAccount)
+	// Not Tested.
+
+	router.POST("/api/user/login/", userhandler.UserLogin)
+	router.PUT("/api/user/password/new/", rules.Authenticated(), userhandler.ChangePassword)
+	router.GET("/api/user/password/forgot/", rules.Authenticated(), userhandler.ForgotPassword)
+	router.POST("/api/user/new/", userhandler.CreateUser)
+	router.PUT("/api/user/", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
+	router.PUT("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
+	router.DELETE("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
+	router.DELETE("/api/user/deactivate/", userhandler.DeactivateAccount)
+
+	//
 	router.Use(FilterDirectory(), rules.Authenticated())
 	{
 		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))

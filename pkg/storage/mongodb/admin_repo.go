@@ -103,15 +103,15 @@ func (repo *AdminRepo) UpdateAdmin(ctx context.Context) (*model.Admin, error) {
 // GetImageUrl  uses session in the context of the application to retrieve the user informationa
 func (repo *AdminRepo) GetImageUrl(ctx context.Context) (string, error) {
 	session := ctx.Value("session").(*model.Session)
-	if oid, er := primitive.ObjectIDFromHex(session.ID); er != nil {
+	if oid, er := primitive.ObjectIDFromHex(session.ID); er == nil {
 		filter := bson.D{{"_id", oid}}
-		projection := &options.FindOneOptions{Projection: bson.D{{"imgurl", 1}}}
-		imgurl := ""
-		if er := repo.Conn.Collection(state.ADMINS).FindOne(ctx, filter, projection).Decode(&imgurl); er != nil {
+		findOneOption := options.FindOne().SetProjection(bson.D{{"imgurl", 1}})
+		admin := &mongo_models.MAdmin{}
+		if er := repo.Conn.Collection(state.ADMINS).FindOne(ctx, filter, findOneOption).Decode((admin)); er != nil {
 			log.Println(er.Error())
-			return imgurl, er
+			return admin.Imgurl, er
 		}
-		return imgurl, nil
+		return admin.Imgurl, nil
 	} else {
 		return "", er
 	}

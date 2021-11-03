@@ -24,7 +24,9 @@ type IAdminService interface {
 	GetImageUrl(ctx context.Context) string
 	// ChangeImageUrl uses 'image_url' and 'user_id' to modify the user's profile Picture.
 	ChangeImageUrl(ctx context.Context) bool
-	// DeleteProfilePicture uses the session to delete the imgurl
+	// DeleteProfilePicture uses the "session" *model.Session to delete the imgurl.
+	// This session instance is instantiated at the time of authentication.
+	// thre for you don't have to intialize it at the handler function.
 	DeleteProfilePicture(ctx context.Context) bool
 }
 

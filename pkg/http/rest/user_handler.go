@@ -11,61 +11,44 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mabdela/mella-backend/pkg/admin"
 	"github.com/mabdela/mella-backend/pkg/constants/model"
 	"github.com/mabdela/mella-backend/pkg/constants/state"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	"github.com/mabdela/mella-backend/pkg/user"
 	"github.com/mabdela/mella-backend/platforms/form"
 	"github.com/mabdela/mella-backend/platforms/hash"
 	"github.com/mabdela/mella-backend/platforms/helper"
 	"github.com/mabdela/mella-backend/platforms/mail"
 )
 
-// IAdminHandler interface
-type IAdminHandler interface {
-	AdminLogin(c *gin.Context)
+// IUserHandler interface representing the user handler
+// the methods listed in this route has to be implemented by the struct implementing this interface.
+type IUserHandler interface {
+	UserLogin(c *gin.Context)
 	ChangePassword(c *gin.Context)
 	ForgotPassword(c *gin.Context)
 	DeactivateAccount(c *gin.Context)
 	DeleteProfilePicture(c *gin.Context)
 	ChangeProfilePicture(c *gin.Context)
-	CreateAdmin(c *gin.Context)
+	CreateUser(c *gin.Context)
 	Logout(c *gin.Context)
-	UpdateAdmin(c *gin.Context)
+	UpdateUser(c *gin.Context)
 }
 
-// AdminHandler ... |  ...
-type AdminHandler struct {
+type UserHandler struct {
+	Service       user.IUserService
 	Authenticator auth.Authenticator
-	AdminSer      admin.IAdminService
 }
 
-// NewAdminHandler ... | ...
-func NewAdminHandler(auths auth.Authenticator, adminser admin.IAdminService) IAdminHandler {
-	return &AdminHandler{
-		AdminSer:      adminser,
-		Authenticator: auths,
+// NewUserHandler returns a user handler instance for  the User taking the User service as a Parameter.
+func NewUserHandler(authenticator auth.Authenticator, ser user.IUserService) IUserHandler {
+	return &UserHandler{
+		Service: ser,
 	}
 }
 
-// /*
-// 	AdminLogin to handle a login request for an admin ....
-// 	METHOD : POST
-// 	INPUT  : JSON
-// 	INPUT : {
-// 		"email"  : "email" ,
-// 		"password"  : "passs"
-// 	}
-// 	OUTPUT : {
-// 		"success" : true ,
-// 		"message" : "Success message" ,
-// 		"admin" : {
-// 			"id" : 3 ,
-// 			"email" : ""
-// 		}
-// 	}
-// */
-func (adminhr *AdminHandler) AdminLogin(c *gin.Context) {
+// UserLogin ...
+func (userhandler *UserHandler) UserLogin(c *gin.Context) {
 	input := &struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -81,32 +64,27 @@ func (adminhr *AdminHandler) AdminLogin(c *gin.Context) {
 	}
 	ctx := c.Request.Context()
 	ctx = context.WithValue(ctx, "email", input.Email)
-	newAdmin, err := adminhr.AdminSer.AdminByEmail(ctx)
-	if err != nil || newAdmin == nil {
+	newuser, err := userhandler.Service.UserByEmail(ctx)
+	if err != nil || newuser == nil {
 		resp.Success = false
 		resp.Message = "Invalid Username or Password!"
 		c.JSON(401, resp)
 		return
 	} else {
-		if newAdmin == nil {
+		if newuser == nil {
 			goto InvalidUsernameOrPassword
 		}
-		// comparing the hashed password and the password
-		matches := hash.ComparePassword(newAdmin.Password, input.Password)
+		matches := hash.ComparePassword(newuser.Password, input.Password)
 		if !matches {
 			goto InvalidUsernameOrPassword
 		}
 		session := &model.Session{
-			ID:       newAdmin.ID,
-			Email:    newAdmin.Email,
+			ID:       newuser.ID,
+			Email:    newuser.Email,
 			Password: input.Password,
 		}
-		if newAdmin.Superadmin {
-			session.Role = state.SUPERADMIN
-		} else {
-			session.Role = state.ADMIN
-		}
-		success := adminhr.Authenticator.SaveSession(c.Writer, session)
+		session.Role = state.USER
+		success := userhandler.Authenticator.SaveSession(c.Writer, session)
 		if !success {
 			resp.Message = os.Getenv("INTERNAL_SERVER_ERROR")
 			resp.Success = false
@@ -115,7 +93,7 @@ func (adminhr *AdminHandler) AdminLogin(c *gin.Context) {
 		}
 		resp.Success = true
 		resp.Message = state.SuccesfulyLoggedIn
-		resp.User = newAdmin
+		resp.User = newuser
 		c.JSON(200, resp)
 		return
 	}
@@ -129,9 +107,9 @@ InvalidUsernameOrPassword:
 	}
 }
 
-// Logout || method GET /for an admin to log out
-func (adminhr *AdminHandler) Logout(c *gin.Context) {
-	adminhr.Authenticator.DeleteSession(c.Writer, c.Request)
+// Logout || method GET /for an user to log out
+func (userhandler *UserHandler) Logout(c *gin.Context) {
+	userhandler.Authenticator.DeleteSession(c.Writer, c.Request)
 }
 
 // ChangePassword ... method to change the password for all the three roles
@@ -151,7 +129,7 @@ func (adminhr *AdminHandler) Logout(c *gin.Context) {
 		"message" : "Password changed succesfuly "
 	}
 */
-func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
+func (userhandler *UserHandler) ChangePassword(c *gin.Context) {
 	ctx := c.Request.Context()
 	session := ctx.Value("session").(*model.Session)
 
@@ -181,7 +159,7 @@ func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 	var changesuccess bool
-	ctx = context.WithValue(ctx, "admin_id", session.ID)
+	ctx = context.WithValue(ctx, "user_id", session.ID)
 	hashed, era := hash.HashPassword(input.NewPassword)
 	if era != nil {
 		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
@@ -190,7 +168,7 @@ func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
 		return
 	}
 	ctx = context.WithValue(ctx, "password", hashed)
-	changesuccess = adminhr.AdminSer.ChangePassword(ctx)
+	changesuccess = userhandler.Service.ChangePassword(ctx)
 	if !changesuccess {
 		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
 		res.Success = false
@@ -207,9 +185,8 @@ Input
 {
 	"email" : "usersemail@gmail.com"
 }
-
 */
-func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
+func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 	input := &struct {
 		Email string `json:"email"`
 	}{}
@@ -222,7 +199,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, respo)
 		return
 	}
-	// session, _ := adminhr.Authenticator.GetSession(request)
+	// session, _ := userhandler.Authenticator.GetSession(request)
 	ctx := c.Request.Context()
 	if !form.MatchesPattern(input.Email, form.EmailRX) {
 		respo.Message = "Invalid email address!"
@@ -231,25 +208,25 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 	}
 	ctx = context.WithValue(ctx, "email", input.Email)
 	log.Println("The Email is ", input.Email)
-	admin, er := adminhr.AdminSer.AdminByEmail(ctx)
-	if admin != nil && er == nil {
+	user, er := userhandler.Service.UserByEmail(ctx)
+	if user != nil && er == nil {
 		password := helper.GenerateRandomString(5, helper.NUMBERS)
-		if success := mail.SendPasswordEmailSMTP([]string{admin.Email}, password, false, admin.Firstname+" "+admin.Lastname, c.Request.Host); success {
+		if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, false, user.Firstname+" "+user.Lastname, c.Request.Host); success {
 			hashed, era := hash.HashPassword(password)
 			if era != nil {
 				respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
 				c.JSON(http.StatusInternalServerError, respo)
 				return
 			}
-			ctx = context.WithValue(ctx, "admin_id", admin.ID)
+			ctx = context.WithValue(ctx, "user_id", user.ID)
 			ctx = context.WithValue(ctx, "password", hashed)
-			changesuccess := adminhr.AdminSer.ChangePassword(ctx)
+			changesuccess := userhandler.Service.ChangePassword(ctx)
 			if !changesuccess {
 				respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
 				c.JSON(http.StatusInternalServerError, respo)
 				return
 			}
-			respo.Message = "Email is sent to Your email account " + admin.Email
+			respo.Message = "Email is sent to Your email account " + user.Email
 			c.JSON(http.StatusOK, respo)
 			return
 		}
@@ -264,13 +241,12 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 
 }
 
-// CreateAdmin creates admin instance.
-func (adminhr *AdminHandler) CreateAdmin(c *gin.Context) {
+// Createuser creates user instance.
+func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 	input := &struct {
-		Firstname  string `json:"firstname"`
-		Lastname   string `json:"lastname"`
-		Email      string `json:"email"`
-		Superadmin bool   `json:"superadmin"`
+		Firstname string `json:"firstname"`
+		Lastname  string `json:"lastname"`
+		Email     string `json:"email"`
 	}{}
 	resp := &model.LoginResponse{false, "Bad Request Body", nil}
 	if er := c.BindJSON(input); er == nil {
@@ -289,7 +265,7 @@ func (adminhr *AdminHandler) CreateAdmin(c *gin.Context) {
 			hash, er := helper.HashPassword(password)
 			ctx := c.Request.Context()
 			ctx = context.WithValue(ctx, "email", input.Email)
-			if admin, err := adminhr.AdminSer.AdminByEmail(ctx); admin != nil || err == nil {
+			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
 				resp.Message = "account with this email already exist."
 				c.JSON(http.StatusUnauthorized, resp)
 				return
@@ -301,30 +277,26 @@ func (adminhr *AdminHandler) CreateAdmin(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, resp)
 				return
 			}
-			admin := &model.Admin{
+			user := &model.User{
 				Firstname: input.Firstname,
 				Lastname:  input.Lastname,
 				Email:     input.Email, //
 				Password:  hash,
-				// Superadmin: input.Superadmin,
 			}
 			// Send Email for the password if this doesn't work raise internal server error.
-			if success := mail.SendPasswordEmailSMTP([]string{admin.Email}, password, true, admin.Firstname+" "+admin.Lastname, c.Request.Host); success {
+			if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, c.Request.Host); success {
 				ctx = c.Request.Context()
-				ctx = context.WithValue(ctx, "admin", admin)
-				if admin, er = adminhr.AdminSer.CreateAdmin(ctx); admin != nil && er == nil {
+				ctx = context.WithValue(ctx, "user", user)
+				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {
 					resp.Success = true
 					resp.Message = func() string {
-						if admin.Superadmin {
-							return " Super Admin"
-						}
-						return " Admin "
+						return " user "
 					}() + " created succesfully!"
-					resp.User = admin
+					resp.User = user
 					c.JSON(http.StatusOK, resp)
 					return
 				} else {
-					if admin != nil && er != nil {
+					if user != nil && er != nil {
 						resp.Message = er.Error()
 					} else {
 						resp.Message = "Internal server error!"
@@ -343,7 +315,7 @@ func (adminhr *AdminHandler) CreateAdmin(c *gin.Context) {
 }
 
 // DeactivateAccount to deactivate an account usign the username and password
-func (adminhr *AdminHandler) DeactivateAccount(c *gin.Context) {
+func (userhandler *UserHandler) DeactivateAccount(c *gin.Context) {
 	email := c.Request.FormValue("email")
 	password := c.Request.FormValue("password")
 	resp := &struct {
@@ -361,22 +333,22 @@ func (adminhr *AdminHandler) DeactivateAccount(c *gin.Context) {
 		return
 	}
 	ctx = context.WithValue(ctx, "email", email)
-	newAdmin, err := adminhr.AdminSer.AdminByEmail(ctx)
-	if err != nil || newAdmin == nil {
+	newuser, err := userhandler.Service.UserByEmail(ctx)
+	if err != nil || newuser == nil {
 		resp.Msg = "Invalid Username or Password!"
 		c.JSON(401, resp)
 		return
 	} else {
-		if newAdmin == nil {
+		if newuser == nil {
 			goto InvalidEmailsOrPassword
 		}
 		// comparing the hashed password and the password
-		matches := hash.ComparePassword(newAdmin.Password, password)
+		matches := hash.ComparePassword(newuser.Password, password)
 		if !matches {
 			goto InvalidEmailsOrPassword
 		}
 		ctx = context.WithValue(ctx, "email", email)
-		if success := adminhr.AdminSer.DeleteAccountByEmail(ctx); success {
+		if success := userhandler.Service.DeleteAccountByEmail(ctx); success {
 			resp.Msg = "succesfuly deleted!"
 			c.JSON(http.StatusOK, resp)
 			return
@@ -393,7 +365,7 @@ InvalidEmailsOrPassword:
 	}
 }
 
-func (adminhr *AdminHandler) UpdateAdmin(c *gin.Context) {
+func (userhandler *UserHandler) UpdateUser(c *gin.Context) {
 	input := &struct {
 		Firstname string `json:"firstname,omitempty"`
 		Lastname  string `json:"lastname,omitempty"`
@@ -423,32 +395,32 @@ func (adminhr *AdminHandler) UpdateAdmin(c *gin.Context) {
 			return
 		}
 		ctx := c.Request.Context()
-		// Get the admin By his ID and tell the newly Created Email to confirm that this is his email.
+		// Get the user By his ID and tell the newly Created Email to confirm that this is his email.
 		session := c.Request.Context().Value("session").(*model.Session)
 		if session == nil {
 			res.Msg = "not authorized"
 			c.JSON(http.StatusUnauthorized, res)
 			return
 		}
-		ctx = context.WithValue(ctx, "admin_id", session.ID)
-		admin, era := adminhr.AdminSer.AdminByID(ctx)
-		if admin == nil || era != nil {
+		ctx = context.WithValue(ctx, "user_id", session.ID)
+		user, era := userhandler.Service.UserByID(ctx)
+		if user == nil || era != nil {
 			res.Msg = "internal server Error "
 			c.JSON(http.StatusInternalServerError, res)
 			return
 		}
 		changed := false
-		if admin.Firstname != input.Firstname {
-			admin.Firstname = input.Firstname
+		if user.Firstname != input.Firstname {
+			user.Firstname = input.Firstname
 			changed = true
 		}
-		if admin.Lastname != input.Lastname {
-			admin.Lastname = input.Lastname
+		if user.Lastname != input.Lastname {
+			user.Lastname = input.Lastname
 			changed = true
 		}
-		if input.Email != "" && admin.Email != input.Email {
-			if success := mail.SendEmailChangeSMTP([]string{input.Email}, session.Password, admin.Firstname+" "+admin.Lastname, c.Request.Host); success {
-				admin.Email = input.Email
+		if input.Email != "" && user.Email != input.Email {
+			if success := mail.SendEmailChangeSMTP([]string{input.Email}, session.Password, user.Firstname+" "+user.Lastname, c.Request.Host); success {
+				user.Email = input.Email
 				changed = true
 			} else {
 				res.Msg = "internal server error!"
@@ -457,8 +429,8 @@ func (adminhr *AdminHandler) UpdateAdmin(c *gin.Context) {
 			}
 		}
 		if changed {
-			ctx = context.WithValue(ctx, "admin", admin)
-			if admin, er := adminhr.AdminSer.UpdateAdmin(ctx); admin == nil || er != nil {
+			ctx = context.WithValue(ctx, "user", user)
+			if user, er := userhandler.Service.UpdateUser(ctx); user == nil || er != nil {
 				res.Msg = "update was not succesful please try again!"
 				c.JSON(http.StatusNotModified, res)
 				return
@@ -480,7 +452,7 @@ func (adminhr *AdminHandler) UpdateAdmin(c *gin.Context) {
 }
 
 // ChangeProfilePicture
-func (adminhr *AdminHandler) ChangeProfilePicture(c *gin.Context) {
+func (userhandler *UserHandler) ChangeProfilePicture(c *gin.Context) {
 	var header *multipart.FileHeader
 	var erro error
 	var oldImage string
@@ -508,7 +480,7 @@ func (adminhr *AdminHandler) ChangeProfilePicture(c *gin.Context) {
 			return
 		}
 		defer newImage.Close()
-		oldImage = adminhr.AdminSer.GetImageUrl(c.Request.Context())
+		oldImage = userhandler.Service.GetImageUrl(c.Request.Context())
 		_, er := io.Copy(newImage, image)
 		if er != nil {
 			c.Writer.WriteHeader(http.StatusInternalServerError)
@@ -516,7 +488,7 @@ func (adminhr *AdminHandler) ChangeProfilePicture(c *gin.Context) {
 		}
 		ncon := context.WithValue(c.Request.Context(), "user_id", c.Request.Context().Value("session").(*model.Session).ID)
 		ncon = context.WithValue(ncon, "image_url", newName)
-		success := adminhr.AdminSer.ChangeImageUrl(ncon)
+		success := userhandler.Service.ChangeImageUrl(ncon)
 		if success {
 			if oldImage != "" {
 				if strings.HasSuffix(os.Getenv("ASSETS_DIRECTORY"), "/") {
@@ -540,13 +512,13 @@ func (adminhr *AdminHandler) ChangeProfilePicture(c *gin.Context) {
 }
 
 // DeleteProfilePicture ...
-func (adminhr *AdminHandler) DeleteProfilePicture(c *gin.Context) {
-	imageUrl := adminhr.AdminSer.GetImageUrl(c.Request.Context())
+func (userhandler *UserHandler) DeleteProfilePicture(c *gin.Context) {
+	imageUrl := userhandler.Service.GetImageUrl(c.Request.Context())
 	if imageUrl == "" {
 		c.JSON(http.StatusNotFound, &model.ShortSuccess{Msg: "User doesn't have profile image."})
 		return
 	}
-	success := adminhr.AdminSer.DeleteProfilePicture(c.Request.Context())
+	success := userhandler.Service.DeleteProfilePicture(c.Request.Context())
 	if success {
 		if strings.HasSuffix(os.Getenv("ASSETS_DIRECTORY"), "/") {
 			os.Remove(os.Getenv("ASSETS_DIRECTORY") + imageUrl)
