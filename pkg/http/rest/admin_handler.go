@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"os"
@@ -115,7 +116,7 @@ func (adminhr *AdminHandler) AdminLogin(c *gin.Context) {
 		resp.Success = true
 		resp.Message = state.SuccesfulyLoggedIn
 		resp.User = newAdmin
-		c.JSON(200, resp)
+		c.JSON(200, resp) 
 		return
 	}
 	// InvalidUsernameOrPassword
@@ -201,7 +202,13 @@ func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-// Method ForgotPassword method GET
+/* ForgotPassword method GET
+Input
+{
+	"email" : "usersemail@gmail.com"
+}
+
+*/
 func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 	input := &struct {
 		Email string `json:"email"`
@@ -223,6 +230,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 		return
 	}
 	ctx = context.WithValue(ctx, "email", input.Email)
+	log.Println("The Email is ", input.Email)
 	admin, er := adminhr.AdminSer.AdminByEmail(ctx)
 	if admin != nil && er == nil {
 		password := helper.GenerateRandomString(5, helper.NUMBERS)
@@ -233,7 +241,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, respo)
 				return
 			}
-			ctx = context.WithValue(ctx, "user_id", admin.ID)
+			ctx = context.WithValue(ctx, "admin_id", admin.ID)
 			ctx = context.WithValue(ctx, "password", hashed)
 			changesuccess := adminhr.AdminSer.ChangePassword(ctx)
 			if !changesuccess {
@@ -422,7 +430,7 @@ func (adminhr *AdminHandler) UpdateAdmin(c *gin.Context) {
 			c.JSON(http.StatusUnauthorized, res)
 			return
 		}
-		ctx = context.WithValue(ctx, "user_id", session.ID)
+		ctx = context.WithValue(ctx, "admin_id", session.ID)
 		admin, era := adminhr.AdminSer.AdminByID(ctx)
 		if admin == nil || era != nil {
 			res.Msg = "internal server Error "
@@ -534,6 +542,10 @@ func (adminhr *AdminHandler) ChangeProfilePicture(c *gin.Context) {
 // DeleteProfilePicture ...
 func (adminhr *AdminHandler) DeleteProfilePicture(c *gin.Context) {
 	imageUrl := adminhr.AdminSer.GetImageUrl(c.Request.Context())
+	if imageUrl == "" {
+		c.JSON(http.StatusNotFound, &model.ShortSuccess{Msg: "User doesn't have profile image."})
+		return
+	}
 	success := adminhr.AdminSer.DeleteProfilePicture(c.Request.Context())
 	if success {
 		if strings.HasSuffix(os.Getenv("ASSETS_DIRECTORY"), "/") {
@@ -541,9 +553,9 @@ func (adminhr *AdminHandler) DeleteProfilePicture(c *gin.Context) {
 		} else {
 			os.Remove(os.Getenv("ASSETS_DIRECTORY") + "/" + imageUrl)
 		}
-		c.Writer.Write(helper.MarshalThis(&model.ShortSuccess{Msg: "Succesfully Deleted"}))
+		c.JSON(http.StatusOK, &model.ShortSuccess{Msg: "Profile Image is succesfully Deleted"})
 		return
 	} else {
-		c.Writer.WriteHeader(http.StatusInternalServerError)
+		c.JSON(http.StatusInternalServerError, &model.ShortSuccess{Msg: "Deletion was not succesful."})
 	}
 }

@@ -12,9 +12,11 @@ type IAdminService interface {
 	AdminByEmail(ctx context.Context) (*model.Admin, error)
 	// ChangePassword uses "password" string and "admin_id" string to change a users password
 	ChangePassword(ctx context.Context) bool
+	// DeleteAccountByEmail uses "email" string to delete an admin
 	DeleteAccountByEmail(context.Context) bool
+	// CreateAdmin uses "admin" *model.Admin to create a new Admin instance.
 	CreateAdmin(context.Context) (*model.Admin, error)
-	// AdminByID uses ""
+	// AdminByID uses "admin_id" stringto return an admin instance.
 	AdminByID(ctx context.Context) (*model.Admin, error)
 	// UpdateAdmin uses "admin" *model.Admin
 	UpdateAdmin(ctx context.Context) (*model.Admin, error)
@@ -22,7 +24,9 @@ type IAdminService interface {
 	GetImageUrl(ctx context.Context) string
 	// ChangeImageUrl uses 'image_url' and 'user_id' to modify the user's profile Picture.
 	ChangeImageUrl(ctx context.Context) bool
-	// DeleteProfilePicture uses the session to delete the imgurl
+	// DeleteProfilePicture uses the "session" *model.Session to delete the imgurl.
+	// This session instance is instantiated at the time of authentication.
+	// thre for you don't have to intialize it at the handler function.
 	DeleteProfilePicture(ctx context.Context) bool
 }
 

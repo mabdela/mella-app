@@ -13,14 +13,14 @@ type QuizRepo struct {
 
 // NewAdminRepo ...
 func NewQuizRepo(conn *mongo.Database) quiz.IQuizRepo {
-	return &AdminRepo{
+	return &QuizRepo{
 		Conn: conn,
 	}
 }
 func (repo *quiz.IQuizRepo)AddQuiz(ctx context.Context) bool{
-	
+	return true
 }
 
 func (repo *quiz.IQuizRepo)GetQuestion(ctx context.Context) bool{
-
+	return true
 }

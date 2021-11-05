@@ -1,24 +1,26 @@
-type IQuizHandler interface{
-	AddQuiz(c *gin.Context)
-	GetQuestion(c *gin.Context)
+package rest
+
+import (
+	"github.com/gin-gonic/gin"
+	"github.com/mabdela/mella-backend/pkg/quiz"
+)
+
+type IQuizHandler interface {
 }
 
 type QuizHandler struct {
-	Authenticator auth.Authenticator
-	QuizSer quiz.IQuizService
+	Service quiz.IQuizService
 }
 
-func NewQuizHandler(auths auth.Authenticator , quizser quiz.IQuizService) IQuizHandler{
+// QuizHandler a function to create a new quiz handler instance.
+func NewQuizHandler(service quiz.IQuizService) IQuizHandler {
 	return &QuizHandler{
-		Authenticator: auths,
-		QuizSer: quizser
+		Service: service,
 	}
 }
 
-func (quizhr *QuizHandler) AddQuiz(c *gin.Context){
-   //write handler function
-}
-
-func (quizhr *QuizHandler) GetQuestion(c *gin.Context){
-	//write handler function
+func CreateQuiz(c *gin.Context) {
+	// quiz := struct{
+		
+	// }{}
 }

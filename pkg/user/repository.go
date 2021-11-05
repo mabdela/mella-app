@@ -6,12 +6,14 @@ import (
 	"github.com/mabdela/mella-backend/pkg/constants/model"
 )
 
+// IUserRepo interface represernts the methods that a user repo struct shoulkd implements
+// User Service instance uses this Interface.
 type IUserRepo interface {
-	// AdminByEmail is a method to get an admin instance using the email in the context.
+	// UserByEmail is a method to get an user instance using the email in the context.
 	UserByEmail(ctx context.Context) (*model.User, error)
 	ChangePassword(ctx context.Context) bool
 	DeleteAccountByEmail(context.Context) error
-	// CreateAdmin(ctx context.Context) (*model.User, error)
+	CreateUser(ctx context.Context) (*model.User, error)
 	UserByID(ctx context.Context) (*model.User, error)
 	UpdateUser(ctx context.Context) (*model.User, error)
 	// GetImageUrl  uses session in the context of the application to retrieve the user informationa

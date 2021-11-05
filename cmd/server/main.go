@@ -11,6 +11,7 @@ import (
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
 	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
 	"github.com/mabdela/mella-backend/pkg/storage/mongodb"
+	"github.com/mabdela/mella-backend/pkg/user"
 	"github.com/subosito/gotenv"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -43,5 +44,9 @@ func main() {
 	adminservice := admin.NewAdminService(adminrepo)
 	adminhandler := rest.NewAdminHandler(authenticator, adminservice /*secretaryservice*/)
 
-	rest.Route(rules, adminhandler).Run(":8080")
+	userrepo := mongodb.NewUserRepo(conn)
+	userser := user.NewUserService(userrepo)
+	userhandler := rest.NewUserHandler(authenticator, userser)
+
+	rest.Route(rules, adminhandler, userhandler).Run(":8080")
 }
