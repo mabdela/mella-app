@@ -4,8 +4,11 @@ type IArticleService interface {
 }
 
 type ArticleService struct {
+	Repo IArticleRepo
 }
 
-func NewArticleService() IArticleService {
-	return ArticleService{}
+func NewArticleService(repo IArticleRepo) IArticleService {
+	return ArticleService{
+		Repo: repo,
+	}
 }

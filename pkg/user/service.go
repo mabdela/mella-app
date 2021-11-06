@@ -45,7 +45,6 @@ func (userser *UserService) UserByEmail(ctx context.Context) (*model.User, error
 func (userser *UserService) ChangePassword(ctx context.Context) bool {
 	return userser.Repo.ChangePassword(ctx)
 }
-
 func (userser *UserService) DeleteAccountByEmail(ctx context.Context) bool {
 	return userser.Repo.DeleteAccountByEmail(ctx) == nil
 }
@@ -71,7 +70,6 @@ func (userser *UserService) GetImageUrl(ctx context.Context) string {
 func (userser *UserService) ChangeImageUrl(ctx context.Context) bool {
 	return userser.Repo.ChangeImageUrl(ctx) == nil
 }
-
 // DeleteProfilePicture(ctx context.Context) error
 func (userser *UserService) DeleteProfilePicture(ctx context.Context) bool {
 	return userser.Repo.DeleteProfilePicture(ctx) == nil

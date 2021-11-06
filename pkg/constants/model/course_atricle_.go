@@ -12,8 +12,9 @@ type (
 
 	Article struct {
 		ID          string       `json:"id,omitempty"` // ID
-		Title       string       `json:"title"`        // Title
-		Desc        string       `json:"desc"`         // Description
+		CourseID    string       `bson:"course_id"`
+		Title       string       `json:"title"` // Title
+		Desc        string       `json:"desc"`  // Description
 		Image       string       `json:"imgage"`
 		Subarticles []SubArticle `json:"sub_articles"`
 	}

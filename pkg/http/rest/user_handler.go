@@ -122,9 +122,7 @@ func (userhandler *UserHandler) Logout(c *gin.Context) {
 		"new_password" : "new_password " ,
 		"confirm_password" : "new_password_here"
 	}
-
 	OUTPUT : JSON
-
 	{
 		"success" : true ,
 		"message" : "Password changed succesfuly "
@@ -286,13 +284,13 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 			hash, er := helper.HashPassword(password)
 			ctx := c.Request.Context()
 			ctx = context.WithValue(ctx, "email", input.Email)
-			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
+			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil { 
 				resp.Message = "account with this email already exist."
-				c.JSON(http.StatusUnauthorized, resp)
+				c.JSON(http.StatusUnauthorized, resp) //it should respond statusForbiden (check)
 				return
 			}
 
-			if er != nil {
+			if er != nil { 
 				resp.Message = " Internal Server error "
 				resp.Success = false
 				c.JSON(http.StatusInternalServerError, resp)
@@ -313,7 +311,11 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 					resp.Message = func() string {
 						return " user "
 					}() + " created succesfully!"
+<<<<<<< HEAD
 					// -----
+=======
+					resp.User = ""
+>>>>>>> c8cf4f612b63740944e3fb24b3cfd8f8aeca213b
 					c.JSON(http.StatusOK, resp)
 					return
 				} else {

@@ -69,6 +69,7 @@ func AccessControl(h httprouter.Handle) httprouter.Handle {
 		h(w, r, params)
 	})
 }
+
 func FilterDirectory() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log.Println(" Filter Directory ")

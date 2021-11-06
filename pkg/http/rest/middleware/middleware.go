@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"strings"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mabdela/mella-backend/pkg/constants/model"
@@ -44,7 +45,7 @@ func (m rules) Authenticated() gin.HandlerFunc {
 			c.Abort()
 			return
 		}
-		// ctx.Deadline( time.Now().Add(time.Second * 5))
+		ctx, _ = context.WithDeadline(ctx, time.Now().Add(time.Millisecond*100))
 		c.Request = c.Request.WithContext(ctx)
 		c.Next()
 	}
@@ -94,8 +95,6 @@ func (m *rules) HasPermission(path, role, method string) bool {
 		return true
 	}
 	return false
-	// }
-	// return false
 }
 
 // Logout function api Logging out

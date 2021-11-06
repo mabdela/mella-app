@@ -18,6 +18,7 @@ type (
 
 	MArticle struct {
 		ID          primitive.ObjectID `bson:"_id,omitempty"`
+		CourseID    string             `bson:"course_id"`
 		Title       string             `bson:"title"` // Title
 		Desc        string             `bson:"desc"`  // Description
 		Image       string             `bson:"imgage"`
