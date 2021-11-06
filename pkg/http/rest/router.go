@@ -18,9 +18,10 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "https://facebook.com"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
 		AllowHeaders:     []string{"Content-type", "*"},
 		AllowCredentials: true,
+		//AllowAllOrigins:  true,
 	}))
 	router.GET("/logout/", rules.Logout)
 	router.POST("/api/admin/login/", adminhandler.AdminLogin)
@@ -32,7 +33,7 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.DELETE("/api/admin/profile/img/", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate/", adminhandler.DeactivateAccount)
 	// Users Route here
-	router.POST("/api/user/login/", userhandler.UserLogin)
+	router.POST("/api/user/login", userhandler.UserLogin)
 	router.PUT("/api/user/password/new/", rules.Authenticated(), rules.Authorized(), userhandler.ChangePassword)
 	router.GET("/api/user/password/forgot/", rules.Authenticated(), userhandler.ForgotPassword)
 	router.POST("/api/user/new/", userhandler.CreateUser)

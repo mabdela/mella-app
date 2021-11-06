@@ -6,5 +6,10 @@ import (
 )
 
 func main() {
-	println(string(helper.MarshalThis(model.Admin{})) + "\n" + string(helper.MarshalThis(model.User{})) + "\n")
+	println(string(helper.MarshalThis(&struct {
+		Firstname  string `json:"firstname"`
+		Lastname   string `json:"lastname"`
+		Email      string `json:"email"`
+		Superadmin bool   `json:"superadmin"`
+	}{}))+"\n\n\n\n"+string(helper.MarshalThis(&model.LoginResponse{false, "bad request body  ", nil})), string(helper.MarshalThis(&model.Admin{ID: "sdfjkadj", Email: "someone@gmail.com", Firstname: "abebe", Lastname: "Kebede", Imgurl: "/image/profile/abcdef.jpg", Superadmin: false, Password: ""})))
 }
