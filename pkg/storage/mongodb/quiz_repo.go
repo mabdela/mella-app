@@ -17,10 +17,12 @@ func NewQuizRepo(conn *mongo.Database) quiz.IQuizRepo {
 		Conn: conn,
 	}
 }
-func (repo *quiz.IQuizRepo)AddQuiz(ctx context.Context) bool{
+func (repo *QuizRepo) AddQuiz(ctx context.Context) bool {
 	return true
+	//here the insertion into the database will be implemented
 }
 
-func (repo *quiz.IQuizRepo)GetQuestion(ctx context.Context) bool{
-	return true
-}
+//  func (repo *QuizRepo)GetQuestion(ctx context.Context) *model.Question {
+//  	quiz := &model.Question{}
+// 	 return quiz
+//  }

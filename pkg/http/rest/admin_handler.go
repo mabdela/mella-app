@@ -151,56 +151,74 @@ func (adminhr *AdminHandler) Logout(c *gin.Context) {
 		"message" : "Password changed succesfuly "
 	}
 */
-func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
-	ctx := c.Request.Context()
-	session := ctx.Value("session").(*model.Session)
+	func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
+		ctx := c.Request.Context()
+		session := ctx.Value("session").(*model.Session)//
 
-	res := &model.SimpleSuccessNotifier{
-		Success: false,
+		res := &model.SimpleSuccessNotifier{
+			Success: false,
+		}
+		input := &struct {
+			Oldpassword     string `json:"old_password"`
+			NewPassword     string `json:"new_password"`
+			ConfirmPassword string `json:"confirm_password"`
+		}{}
+		jdecoder := json.NewDecoder(c.Request.Body)
+		era := jdecoder.Decode(input)
+		if era != nil || input.Oldpassword == "" || input.NewPassword == "" || input.ConfirmPassword == "" {
+			res.Message = os.Getenv("BAD_REQUEST_BODY")
+			c.JSON(http.StatusBadRequest, res)
+			return
+		}
+		if input.ConfirmPassword != input.NewPassword {
+			res.Message = os.Getenv("RE_CONFIRM_PASSWORD")
+			c.JSON(http.StatusBadRequest, res)
+			return
+		}
+		if input.NewPassword == input.Oldpassword {
+			res.Message = "No Change was made!\n Please use a new password instead"
+			c.JSON(http.StatusBadRequest, res)
+			return
+		}
+		if len(input.NewPassword) < 4 {
+			res.Message = "Password Length Must exceed 4 characters! "
+			c.JSON(http.StatusBadRequest, res)
+			return
+		}
+		// Check whether the old password is correct.
+		ctx = context.WithValue(ctx, "admin_id", session.ID)
+		if user, err := adminhr.AdminSer.AdminByID(c.Request.Context()); err != nil || user == nil {
+			res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+			res.Success = false
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		} else if !(hash.ComparePassword(user.Password, input.Oldpassword)) {
+			res.Message = "Incorrect old password."
+			res.Success = false
+			c.JSON(http.StatusForbidden, res)
+			return
+		}
+		var changesuccess bool
+		ctx = context.WithValue(ctx, "admin_id", session.ID)
+		hashed, era := hash.HashPassword(input.NewPassword)
+		if era != nil {
+			res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+			res.Success = false
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+		ctx = context.WithValue(ctx, "password", hashed)
+		changesuccess = adminhr.AdminSer.ChangePassword(ctx)
+		if !changesuccess {
+			res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+			res.Success = false
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+		res.Message = "Password Changed Succesfuly!"
+		res.Success = true
+		c.JSON(http.StatusOK, res)
 	}
-	input := &struct {
-		Oldpassword     string `json:"old_password"`
-		NewPassword     string `json:"new_password"`
-		ConfirmPassword string `json:"confirm_password"`
-	}{}
-	jdecoder := json.NewDecoder(c.Request.Body)
-	era := jdecoder.Decode(input)
-	if era != nil || input.Oldpassword == "" || input.NewPassword == "" || input.ConfirmPassword == "" {
-		res.Message = os.Getenv("BAD_REQUEST_BODY")
-		c.JSON(http.StatusBadRequest, res)
-		return
-	}
-	if input.ConfirmPassword != input.NewPassword {
-		res.Message = os.Getenv("RE_CONFIRM_PASSWORD")
-		c.JSON(http.StatusBadRequest, res)
-		return
-	}
-	if len(input.NewPassword) < 4 {
-		res.Message = "Password Length Must exceed 4 characters! "
-		c.JSON(http.StatusBadRequest, res)
-		return
-	}
-	var changesuccess bool
-	ctx = context.WithValue(ctx, "admin_id", session.ID)
-	hashed, era := hash.HashPassword(input.NewPassword)
-	if era != nil {
-		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-		res.Success = false
-		c.JSON(http.StatusInternalServerError, res)
-		return
-	}
-	ctx = context.WithValue(ctx, "password", hashed)
-	changesuccess = adminhr.AdminSer.ChangePassword(ctx)
-	if !changesuccess {
-		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-		res.Success = false
-		c.JSON(http.StatusInternalServerError, res)
-		return
-	}
-	res.Message = "Password Changed Succesfuly!"
-	res.Success = true
-	c.JSON(http.StatusOK, res)
-}
 
 /* ForgotPassword method GET
 Input
@@ -306,8 +324,8 @@ func (adminhr *AdminHandler) CreateAdmin(c *gin.Context) {
 				Lastname:  input.Lastname,
 				Email:     input.Email, //
 				Password:  hash,
-				// Superadmin: input.Superadmin,
 			}
+			
 			// Send Email for the password if this doesn't work raise internal server error.
 			if success := mail.SendPasswordEmailSMTP([]string{admin.Email}, password, true, admin.Firstname+" "+admin.Lastname, c.Request.Host); success {
 				ctx = c.Request.Context()

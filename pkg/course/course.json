@@ -1,0 +1,7 @@
+{
+    "id" : "this_is_course_id" , 
+    "title"  : "maths",
+    "title_translation"   : "hisab" , 
+    "articles_count"  : 3 , 
+    "created_by"   : "admins_id_here" 
+}

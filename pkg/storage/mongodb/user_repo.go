@@ -159,6 +159,7 @@ func (repo *UserRepo) UserByEmail(ctx context.Context) (*model.User, error) {
 	email := ctx.Value("email").(string)
 	filter := bson.D{{"email", email}}
 	userInput := &mongo_models.MUser{}
+	// var userInput mongo_models.MUser
 	if erro := repo.Conn.Collection(state.USERS).FindOne(ctx, filter).Decode(userInput); erro == nil {
 		user := userInput.GetUser()
 		return user, erro

@@ -15,6 +15,11 @@ import (
 	"github.com/mabdela/mella-backend/pkg/constants/state"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
 	"github.com/mabdela/mella-backend/pkg/user"
+	"github.com/mabdela/mella-backend/platforms/form"
+	"github.com/mabdela/mella-backend/platforms/hash"
+	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-backend/platforms/mail"
+)
 
 // IUserHandler interface representing the user handler
 // the methods listed in this route has to be implemented by the struct implementing this interface.
@@ -22,35 +27,29 @@ type IUserHandler interface {
 	UserLogin(c *gin.Context)
 	ChangePassword(c *gin.Context)
 	ForgotPassword(c *gin.Context)
-	// DeactivateAccount(c *gin.Context)
-	DeleteProfilePicture(c *gin.Context)
-	ChangeProfilePicture(c *gin.Context)
-	// CreateAdmin(c *gin.Context)
-
 	DeactivateAccount(c *gin.Context)
 	DeleteProfilePicture(c *gin.Context)
 	ChangeProfilePicture(c *gin.Context)
 	CreateUser(c *gin.Context)
-
 	Logout(c *gin.Context)
 	UpdateUser(c *gin.Context)
 }
 
-
-// AdminHandler ... |  ...
 type UserHandler struct {
+	Service       user.IUserService
 	Authenticator auth.Authenticator
-	UserSer       user.IUserService
 }
 
-func NewUserHandler(auths auth.Authenticator, userser user.IUserService) IUserHandler {
+// NewUserHandler returns a user handler instance for  the User taking the User service as a Parameter.
+func NewUserHandler(authenticator auth.Authenticator, ser user.IUserService) IUserHandler {
 	return &UserHandler{
-		UserSer:       userser,
-		Authenticator: auths,
+		Service:       ser,
+		Authenticator: authenticator,
+	}
+}
 
 // UserLogin ...
 func (userhandler *UserHandler) UserLogin(c *gin.Context) {
-
 	input := &struct {
 		Email    string `json:"email"`
 		Password string `json:"password"`
@@ -61,6 +60,7 @@ func (userhandler *UserHandler) UserLogin(c *gin.Context) {
 	err := c.Bind(input)
 	if err != nil || input.Email == "" || input.Password == "" {
 		resp.Message = os.Getenv("INVALID_INPUT")
+		c.JSON(http.StatusUnauthorized, resp)
 		return
 	}
 	ctx := c.Request.Context()
@@ -72,6 +72,14 @@ func (userhandler *UserHandler) UserLogin(c *gin.Context) {
 		c.JSON(401, resp)
 		return
 	} else {
+		if newuser == nil {
+			goto InvalidUsernameOrPassword
+		}
+		matches := hash.ComparePassword(newuser.Password, input.Password)
+		if !matches {
+			goto InvalidUsernameOrPassword
+		}
+		session := &model.Session{
 			ID:       newuser.ID,
 			Email:    newuser.Email,
 			Password: input.Password,
@@ -100,11 +108,6 @@ InvalidUsernameOrPassword:
 	}
 }
 
-func (userhr *UserHandler) Logout(c *gin.Context) {
-
-}
-func (userhr *UserHandler) UpdateUser(c *gin.Context) {
-
 // Logout || method GET /for an user to log out
 func (userhandler *UserHandler) Logout(c *gin.Context) {
 	userhandler.Authenticator.DeleteSession(c.Writer, c.Request)
@@ -119,9 +122,7 @@ func (userhandler *UserHandler) Logout(c *gin.Context) {
 		"new_password" : "new_password " ,
 		"confirm_password" : "new_password_here"
 	}
-
 	OUTPUT : JSON
-
 	{
 		"success" : true ,
 		"message" : "Password changed succesfuly "
@@ -151,13 +152,30 @@ func (userhandler *UserHandler) ChangePassword(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
+	if input.NewPassword == input.Oldpassword {
+		res.Message = "No Change was made!\n Please use a new password instead"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
 	if len(input.NewPassword) < 4 {
 		res.Message = "Password Length Must exceed 4 characters! "
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
-	var changesuccess bool
+	// Check whether the old password is correct.
 	ctx = context.WithValue(ctx, "user_id", session.ID)
+	if user, err := userhandler.Service.UserByID(ctx); err != nil || user == nil {
+		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+		res.Success = false
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	} else if !(hash.ComparePassword(user.Password, input.Oldpassword)) {
+		res.Message = "Incorrect old password."
+		res.Success = false
+		c.JSON(http.StatusForbidden, res)
+		return
+	}
+	var changesuccess bool
 	hashed, era := hash.HashPassword(input.NewPassword)
 	if era != nil {
 		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
@@ -290,7 +308,7 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 					resp.Message = func() string {
 						return " user "
 					}() + " created succesfully!"
-					resp.User = user
+					resp.User = ""
 					c.JSON(http.StatusOK, resp)
 					return
 				} else {
@@ -528,5 +546,4 @@ func (userhandler *UserHandler) DeleteProfilePicture(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusInternalServerError, &model.ShortSuccess{Msg: "Deletion was not succesful."})
 	}
-
 }

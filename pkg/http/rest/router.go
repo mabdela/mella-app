@@ -31,13 +31,13 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.PUT("/api/admin/profile/img/", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img/", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate/", adminhandler.DeactivateAccount)
-	// Not Tested.
-
+	// Users Route here
 	router.POST("/api/user/login/", userhandler.UserLogin)
-	router.PUT("/api/user/password/new/", rules.Authenticated(), userhandler.ChangePassword)
+	router.PUT("/api/user/password/new/", rules.Authenticated(), rules.Authorized(), userhandler.ChangePassword)
 	router.GET("/api/user/password/forgot/", rules.Authenticated(), userhandler.ForgotPassword)
 	router.POST("/api/user/new/", userhandler.CreateUser)
 	router.PUT("/api/user/", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
+	// Not Tested.
 	router.PUT("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate/", userhandler.DeactivateAccount)
