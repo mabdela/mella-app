@@ -169,3 +169,27 @@ func (repo *AdminRepo) AdminByEmail(ctx context.Context) (*model.Admin, error) {
 		return nil, erro
 	}
 }
+
+func (repo *AdminRepo) GetAllAdmins(ctx context.Context) ([]*model.Admin, error) {
+	includeSuperadmins := ctx.Value("include_superadmins").(bool)
+	admins := []*model.Admin{}
+	filter := func() bson.D {
+		if includeSuperadmins {
+			return bson.D{{"superadmin", true}}
+		} else {
+			return bson.D{}
+		}
+	}()
+	if cnt, er := repo.Conn.Collection(state.ADMINS).Find(ctx, filter); er != nil || cnt == nil {
+		return admins, er
+	} else {
+		for cnt.Next(ctx) {
+			madmin := &mongo_models.MAdmin{}
+			if er := cnt.Decode(madmin); er == nil {
+				admin := madmin.GetAdmin()
+				admins = append(admins, admin)
+			}
+		}
+		return admins, nil
+	}
+}

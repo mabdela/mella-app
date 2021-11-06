@@ -21,4 +21,6 @@ type IAdminRepo interface {
 	// DeleteProfilePicture(ctx context.Context) error  uses the session in the context to get the user ID and profile
 	// and delete the profile picture.
 	DeleteProfilePicture(ctx context.Context) error
+	// GetAllAdmins(ctx context.Context) ([]*model.Admin, error)
+	GetAllAdmins(ctx context.Context) ([]*model.Admin, error)
 }

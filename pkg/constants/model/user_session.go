@@ -13,3 +13,8 @@ type Session struct {
 	Password string //
 	Role     string //  state.SUPERADMIN , state.ADMIN , state.USER
 }
+
+// LoginInProgress  a struct to login with the password 
+type LoginInProgress struct {
+
+}

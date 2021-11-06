@@ -7,6 +7,7 @@ import (
 	"sync"
 
 	"github.com/mabdela/mella-backend/pkg/admin"
+	"github.com/mabdela/mella-backend/pkg/course"
 	"github.com/mabdela/mella-backend/pkg/http/rest"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
 	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
@@ -48,5 +49,9 @@ func main() {
 	userser := user.NewUserService(userrepo)
 	userhandler := rest.NewUserHandler(authenticator, userser)
 
-	rest.Route(rules, adminhandler, userhandler).Run(":8080")
+	courserepo := mongodb.NewCourseRepo(conn)
+	courseser := course.NewCourseService(courserepo)
+	coursehandler := rest.NewCourseHandler(courseser, authenticator)
+
+	rest.Route(rules, adminhandler, userhandler, coursehandler).Run(":8080")
 }

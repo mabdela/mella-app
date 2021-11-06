@@ -8,6 +8,7 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -32,6 +33,7 @@ type IAdminHandler interface {
 	CreateAdmin(c *gin.Context)
 	Logout(c *gin.Context)
 	UpdateAdmin(c *gin.Context)
+	GetAllAdmins(c *gin.Context)
 }
 
 // AdminHandler ... |  ...
@@ -575,5 +577,24 @@ func (adminhr *AdminHandler) DeleteProfilePicture(c *gin.Context) {
 		return
 	} else {
 		c.JSON(http.StatusInternalServerError, &model.ShortSuccess{Msg: "Deletion was not succesful."})
+	}
+}
+
+// GetAllAdmins  returns admins instance
+func (adminhr *AdminHandler) GetAllAdmins(c *gin.Context) {
+	// this method is Get and I Am Gonna Sent all the Admins in the Database.
+	// This Request has a header telling that
+	superadmin, er := strconv.ParseBool(c.Query("superadmin"))
+	if er != nil {
+		superadmin = false
+	}
+	admins := []*model.Admin{}
+	ctx := c.Request.Context()
+	ctx = context.WithValue(ctx, "include_superadmins", superadmin)
+	admins, rror := adminhr.AdminSer.GetAllAdmins(ctx)
+	if rror != nil {
+		c.JSON(http.StatusNotFound, admins)
+	} else {
+		c.JSON(http.StatusOK, admins)
 	}
 }

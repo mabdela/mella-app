@@ -28,6 +28,10 @@ type IAdminService interface {
 	// This session instance is instantiated at the time of authentication.
 	// thre for you don't have to intialize it at the handler function.
 	DeleteProfilePicture(ctx context.Context) bool
+	// GetAllAdmins  ..uses  "include_superadmins" << bool >> to decide whether to return only superadmins or not.
+	// if include_superadmins is true it returns super admins only and returns all admins and superadmins.
+	// this variable is needed to decide whether to include the superadmins.
+	GetAllAdmins(ctx context.Context) ([]*model.Admin, error)
 }
 
 // AdminService struct representing a admin service
@@ -81,4 +85,8 @@ func (adminser *AdminService) ChangeImageUrl(ctx context.Context) bool {
 // DeleteProfilePicture(ctx context.Context) error
 func (adminser *AdminService) DeleteProfilePicture(ctx context.Context) bool {
 	return adminser.Repo.DeleteProfilePicture(ctx) == nil
+}
+
+func (adminser *AdminService) GetAllAdmins(ctx context.Context) ([]*model.Admin, error) {
+	return adminser.Repo.GetAllAdmins(ctx)
 }

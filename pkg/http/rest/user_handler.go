@@ -266,7 +266,10 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 		Lastname  string `json:"lastname"`
 		Email     string `json:"email"`
 	}{}
-	resp := &model.LoginResponse{false, "Bad Request Body", nil}
+	resp := &model.CreateUser{
+		false,
+		"Bad Request Body",
+	}
 	if er := c.BindJSON(input); er == nil {
 		fail := false
 		if !form.MatchesPattern(input.Email, form.EmailRX) {
@@ -310,7 +313,7 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 					resp.Message = func() string {
 						return " user "
 					}() + " created succesfully!"
-					resp.User = user
+					// -----
 					c.JSON(http.StatusOK, resp)
 					return
 				} else {
