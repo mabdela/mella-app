@@ -236,7 +236,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 		Message string `json:"msg"`
 	}{}
 	if input.Email = c.Request.FormValue("email"); input.Email == "" {
-		respo.Message = "Expected Email not found!"
+		respo.Message = "Expected Email not found!"//the respnonse (check)
 		c.JSON(http.StatusBadRequest, respo)
 		return
 	}
@@ -267,7 +267,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, respo)
 				return
 			}
-			respo.Message = "Email is sent to Your email account " + admin.Email
+			respo.Message = "Email is sent to Your email account " + admin.Email //here the reaponse could be "new password is sent to your email acount" (check)
 			c.JSON(http.StatusOK, respo)
 			return
 		}
