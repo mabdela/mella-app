@@ -30,6 +30,8 @@ const (
 	ADMINS = "admins"
 	// COMMENTS ...
 	COMMENTS = "comments"
+	// COURSES  ... used for database collections.
+	COURSES = "courses"
 	// USER ...
 	USERS = "users"
 	// QUIZS

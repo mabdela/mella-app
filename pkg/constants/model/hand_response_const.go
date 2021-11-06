@@ -16,6 +16,12 @@ type LoginResponse struct {
 	User    interface{} `json:"user"`
 }
 
+// CreateUserResponse ...
+type CreateUser struct {
+	Success bool   `json:"success"`
+	Message string `json:"message"`
+}
+
 // SimpleSuccessNotifier ...
 type SimpleSuccessNotifier struct {
 	Success bool   `json:"success"`

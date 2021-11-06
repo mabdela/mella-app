@@ -11,5 +11,26 @@ func main() {
 		Lastname   string `json:"lastname"`
 		Email      string `json:"email"`
 		Superadmin bool   `json:"superadmin"`
-	}{}))+"\n\n\n\n"+string(helper.MarshalThis(&model.LoginResponse{false, "bad request body  ", nil})), string(helper.MarshalThis(&model.Admin{ID: "sdfjkadj", Email: "someone@gmail.com", Firstname: "abebe", Lastname: "Kebede", Imgurl: "/image/profile/abcdef.jpg", Superadmin: false, Password: ""})))
+	}{}))+
+		"\n\n\n\n"+
+		string(
+			helper.MarshalThis(
+				&model.LoginResponse{
+					false,
+					"bad request body  ",
+					nil,
+				})), 
+				string(
+					helper.MarshalThis(
+						&model.Admin{
+							ID: "sdfjkadj",
+							Email: "someone@gmail.com", 
+							Firstname: "abebe",
+							Lastname: "Kebede", 
+							Imgurl: "/image/profile/abcdef.jpg", 
+							Superadmin: false, 
+							Password: "",
+						},),),)
+
+
 }

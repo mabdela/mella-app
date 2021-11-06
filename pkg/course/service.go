@@ -1,11 +1,38 @@
 package course
 
+import (
+	"context"
+
+	"github.com/mabdela/mella-backend/pkg/constants/model"
+)
+
 type ICourseService interface {
+	// CreateCourse uses "course" *model.Course creates a course instance.
+	CreateCourse(ctx context.Context) (*model.Course, error)
+	// GetCourseByID  uses "course_id"   string to get a single course instance.
+	GetCourseByID(ctx context.Context) (*model.Course, error)
+	// UpdateCourse  uses "course" string to update a single course instance.
+	UpdateCourse(ctx context.Context) (*model.Course, error)
 }
 
 type CourseService struct {
+	Repo ICourseRepo
 }
 
-func NewCourseService() ICourseService {
-	return &CourseService{}
+func NewCourseService(repo ICourseRepo) ICourseService {
+	return &CourseService{
+		Repo: repo,
+	}
+}
+
+func (cser *CourseService) CreateCourse(ctx context.Context) (*model.Course, error) {
+	return cser.Repo.CreateCourse(ctx)
+}
+
+func (cser *CourseService) GetCourseByID(ctx context.Context) (*model.Course, error) {
+	return cser.Repo.GetCourseByID(ctx)
+}
+
+func (cser *CourseService) UpdateCourse(ctx context.Context) (*model.Course, error) {
+	return cser.Repo.UpdateCourse(ctx)
 }

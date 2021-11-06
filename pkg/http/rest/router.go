@@ -14,14 +14,14 @@ import (
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler) *gin.Engine {
+func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler) *gin.Engine {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
+		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
+		// AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
 		AllowHeaders:     []string{"Content-type", "*"},
 		AllowCredentials: true,
-		//AllowAllOrigins:  true,
+		AllowAllOrigins:  true,
 	}))
 	router.GET("/logout/", rules.Logout)
 	router.POST("/api/admin/login/", adminhandler.AdminLogin)
@@ -32,19 +32,24 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.PUT("/api/admin/profile/img/", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img/", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate/", adminhandler.DeactivateAccount)
+	// New Tested
+	router.GET("/api/admins/", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
 	router.POST("/api/user/login", userhandler.UserLogin)
 	router.PUT("/api/user/password/new/", rules.Authenticated(), rules.Authorized(), userhandler.ChangePassword)
 	router.GET("/api/user/password/forgot/", rules.Authenticated(), userhandler.ForgotPassword)
 	router.POST("/api/user/new/", userhandler.CreateUser)
 	router.PUT("/api/user/", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
+
+	router.POST("/api/superadmin/course/new/", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
+	router.PUT("/api/superadmin/course/", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	// Not Tested.
 	router.PUT("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate/", userhandler.DeactivateAccount)
 
 	//
-	router.Use(FilterDirectory(), rules.Authenticated())
+	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
 	{
 		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
 	}
