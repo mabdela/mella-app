@@ -85,7 +85,11 @@ func (repo *CourseRepo) ChangePicture(ctx context.Context) (string, error) {
 	}
 	filter := bson.D{{"_id", oid}}
 	update := bson.D{{"$set", bson.D{{"imgurl", pictureUrl}}}}
-	if uc, er := repo.Conn.Collections(state.COURSES).UpdateOne(ctx, filter, update); uc.UpdateCount == 0 || er != nil {
+	if uc, er := repo.Conn.
+		Collection(state.COURSES).
+		UpdateOne(ctx, filter, update); uc == nil || uc.
+		ModifiedCount == 0 || er != nil {
+		log.Println(er.Error())
 		return "", er
 	} else {
 		return pictureUrl, nil
@@ -104,6 +108,7 @@ func (repo *CourseRepo) GetCourseImageByID(ctx context.Context) (string, error) 
 		}
 		return insCouse.Imgurl, nil
 	} else {
+
 		return "", er
 	}
 }
