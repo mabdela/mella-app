@@ -2,17 +2,22 @@ package rest
 
 import (
 	"context"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/state"
 	"github.com/mabdela/mella-backend/pkg/course"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	"github.com/mabdela/mella-backend/platforms/helper"
 )
 
 type ICourseHandler interface {
 	CreateCourse(c *gin.Context)
 	UpdateCourse(c *gin.Context)
+	UplodaCourseImage(c *gin.Context)
 }
 
 type CourseHandler struct {
@@ -120,4 +125,80 @@ func (coursehr *CourseHandler) UpdateCourse(c *gin.Context) {
 	resp.Msg = "course updated succesfully"
 	resp.Course = course
 	c.JSON(http.StatusOK, resp)
+}
+
+// UplodaCourseImage  ..
+func (coursehr *CourseHandler) UplodaCourseImage(c *gin.Context) {
+	er := c.Request.ParseMultipartForm(99999999)
+	resp := &struct {
+		Msg    string `json:"msg"`
+		Imgurl string `json:"imgurl"`
+	}{"bad request paylocad ", ""}
+	course_id := c.Query("id")
+	if er != nil {
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+	if image, header, ero := c.Request.FormFile("image"); ero == nil && header != nil && image != nil {
+		// check whether t  he file is image or not .
+		if helper.IsImage(header.Filename) {
+			extension := helper.GetExtension(header.Filename)
+			randomname := helper.GenerateRandomString(7, helper.CHARACTERS)
+			newimagename := state.COURSE_IMAGES_RELATIVE_PATH + randomname + "." + extension
+
+			ctx := c.Request.Context()
+			ctx = context.WithValue(ctx, "course_id", course_id)
+			oldimageurl, _ := coursehr.Service.GetCourseImageByID(ctx)
+			ctx = context.WithValue(ctx, "picture_url", newimagename)
+			if url, era := coursehr.Service.ChangePicture(ctx); url == newimagename && era == nil {
+				file, era := os.Create(os.Getenv("ASSETS_DIRECTORY") + newimagename)
+				if era != nil {
+					ctx = context.WithValue(ctx, "picture_url", oldimageurl)
+					coursehr.Service.ChangePicture(ctx)
+					resp.Msg = "temporary failure , Please try again later"
+					c.JSON(http.StatusInternalServerError, resp)
+					return
+				}
+				if _, ers := io.Copy(file, image); ers != nil {
+					// remove the updated image
+					ctx = context.WithValue(ctx, "picture_url", oldimageurl)
+					coursehr.Service.ChangePicture(ctx)
+					file.Close()
+					os.Remove(os.Getenv("ASSETS_DIRECTORY") + newimagename)
+					resp.Msg = "internal server error"
+					c.JSON(http.StatusInternalServerError, resp)
+				} else {
+					file.Close()
+					resp.Msg = "succesfilly updated"
+					resp.Imgurl = url
+					resp.Msg = "image succesfuly uploaded"
+					c.JSON(http.StatusCreated, resp)
+					return
+				}
+			} else {
+				resp.Msg = "temporary failure , Please , try again later"
+				c.JSON(http.StatusInternalServerError, resp)
+				return
+			}
+
+		} else {
+			resp.Msg = `image types with extenstion "jpeg", "png", "jpg", "gif", and "btmp" are supported `
+			c.JSON(http.StatusUnsupportedMediaType, resp)
+			return
+		}
+	} else {
+		c.JSON(http.StatusBadRequest, resp)
+	}
+}
+
+func (coursehr *CourseHandler) GetCourseByID(c *gin.Context) {
+
+}
+
+func (coursehr *CourseHandler) GetAllCourses(c *gin.Context) {
+
+}
+
+func (coursehr *CourseHandler) DeleteCourseByID(c *gin.Context) {
+
 }

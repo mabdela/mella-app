@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"log"
 
 	"github.com/mabdela/mella-backend/pkg/constants/model"
 	"github.com/mabdela/mella-backend/pkg/constants/model/mongo_models"
@@ -11,6 +12,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
 type CourseRepo struct {
@@ -72,4 +74,36 @@ func (repo *CourseRepo) UpdateCourse(ctx context.Context) (*model.Course, error)
 		return nil, er
 	}
 	return course, nil
+}
+
+func (repo *CourseRepo) ChangePicture(ctx context.Context) (string, error) {
+	pictureUrl := ctx.Value("picture_url").(string)
+	courseID := ctx.Value("course_id").(string)
+	oid, er := primitive.ObjectIDFromHex(courseID)
+	if er != nil {
+		return "", er
+	}
+	filter := bson.D{{"_id", oid}}
+	update := bson.D{{"$set", bson.D{{"imgurl", pictureUrl}}}}
+	if uc, er := repo.Conn.Collections(state.COURSES).UpdateOne(ctx, filter, update); uc.UpdateCount == 0 || er != nil {
+		return "", er
+	} else {
+		return pictureUrl, nil
+	}
+}
+
+func (repo *CourseRepo) GetCourseImageByID(ctx context.Context) (string, error) {
+	courseID := ctx.Value("course_id").(string)
+	if oid, er := primitive.ObjectIDFromHex(courseID); er == nil {
+		filter := bson.D{{"_id", oid}}
+		findOneOption := options.FindOne().SetProjection(bson.D{{"imgurl", 1}})
+		insCouse := &mongo_models.MCourse{}
+		if er := repo.Conn.Collection(state.COURSES).FindOne(ctx, filter, findOneOption).Decode((insCouse)); er != nil {
+			log.Println(er.Error())
+			return insCouse.Imgurl, er
+		}
+		return insCouse.Imgurl, nil
+	} else {
+		return "", er
+	}
 }
