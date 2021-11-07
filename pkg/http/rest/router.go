@@ -43,6 +43,7 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 
 	router.POST("/api/superadmin/course/new/", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course/", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
+	router.DELETE("/api/superadmin/course/delete", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
 	// Not Tested.
 	router.PUT("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img/", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)

@@ -73,3 +73,16 @@ func (repo *CourseRepo) UpdateCourse(ctx context.Context) (*model.Course, error)
 	}
 	return course, nil
 }
+func (repo *CourseRepo)RemoveCourse(ctx context.Context)(bool, error){
+	courseId := ctx.Value("course_id").(string)
+	oid , err := primitive.ObjectIDFromHex(courseId)
+	if err!=nil{
+		return false, err
+	}
+	filter:= bson.M{"_id":oid}
+	_, err= repo.Conn.Collection(state.COURSES).DeleteOne(ctx,filter)
+	if err!=nil{
+		return false , err
+	}
+	return true , nil
+}

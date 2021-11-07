@@ -13,6 +13,8 @@ type ICourseService interface {
 	GetCourseByID(ctx context.Context) (*model.Course, error)
 	// UpdateCourse  uses "course" string to update a single course instance.
 	UpdateCourse(ctx context.Context) (*model.Course, error)
+	//to remove course from the list of courses
+	RemoveCourse(ctx context.Context) (bool,error)
 }
 
 type CourseService struct {
@@ -35,4 +37,7 @@ func (cser *CourseService) GetCourseByID(ctx context.Context) (*model.Course, er
 
 func (cser *CourseService) UpdateCourse(ctx context.Context) (*model.Course, error) {
 	return cser.Repo.UpdateCourse(ctx)
+}
+func (cser *CourseService) RemoveCourse(ctx context.Context) (bool , error){
+	return cser.Repo.RemoveCourse(ctx)
 }

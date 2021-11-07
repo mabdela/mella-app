@@ -311,11 +311,6 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 					resp.Message = func() string {
 						return " user "
 					}() + " created succesfully!"
-<<<<<<< HEAD
-					// -----
-=======
-					resp.User = ""
->>>>>>> c8cf4f612b63740944e3fb24b3cfd8f8aeca213b
 					c.JSON(http.StatusOK, resp)
 					return
 				} else {

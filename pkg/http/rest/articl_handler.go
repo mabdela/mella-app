@@ -23,5 +23,5 @@ func NewArticleHandler(service article.IArticleService, authenticator auth.Authe
 }
 
 func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
-
+	
 }
