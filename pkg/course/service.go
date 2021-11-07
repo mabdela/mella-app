@@ -18,6 +18,8 @@ type ICourseService interface {
 	ChangePicture(ctx context.Context) (string, error)
 	// GetCourseImageByID users "course_id"  string
 	GetCourseImageByID(ctx context.Context) (string, error)
+	//to remove course from the list of courses
+	RemoveCourse(ctx context.Context) (bool, error)
 }
 
 type CourseService struct {
@@ -47,4 +49,7 @@ func (cser *CourseService) ChangePicture(ctx context.Context) (string, error) {
 }
 func (cser *CourseService) GetCourseImageByID(ctx context.Context) (string, error) {
 	return cser.Repo.GetCourseImageByID(ctx)
+}
+func (cser *CourseService) RemoveCourse(ctx context.Context) (bool, error) {
+	return cser.Repo.RemoveCourse(ctx)
 }

@@ -18,6 +18,7 @@ type ICourseHandler interface {
 	CreateCourse(c *gin.Context)
 	UpdateCourse(c *gin.Context)
 	UploadCourseImage(c *gin.Context)
+	RemoveCourse(c *gin.Context)
 }
 
 type CourseHandler struct {
@@ -26,7 +27,10 @@ type CourseHandler struct {
 }
 
 func NewCourseHandler(ser course.ICourseService, authenticator auth.Authenticator) ICourseHandler {
-	return &CourseHandler{Service: ser, Authenticator: authenticator}
+	return &CourseHandler{
+		Service:       ser,
+		Authenticator: authenticator,
+	}
 }
 
 func (coursehr *CourseHandler) CreateCourse(c *gin.Context) {
@@ -116,7 +120,7 @@ func (coursehr *CourseHandler) UpdateCourse(c *gin.Context) {
 	}
 	ctx = context.WithValue(ctx, "course", oldCourse)
 	course, err := coursehr.Service.UpdateCourse(ctx)
-	if course == nil || err != nil {
+	if course == nil || err != nil { //there is error
 		resp.Msg = "internal server error"
 		c.JSON(http.StatusInternalServerError, resp)
 		return
@@ -203,4 +207,39 @@ func (coursehr *CourseHandler) GetAllCourses(c *gin.Context) {
 
 func (coursehr *CourseHandler) DeleteCourseByID(c *gin.Context) {
 
+}
+func (handler *CourseHandler) RemoveCourse(c *gin.Context) {
+	ctx := c.Request.Context()
+	input := &struct {
+		CourseId string `json:"course_id"`
+	}{}
+	resp :=
+		&struct {
+			Succ bool   `json:"success"`
+			Msg  string `json:"msg"`
+		}{}
+	err := c.BindJSON(input)
+
+	resp.Succ = false
+	resp.Msg = ""
+	if err != nil || input.CourseId == "" {
+		if err != nil {
+			resp.Msg = "Bad paylod"
+		} else if input.CourseId == "" {
+			resp.Msg = "empty Id field"
+		}
+		c.JSON(http.StatusBadRequest, resp)
+		return
+	}
+	ctx = context.WithValue(ctx, "course_id", input.CourseId)
+	response, err := handler.Service.RemoveCourse(ctx)
+	if response == false || err != nil {
+		resp.Msg = "internal server error"
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	resp.Succ = true //
+	resp.Msg = "course deleted succesfully"
+
+	c.JSON(http.StatusOK, resp)
 }

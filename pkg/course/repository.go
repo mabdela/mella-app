@@ -12,4 +12,5 @@ type ICourseRepo interface {
 	UpdateCourse(ctx context.Context) (*model.Course, error)
 	ChangePicture(ctx context.Context) (string, error)
 	GetCourseImageByID(ctx context.Context) (string, error)
+	RemoveCourse(ctx context.Context) (bool, error)
 }
