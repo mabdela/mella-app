@@ -284,13 +284,13 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 			hash, er := helper.HashPassword(password)
 			ctx := c.Request.Context()
 			ctx = context.WithValue(ctx, "email", input.Email)
-			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil { 
+			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
 				resp.Message = "account with this email already exist."
 				c.JSON(http.StatusUnauthorized, resp) //it should respond statusForbiden (check)
 				return
 			}
 
-			if er != nil { 
+			if er != nil {
 				resp.Message = " Internal Server error "
 				resp.Success = false
 				c.JSON(http.StatusInternalServerError, resp)

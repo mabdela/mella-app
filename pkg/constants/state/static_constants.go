@@ -39,3 +39,12 @@ const (
 	// QUIZINFOS ...
 	QUIZINFOS = "quizinfos"
 )
+
+const (
+	// COURSE_IMAGES_PATH
+	COURSE_IMAGES_RELATIVE_PATH = "images/course/"
+	// PROFILE_IMAGES_RELATIVE_PATH ...
+	PROFILE_IMAGES_RELATIVE_PATH = "images/profile/"
+	// ARTICLE_IMAGES_RELATIVE_PATH  relative path to courses.
+	ARTICLE_IMAGES_RELATIVE_PATH = "images/articles/"
+)

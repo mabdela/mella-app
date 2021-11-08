@@ -13,8 +13,13 @@ type ICourseService interface {
 	GetCourseByID(ctx context.Context) (*model.Course, error)
 	// UpdateCourse  uses "course" string to update a single course instance.
 	UpdateCourse(ctx context.Context) (*model.Course, error)
+	// ChangePicture uses "picture_url" string and "course_id"  string
+	// to cahnge the picture representing the course
+	ChangePicture(ctx context.Context) (string, error)
+	// GetCourseImageByID users "course_id"  string
+	GetCourseImageByID(ctx context.Context) (string, error)
 	//to remove course from the list of courses
-	RemoveCourse(ctx context.Context) (bool,error)
+	RemoveCourse(ctx context.Context) (bool, error)
 }
 
 type CourseService struct {
@@ -38,6 +43,13 @@ func (cser *CourseService) GetCourseByID(ctx context.Context) (*model.Course, er
 func (cser *CourseService) UpdateCourse(ctx context.Context) (*model.Course, error) {
 	return cser.Repo.UpdateCourse(ctx)
 }
-func (cser *CourseService) RemoveCourse(ctx context.Context) (bool , error){
+
+func (cser *CourseService) ChangePicture(ctx context.Context) (string, error) {
+	return cser.Repo.ChangePicture(ctx)
+}
+func (cser *CourseService) GetCourseImageByID(ctx context.Context) (string, error) {
+	return cser.Repo.GetCourseImageByID(ctx)
+}
+func (cser *CourseService) RemoveCourse(ctx context.Context) (bool, error) {
 	return cser.Repo.RemoveCourse(ctx)
 }
