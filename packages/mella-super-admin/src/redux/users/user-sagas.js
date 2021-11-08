@@ -14,13 +14,13 @@ export function* addSuperAdminSaga(action) {
   try {
     console.log(action.payload);
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
-    yield call(
+    const addedAdmin = yield call(
       apiData,
       `${process.env.REACT_APP_ADD_ADMIN}`,
       action.payload,
       'POST'
     );
-    yield put(addAdmin({ message: 'Admin Successfully added!' }));
+    yield put(addAdmin({ message: addedAdmin.message }));
   } catch (error) {
     yield put(setErrors(error));
   }

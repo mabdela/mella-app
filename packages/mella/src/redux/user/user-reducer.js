@@ -10,6 +10,11 @@ const initialState = {
 export const authReducer = (state = initialState, action) => {
   switch (action.type) {
     case userTypes.LOGIN_USER:
+      return {
+        ...state,
+        isAuthenticated: true,
+        user: action.payload.user,
+      };
     case userTypes.GOOGLE_LOGIN:
       // case userTypes.FACEBOOK_LOGIN:
       return {

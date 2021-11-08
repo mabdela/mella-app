@@ -15,16 +15,18 @@ export function* loginEndUserSaga(action) {
     );
     yield put(loginUser(loginUserData));
   } catch (error) {
-    yield put(setErrors(error));
+    console.log(error);
+    // yield put(setErrors(error));
   }
 }
 
 export function* logoutUserSaga() {
   try {
     yield put({ type: authActionType.SET_AUTH_LOADING });
-    yield call(apiData, `${process.env.REACT_APP_LOGOUT_USER}`, null, 'POST');
+    yield call(apiData, `${process.env.REACT_APP_LOGOUT_USER}`, null, 'GET');
     yield put(logoutUser());
   } catch (error) {
-    yield put(setErrors(error));
+    console.log(error.response);
+    // yield put(setErrors(error));
   }
 }

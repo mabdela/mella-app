@@ -22,7 +22,7 @@ export function* loginSuperAdminSaga(action) {
 export function* logoutSuperAdminSaga() {
   try {
     yield put({ type: authActionType.SET_AUTH_LOADING });
-    yield call(apiData, `${process.env.REACT_APP_LOGOUT_ADMIN}`, null, 'POST');
+    yield call(apiData, `${process.env.REACT_APP_LOGOUT_ADMIN}`, null, 'GET');
     yield put(logoutUser());
   } catch (error) {
     yield put(setErrors(error));

@@ -85,14 +85,14 @@ export function* searchByIdSaga(action) {
 export function* updatePasswordSaga(action) {
   try {
     yield put({ type: userActionTypes.SET_USER_LOADING });
-    yield call(
+    const updatedPassword = yield call(
       apiData,
       `${process.env.REACT_APP_UPDATE_PASSWORD}`,
       action.payload,
       'PUT'
     );
 
-    yield put(updatePassword({ message: 'Password successfully updated!' }));
+    yield put(updatePassword(updatedPassword));
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -126,9 +126,7 @@ export function* updateUserSaga(action) {
     );
     yield put({ type: userActionTypes.SET_USER_LOADING });
 
-    yield put(
-      updateUser({ user: updatedUser, message: `User Successfully Updated!` })
-    );
+    yield put(updateUser({ user: updatedUser, message: updatedUser.message }));
   } catch (error) {
     yield put(setErrors(error));
   }

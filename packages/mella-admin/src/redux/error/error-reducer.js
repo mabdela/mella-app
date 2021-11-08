@@ -9,7 +9,7 @@ export const errorReducer = (state = initialState, action) => {
     case errorTypes.SET_ERRORS:
       return {
         ...state,
-        message: action.payload.response.data.msg,
+        message: action.payload,
         // message: action.payload,
       };
 
