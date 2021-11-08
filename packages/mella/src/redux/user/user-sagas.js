@@ -74,7 +74,7 @@ export function* loginGoogleSaga(action) {
 
 export function* logoutEndUserSaga() {
   try {
-    yield call(apiData, `${process.env.REACT_APP_LOG_OUT}`, null, 'POST');
+    yield call(apiData, `${process.env.REACT_APP_LOG_OUT}`, null, 'GET');
     yield put(logoutUser());
   } catch (error) {
     yield put(setErrors(error));

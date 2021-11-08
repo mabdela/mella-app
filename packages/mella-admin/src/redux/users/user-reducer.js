@@ -64,7 +64,7 @@ export const userReducer = (state = initialState, action) => {
     case userActionTypes.UPDATE_PASSWORD:
       return {
         ...state,
-        message: action.payload,
+        message: action.payload.message,
         loading: false,
       };
 

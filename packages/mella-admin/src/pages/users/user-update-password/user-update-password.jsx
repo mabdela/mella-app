@@ -35,7 +35,6 @@ const UserUpdatePassword = () => {
   const dispatch = useDispatch();
   const message = useSelector(state => state.users.message);
   const error = useSelector(state => state.errors.message);
-  const id = useSelector(state => state.auth.auth._id);
 
   const [errors, setErrors] = useState({});
   const [isSubmitted, setisSubmitted] = useState(false);
@@ -51,9 +50,9 @@ const UserUpdatePassword = () => {
     if (Object.keys(errors).length === 0 && isSubmitted) {
       dispatch(
         updatePasswordRequest({
-          id: id,
-          oldPassword: currentPassword,
-          newPassword,
+          old_password: currentPassword,
+          new_password: newPassword,
+          confirm_password: confirmPassword,
         })
       );
 
@@ -63,7 +62,7 @@ const UserUpdatePassword = () => {
         confirmPassword: '',
       });
     }
-  }, [errors, isSubmitted, dispatch, id]);
+  }, [errors, isSubmitted, dispatch]);
 
   useEffect(() => {
     dispatch(removeComment());
