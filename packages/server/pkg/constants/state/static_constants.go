@@ -38,6 +38,8 @@ const (
 	QUIZS = "quizs"
 	// QUIZINFOS ...
 	QUIZINFOS = "quizinfos"
+	// ARTICLES ... represents the articles name of collection.
+	ARTICLES = "articles"
 )
 
 const (
@@ -46,5 +48,7 @@ const (
 	// PROFILE_IMAGES_RELATIVE_PATH ...
 	PROFILE_IMAGES_RELATIVE_PATH = "images/profile/"
 	// ARTICLE_IMAGES_RELATIVE_PATH  relative path to courses.
-	ARTICLE_IMAGES_RELATIVE_PATH = "images/articles/"
+	ARTICLE_IMAGES_RELATIVE_PATH    = "images/articles/"
+	SUBARTICLE_IMAGES_RELATIVE_PATH = "images/articles/subarticles/"
+	ARTICLES_FILE_SIZE              = (2 << 50) * 24
 )
