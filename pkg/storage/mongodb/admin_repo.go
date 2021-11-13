@@ -3,6 +3,7 @@ package mongodb
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/mabdela/mella-backend/pkg/admin"
@@ -53,6 +54,7 @@ func (repo *AdminRepo) DeleteAccountByEmail(ctx context.Context) error {
 func (repo *AdminRepo) CreateAdmin(ctx context.Context) (*model.Admin, error) {
 	admin := ctx.Value("admin").(*model.Admin)
 	adminInsert := mongo_models.GetMAdmin(admin)
+	fmt.Println("adminInsert", adminInsert)
 	if insert, er := repo.Conn.Collection(state.ADMINS).InsertOne(context.TODO(), adminInsert); insert.InsertedID != nil && er == nil {
 		oidstring := helper.ObjectIDFromInsertResult(insert)
 		if oidstring == "" {

@@ -32,3 +32,9 @@ type SimpleSuccessNotifier struct {
 type ShortSuccess struct {
 	Msg string `json:"msg"`
 }
+
+type CommentRes struct{
+	Success bool `success`
+	Message string `msg`
+	Comments []Comment //to be changed to commentResponse
+}

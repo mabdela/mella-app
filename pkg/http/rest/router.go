@@ -14,7 +14,7 @@ import (
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler) *gin.Engine {
+func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler,commenthandler IcommentHandler) *gin.Engine {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
@@ -44,12 +44,15 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.POST("/api/superadmin/course/new", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	router.PUT("/api/superadmin/course/picture", rules.Authenticated(), rules.Authorized(), coursehandler.UploadCourseImage)
-	router.DELETE("/api/superadmin/course/delete", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
+	router.DELETE("/api/superadmin/course/delete",  coursehandler.RemoveCourse)
 	// Not Tested.
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
-
+	//comments routes
+	router.POST("/api/comments/new",commenthandler.AddComments)
+	router.GET("/api/article/comments/:article_id",commenthandler.LoadComments)
+	router.PUT("/api/article/comment/update_like",commenthandler.UpdateCommentsLike)
 	//
 	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
 	{

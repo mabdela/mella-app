@@ -20,3 +20,4 @@ type (
 		Keyword     []string `json:"keyword"`
 	}
 )
+
