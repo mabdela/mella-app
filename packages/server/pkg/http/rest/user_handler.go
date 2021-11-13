@@ -19,6 +19,7 @@ import (
 	"github.com/mabdela/mella-backend/platforms/hash"
 	"github.com/mabdela/mella-backend/platforms/helper"
 	"github.com/mabdela/mella-backend/platforms/mail"
+	"github.com/markbates/goth/gothic"
 )
 
 // IUserHandler interface representing the user handler
@@ -33,6 +34,8 @@ type IUserHandler interface {
 	CreateUser(c *gin.Context)
 	Logout(c *gin.Context)
 	UpdateUser(c *gin.Context)
+	GoogleUserSigninCallBack(writer http.ResponseWriter, request *http.Request)
+	GoogleUserSignupCallBack(writer http.ResponseWriter, request *http.Request)
 }
 
 type UserHandler struct {
@@ -486,7 +489,7 @@ func (userhandler *UserHandler) ChangeProfilePicture(c *gin.Context) {
 	}
 	defer image.Close()
 	if helper.IsImage(header.Filename) {
-		newName := "images/profile/" + helper.GenerateRandomString(5, helper.CHARACTERS) + "." + helper.GetExtension(header.Filename)
+		newName := state.PROFILE_IMAGES_RELATIVE_PATH + helper.GenerateRandomString(5, helper.CHARACTERS) + "." + helper.GetExtension(header.Filename)
 		var newImage *os.File
 		if strings.HasSuffix(os.Getenv("ASSETS_DIRECTORY"), "/") {
 			newImage, erro = os.Create(os.Getenv("ASSETS_DIRECTORY") + newName)
@@ -548,4 +551,141 @@ func (userhandler *UserHandler) DeleteProfilePicture(c *gin.Context) {
 	} else {
 		c.JSON(http.StatusInternalServerError, &model.ShortSuccess{Msg: "Deletion was not succesful."})
 	}
+}
+
+// GoogleAdminLogin ...
+func (userhandler *UserHandler) GoogleUserSigninCallBack(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	// LoginResponse ...
+	resp := &model.LoginResponse{}
+	resp.Success = false
+	user, err := gothic.CompleteUserAuth(writer, request)
+	if err != nil || &user == nil || user.Email == "" {
+		writer.WriteHeader(http.StatusUnauthorized)
+		resp.Message = " bad and unauthorized access "
+		writer.Write(helper.MarshalThis(resp))
+		return
+	}
+	ctx := request.Context()
+	ctx = context.WithValue(ctx, "email", user.Email)
+	newAdmin, err := userhandler.Service.UserByEmail(ctx)
+	if err != nil || newAdmin == nil {
+		resp.Success = false
+		resp.Message = "Invalid Username or Password!"
+		writer.WriteHeader(401)
+		writer.Write(helper.MarshalThis(resp))
+		return
+	} else {
+		session := &model.Session{
+			ID:       newAdmin.ID,
+			Email:    newAdmin.Email,
+			Password: newAdmin.Password,
+			Role:     state.USER,
+		}
+		success := userhandler.Authenticator.SaveSession(writer, session)
+		if !success {
+			resp.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+			resp.Success = false
+			writer.WriteHeader(http.StatusInternalServerError)
+			writer.Write(helper.MarshalThis(resp))
+			return
+		}
+		resp.Success = true
+		resp.Message = state.SuccesfulyLoggedIn
+		resp.User = newAdmin
+		writer.WriteHeader(http.StatusOK)
+		writer.Write(helper.MarshalThis(resp))
+		return
+	}
+}
+
+func (userhandler *UserHandler) GoogleUserSignupCallBack(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	guser, err := gothic.CompleteUserAuth(writer, request)
+	if err != nil || &guser == nil || guser.Email == "" {
+		writer.WriteHeader(http.StatusUnauthorized)
+		writer.Write(helper.MarshalThis([]string{}))
+		return
+	}
+	resp := &model.CreateUser{
+		false,
+		"Bad Request Body",
+	}
+	if err == nil {
+		fail := false
+		if !form.MatchesPattern(guser.Email, form.EmailRX) {
+			resp.Message = "Invalid email address!"
+			fail = true
+		}
+		if len(strings.Trim(guser.FirstName, " ")) <= 2 {
+			guser.FirstName = guser.Email[0:4]
+		}
+		if len(strings.Trim(guser.LastName, " ")) <= 2 {
+			guser.LastName = "UNKNOWN"
+		}
+		if !fail {
+			// Generate Random password
+			password := helper.GenerateRandomString(5, helper.NUMBERS)
+			hash, er := helper.HashPassword(password)
+			ctx := request.Context()
+			ctx = context.WithValue(ctx, "email", guser.Email)
+			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
+				resp.Message = "account with this email already exist."
+				writer.WriteHeader(http.StatusUnauthorized)
+				writer.Write(helper.MarshalThis(resp)) //it should respond statusForbiden (check)
+				return
+			}
+			if er != nil {
+				resp.Message = " Internal Server error "
+				resp.Success = false
+				writer.WriteHeader(http.StatusInternalServerError)
+				writer.Write(helper.MarshalThis(resp))
+				return
+			}
+			user := &model.User{
+				Firstname: guser.FirstName,
+				Lastname:  guser.LastName,
+				Email:     guser.Email, //
+				Password:  hash,
+			}
+			// Send Email for the password if this doesn't work raise internal server error.
+			if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, request.Host); success {
+				ctx = request.Context()
+				imageName, er := helper.DownloadResource(guser.AvatarURL, os.Getenv("ASSETS_DIRECTORY")+state.PROFILE_IMAGES_RELATIVE_PATH, "jpg")
+				if er == nil && imageName != "" {
+					// mnm madreg ayichalm
+					user.Imgurl = imageName
+				}
+				ctx = context.WithValue(ctx, "user", user)
+				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {
+
+					// Save the Profile Picture and
+
+					resp.Success = true
+					resp.Message = func() string {
+						return " user "
+					}() + " created succesfully!"
+					writer.WriteHeader(http.StatusOK)
+					writer.Write(helper.MarshalThis(resp))
+					return
+				} else {
+					if user != nil && er != nil {
+						resp.Message = er.Error()
+					} else {
+						resp.Message = "Internal server error!"
+					}
+					writer.WriteHeader(http.StatusInternalServerError)
+					writer.Write(helper.MarshalThis(resp))
+					return
+				}
+			} else {
+				resp.Message = "Internal server error!"
+				writer.WriteHeader(http.StatusInternalServerError)
+				writer.Write(helper.MarshalThis(resp))
+				return
+			}
+		}
+	}
+	writer.WriteHeader(http.StatusBadRequest)
+	writer.Write(helper.MarshalThis(resp))
 }

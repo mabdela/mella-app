@@ -20,6 +20,7 @@ import (
 	"github.com/mabdela/mella-backend/platforms/hash"
 	"github.com/mabdela/mella-backend/platforms/helper"
 	"github.com/mabdela/mella-backend/platforms/mail"
+	"github.com/markbates/goth/gothic"
 )
 
 // IAdminHandler interface
@@ -34,6 +35,7 @@ type IAdminHandler interface {
 	Logout(c *gin.Context)
 	UpdateAdmin(c *gin.Context)
 	GetAllAdmins(c *gin.Context)
+	GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request)
 }
 
 // AdminHandler ... |  ...
@@ -118,7 +120,7 @@ func (adminhr *AdminHandler) AdminLogin(c *gin.Context) {
 		resp.Success = true
 		resp.Message = state.SuccesfulyLoggedIn
 		resp.User = newAdmin
-		c.JSON(200, resp) 
+		c.JSON(200, resp)
 		return
 	}
 	// InvalidUsernameOrPassword
@@ -153,74 +155,74 @@ func (adminhr *AdminHandler) Logout(c *gin.Context) {
 		"message" : "Password changed succesfuly "
 	}
 */
-	func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
-		ctx := c.Request.Context()
-		session := ctx.Value("session").(*model.Session)//
+func (adminhr *AdminHandler) ChangePassword(c *gin.Context) {
+	ctx := c.Request.Context()
+	session := ctx.Value("session").(*model.Session) //
 
-		res := &model.SimpleSuccessNotifier{
-			Success: false,
-		}
-		input := &struct {
-			Oldpassword     string `json:"old_password"`
-			NewPassword     string `json:"new_password"`
-			ConfirmPassword string `json:"confirm_password"`
-		}{}
-		jdecoder := json.NewDecoder(c.Request.Body)
-		era := jdecoder.Decode(input)
-		if era != nil || input.Oldpassword == "" || input.NewPassword == "" || input.ConfirmPassword == "" {
-			res.Message = os.Getenv("BAD_REQUEST_BODY")
-			c.JSON(http.StatusBadRequest, res)
-			return
-		}
-		if input.ConfirmPassword != input.NewPassword {
-			res.Message = os.Getenv("RE_CONFIRM_PASSWORD")
-			c.JSON(http.StatusBadRequest, res)
-			return
-		}
-		if input.NewPassword == input.Oldpassword {
-			res.Message = "No Change was made!\n Please use a new password instead"
-			c.JSON(http.StatusBadRequest, res)
-			return
-		}
-		if len(input.NewPassword) < 4 {
-			res.Message = "Password Length Must exceed 4 characters! "
-			c.JSON(http.StatusBadRequest, res)
-			return
-		}
-		// Check whether the old password is correct.
-		ctx = context.WithValue(ctx, "admin_id", session.ID)
-		if user, err := adminhr.AdminSer.AdminByID(c.Request.Context()); err != nil || user == nil {
-			res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-			res.Success = false
-			c.JSON(http.StatusInternalServerError, res)
-			return
-		} else if !(hash.ComparePassword(user.Password, input.Oldpassword)) {
-			res.Message = "Incorrect old password."
-			res.Success = false
-			c.JSON(http.StatusForbidden, res)
-			return
-		}
-		var changesuccess bool
-		ctx = context.WithValue(ctx, "admin_id", session.ID)
-		hashed, era := hash.HashPassword(input.NewPassword)
-		if era != nil {
-			res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-			res.Success = false
-			c.JSON(http.StatusInternalServerError, res)
-			return
-		}
-		ctx = context.WithValue(ctx, "password", hashed)
-		changesuccess = adminhr.AdminSer.ChangePassword(ctx)
-		if !changesuccess {
-			res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-			res.Success = false
-			c.JSON(http.StatusInternalServerError, res)
-			return
-		}
-		res.Message = "Password Changed Succesfuly!"
-		res.Success = true
-		c.JSON(http.StatusOK, res)
+	res := &model.SimpleSuccessNotifier{
+		Success: false,
 	}
+	input := &struct {
+		Oldpassword     string `json:"old_password"`
+		NewPassword     string `json:"new_password"`
+		ConfirmPassword string `json:"confirm_password"`
+	}{}
+	jdecoder := json.NewDecoder(c.Request.Body)
+	era := jdecoder.Decode(input)
+	if era != nil || input.Oldpassword == "" || input.NewPassword == "" || input.ConfirmPassword == "" {
+		res.Message = os.Getenv("BAD_REQUEST_BODY")
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	if input.ConfirmPassword != input.NewPassword {
+		res.Message = os.Getenv("RE_CONFIRM_PASSWORD")
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	if input.NewPassword == input.Oldpassword {
+		res.Message = "No Change was made!\n Please use a new password instead"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	if len(input.NewPassword) < 4 {
+		res.Message = "Password Length Must exceed 4 characters! "
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// Check whether the old password is correct.
+	ctx = context.WithValue(ctx, "admin_id", session.ID)
+	if user, err := adminhr.AdminSer.AdminByID(c.Request.Context()); err != nil || user == nil {
+		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+		res.Success = false
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	} else if !(hash.ComparePassword(user.Password, input.Oldpassword)) {
+		res.Message = "Incorrect old password."
+		res.Success = false
+		c.JSON(http.StatusForbidden, res)
+		return
+	}
+	var changesuccess bool
+	ctx = context.WithValue(ctx, "admin_id", session.ID)
+	hashed, era := hash.HashPassword(input.NewPassword)
+	if era != nil {
+		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+		res.Success = false
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+	ctx = context.WithValue(ctx, "password", hashed)
+	changesuccess = adminhr.AdminSer.ChangePassword(ctx)
+	if !changesuccess {
+		res.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+		res.Success = false
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+	res.Message = "Password Changed Succesfuly!"
+	res.Success = true
+	c.JSON(http.StatusOK, res)
+}
 
 /* ForgotPassword method GET
 Input
@@ -238,7 +240,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 		Message string `json:"msg"`
 	}{}
 	if input.Email = c.Request.FormValue("email"); input.Email == "" {
-		respo.Message = "Email field is empty!"//the respnonse (check)
+		respo.Message = "Email field is empty!" //the respnonse (check)
 		c.JSON(http.StatusBadRequest, respo)
 		return
 	}
@@ -269,7 +271,7 @@ func (adminhr *AdminHandler) ForgotPassword(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, respo)
 				return
 			}
-			respo.Message = "New password is sent to your email acount " + admin.Email 
+			respo.Message = "New password is sent to your email acount " + admin.Email
 			c.JSON(http.StatusOK, respo)
 			return
 		}
@@ -327,7 +329,7 @@ func (adminhr *AdminHandler) CreateAdmin(c *gin.Context) {
 				Email:     input.Email, //
 				Password:  hash,
 			}
-			
+
 			// Send Email for the password if this doesn't work raise internal server error.
 			if success := mail.SendPasswordEmailSMTP([]string{admin.Email}, password, true, admin.Firstname+" "+admin.Lastname, c.Request.Host); success {
 				ctx = c.Request.Context()
@@ -596,5 +598,60 @@ func (adminhr *AdminHandler) GetAllAdmins(c *gin.Context) {
 		c.JSON(http.StatusNotFound, admins)
 	} else {
 		c.JSON(http.StatusOK, admins)
+	}
+}
+
+// GoogleAdminLogin ...
+func (adminhr *AdminHandler) GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+	// LoginResponse ...
+	resp := &model.LoginResponse{}
+
+	log.Println(string(helper.MarshalThis(request.Header)))
+	// log.Println(helper.MarshalThis(request.Body))
+	resp.Success = false
+	user, err := gothic.CompleteUserAuth(writer, request)
+	if err != nil || &user == nil || user.Email == "" {
+		writer.WriteHeader(http.StatusUnauthorized)
+		resp.Message = " you are not authorized "
+		writer.Write(helper.MarshalThis(resp))
+		return
+	}
+	// Here i have all the users information there for i have to enable the user with out the requirement of password.
+
+	ctx := request.Context()
+	ctx = context.WithValue(ctx, "email", user.Email)
+	newAdmin, err := adminhr.AdminSer.AdminByEmail(ctx)
+	if err != nil || newAdmin == nil {
+		resp.Success = false
+		resp.Message = "Invalid Username or Password!"
+		writer.WriteHeader(401)
+		writer.Write(helper.MarshalThis(resp))
+		return
+	} else {
+		session := &model.Session{
+			ID:       newAdmin.ID,
+			Email:    newAdmin.Email,
+			Password: newAdmin.Password,
+		}
+		if newAdmin.Superadmin {
+			session.Role = state.SUPERADMIN
+		} else {
+			session.Role = state.ADMIN
+		}
+		success := adminhr.Authenticator.SaveSession(writer, session)
+		if !success {
+			resp.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+			resp.Success = false
+			writer.WriteHeader(http.StatusInternalServerError)
+			writer.Write(helper.MarshalThis(resp))
+			return
+		}
+		resp.Success = true
+		resp.Message = state.SuccesfulyLoggedIn
+		resp.User = newAdmin
+		writer.WriteHeader(http.StatusOK)
+		writer.Write(helper.MarshalThis(resp))
+		return
 	}
 }
