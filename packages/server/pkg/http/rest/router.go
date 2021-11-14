@@ -11,7 +11,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/gorilla/sessions"
 	"github.com/julienschmidt/httprouter"
-	_ "github.com/mabdela/mella-backend/api"
+	
 	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
 	"github.com/markbates/goth"
 	"github.com/markbates/goth/gothic"
@@ -19,8 +19,10 @@ import (
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler) *gin.Engine {
+func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler,
+	coursehandler ICourseHandler, articlehandler IArticleHandler) *gin.Engine {
 	router := gin.Default()
+	
 	chirouter := chi.NewRouter()
 	router.Use(cors.New(cors.Config{
 		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
@@ -84,6 +86,12 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	chirouter.Get("/auth/google/user/signin/calllback/", userhandler.GoogleUserSigninCallBack)
 	chirouter.Get("/auth/google/user/signup/calllback/", userhandler.GoogleUserSignupCallBack)
 	// --------------------------------------------------------------------
+
+	//test fb login
+
+	router.GET("fb/login",FbLogin)
+	router.GET("facebook/callback",FbCallback)
+	//
 
 	router.GET("/auth/*path", func(c *gin.Context) {
 		log.Println(c.Request.URL.Path)
