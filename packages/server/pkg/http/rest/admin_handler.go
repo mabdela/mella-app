@@ -20,7 +20,6 @@ import (
 	"github.com/mabdela/mella-backend/platforms/hash"
 	"github.com/mabdela/mella-backend/platforms/helper"
 	"github.com/mabdela/mella-backend/platforms/mail"
-	"github.com/markbates/goth/gothic"
 )
 
 // IAdminHandler interface
@@ -35,7 +34,7 @@ type IAdminHandler interface {
 	Logout(c *gin.Context)
 	UpdateAdmin(c *gin.Context)
 	GetAllAdmins(c *gin.Context)
-	GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request)
+	GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
 }
 
 // AdminHandler ... |  ...
@@ -602,21 +601,13 @@ func (adminhr *AdminHandler) GetAllAdmins(c *gin.Context) {
 }
 
 // GoogleAdminLogin ...
-func (adminhr *AdminHandler) GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request) {
+func (adminhr *AdminHandler) GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser) {
 	writer.Header().Set("Content-Type", "application/json")
 	// LoginResponse ...
 	resp := &model.LoginResponse{}
 
 	log.Println(string(helper.MarshalThis(request.Header)))
-	// log.Println(helper.MarshalThis(request.Body))
-	resp.Success = false
-	user, err := gothic.CompleteUserAuth(writer, request)
-	if err != nil || &user == nil || user.Email == "" {
-		writer.WriteHeader(http.StatusUnauthorized)
-		resp.Message = " you are not authorized "
-		writer.Write(helper.MarshalThis(resp))
-		return
-	}
+
 	// Here i have all the users information there for i have to enable the user with out the requirement of password.
 
 	ctx := request.Context()
