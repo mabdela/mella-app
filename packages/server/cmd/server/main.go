@@ -8,6 +8,7 @@ import (
 
 	"github.com/mabdela/mella-backend/pkg/admin"
 	"github.com/mabdela/mella-backend/pkg/article"
+	"github.com/mabdela/mella-backend/pkg/comment"
 	"github.com/mabdela/mella-backend/pkg/course"
 	"github.com/mabdela/mella-backend/pkg/http/rest"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
@@ -58,5 +59,9 @@ func main() {
 	articleservice := article.NewArticleService(articlerepo)
 	articlehandler := rest.NewArticleHandler(articleservice, authenticator)
 
-	rest.Route(rules, adminhandler, userhandler, coursehandler, articlehandler).Run(":8080")
+	comentRepo := mongodb.NewCommentRepo(conn)
+	commentser := comment.NewCommentService(comentRepo)
+	commentHandler := rest.NewCommentHandler(authenticator,commentser)
+
+	rest.Route(rules, adminhandler, userhandler, coursehandler, articlehandler,commentHandler).Run(":8080")
 }

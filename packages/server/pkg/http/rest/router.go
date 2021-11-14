@@ -20,7 +20,7 @@ import (
 
 // Route returns an http handler for the api.
 func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler,
-	coursehandler ICourseHandler, articlehandler IArticleHandler) *gin.Engine {
+	coursehandler ICourseHandler, articlehandler IArticleHandler,commenthandler IcommentHandler) *gin.Engine {
 	router := gin.Default()
 	
 	chirouter := chi.NewRouter()
@@ -75,6 +75,11 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
+	//comment routes
+	router.POST("/api/comments/new",commenthandler.AddComments)
+	router.GET("/api/article/comments/:article_id",commenthandler.LoadComments)
+	router.PUT("/api/article/comment/update_like",commenthandler.UpdateCommentsLike)
+	//
 
 	// This Routing will be changed later.
 	// --------------------------------------------------------------------
