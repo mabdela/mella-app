@@ -77,50 +77,50 @@ func (handler *CommentHandler) LoadComments(c *gin.Context) {
 	// }{}
 	// c.
 	res := model.CommentRes{}
-	articleId :=c.Param("article_id")
+	articleId := c.Param("article_id")
 	ctx := c.Request.Context()
-	ctx = context.WithValue(ctx,"article_id",articleId)
-	comments , err := handler.CommentSer.LoadCommentsByArticle(ctx)
-	res.Success=false
-	if err!=nil{
-		if strings.Contains(err.Error(), "no documents"){
-			 res.Message="no docment"
-			 c.JSON(http.StatusNotFound,res)
-			 return
-		}else{
+	ctx = context.WithValue(ctx, "article_id", articleId)
+	comments, err := handler.CommentSer.LoadCommentsByArticle(ctx)
+	res.Success = false
+	if err != nil {
+		if strings.Contains(err.Error(), "no documents") {
+			res.Message = "no docment"
+			c.JSON(http.StatusNotFound, res)
+			return
+		} else {
 			res.Message = "internal sever error"
 			c.JSON(http.StatusInternalServerError, res)
 			return
 		}
 	}
-	res.Message="successfully loaded the comments"
-	res.Success=true
+	res.Message = "successfully loaded the comments"
+	res.Success = true
 	res.Comments = *comments
 	c.JSON(http.StatusOK, res)
 }
 
-func (handler *CommentHandler)UpdateCommentsLike(c *gin.Context){
+func (handler *CommentHandler) UpdateCommentsLike(c *gin.Context) {
 	input := &model.UpdateCommentInfo{}
 	c.BindJSON(input)
-	res:=model.SimpleSuccessNotifier{}
-	res.Success=false
-	if input.CommentId==""||input.UserId==""{
-		if input.CommentId==""{
-			res.Message="should include comment Id"
-		}else if input.UserId==""{
-			res.Message="should include commenter Id"
+	res := model.SimpleSuccessNotifier{}
+	res.Success = false
+	if input.CommentId == "" || input.UserId == "" {
+		if input.CommentId == "" {
+			res.Message = "should include comment Id"
+		} else if input.UserId == "" {
+			res.Message = "should include commenter Id"
 		}
-		c.JSON(http.StatusBadRequest,res)
+		c.JSON(http.StatusBadRequest, res)
 	}
-	ctx:= c.Request.Context()
-	ctx= context.WithValue(ctx,"commentInfo",input)
-	success , err := handler.CommentSer.UpdateCommentsLike(ctx)
-	if  !success || err!=nil{
-		res.Message="Internal Server Error"
+	ctx := c.Request.Context()
+	ctx = context.WithValue(ctx, "commentInfo", input)
+	success, err := handler.CommentSer.UpdateCommentsLike(ctx)
+	if !success || err != nil {
+		res.Message = "Internal Server Error"
 		c.JSON(http.StatusInternalServerError, res)
 		return
 	}
-	res.Message="seccessfully added a like"
-	res.Success= true
+	res.Message = "seccessfully added a like"
+	res.Success = true
 	c.JSON(http.StatusOK, res)
 }
