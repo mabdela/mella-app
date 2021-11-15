@@ -14,7 +14,7 @@ import (
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler,commenthandler IcommentHandler) *gin.Engine {
+func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, commenthandler IcommentHandler) *gin.Engine {
 	router := gin.Default()
 	router.Use(cors.New(cors.Config{
 		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
@@ -24,35 +24,35 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 		AllowAllOrigins:  true,
 	}))
 	router.GET("/logout", rules.Logout)
-	router.POST("/api/admin/login", adminhandler.AdminLogin)
-	router.PUT("/api/admin/password/new", rules.Authenticated(), adminhandler.ChangePassword)
-	router.GET("/api/admin/password/forgot", rules.Authenticated(), adminhandler.ForgotPassword)
-	router.POST("/api/superadmin/new", rules.Authenticated(), rules.Authorized(), adminhandler.CreateAdmin)
-	router.PUT("/api/admin", rules.Authenticated(), rules.Authorized(), adminhandler.UpdateAdmin)
+	router.POST("/api/admin/login", adminhandler.AdminLogin) //sent
+	router.PUT("/api/admin/password/new", rules.Authenticated(), rules.Authorized(), adminhandler.ChangePassword)
+	router.GET("/api/admin/password/forgot", adminhandler.ForgotPassword)                         //not
+	router.POST("/api/superadmin/new", adminhandler.CreateAdmin)                                  //sent
+	router.PUT("/api/admin", rules.Authenticated(), rules.Authorized(), adminhandler.UpdateAdmin) //session
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
-	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount)
+	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount) // using email
 	// New Tested
-	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
+	router.GET("/api/admins", adminhandler.GetAllAdmins) //sent
 	// Users Route here
 	router.POST("/api/user/login", userhandler.UserLogin)
 	router.PUT("/api/user/password/new", rules.Authenticated(), rules.Authorized(), userhandler.ChangePassword)
-	router.GET("/api/user/password/forgot", rules.Authenticated(), userhandler.ForgotPassword)
+	router.GET("/api/user/password/forgot", userhandler.ForgotPassword)
 	router.POST("/api/user/new", userhandler.CreateUser)
 	router.PUT("/api/user", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
 
 	router.POST("/api/superadmin/course/new", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	router.PUT("/api/superadmin/course/picture", rules.Authenticated(), rules.Authorized(), coursehandler.UploadCourseImage)
-	router.DELETE("/api/superadmin/course/delete",  coursehandler.RemoveCourse)
+	router.DELETE("/api/superadmin/course/delete",rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
 	// Not Tested.
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
 	//comments routes
-	router.POST("/api/comments/new",commenthandler.AddComments)
-	router.GET("/api/article/comments/:article_id",commenthandler.LoadComments)
-	router.PUT("/api/article/comment/update_like",commenthandler.UpdateCommentsLike)
+	router.POST("/api/comments/new", commenthandler.AddComments)
+	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
+	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
 	//
 	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
 	{

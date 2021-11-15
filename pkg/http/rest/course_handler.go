@@ -114,7 +114,6 @@ func (coursehr *CourseHandler) UpdateCourse(c *gin.Context) {
 	}
 
 	if !changed {
-		
 		resp.Msg = "no modification to the course instance is made"
 		c.JSON(http.StatusNotModified, resp)
 		return
