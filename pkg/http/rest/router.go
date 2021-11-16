@@ -53,6 +53,7 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.POST("/api/comments/new", commenthandler.AddComments)
 	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
 	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
+	router.DELETE("api/article/comment/delete/:commentId", rules.Authenticated(), rules.Authorized(),commenthandler.RemoveComment)
 	//
 	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
 	{

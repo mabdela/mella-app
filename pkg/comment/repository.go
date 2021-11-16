@@ -11,4 +11,6 @@ type ICommentRepo interface {
 	AddComments(ctx context.Context) (bool, error)
 	LoadCommentsByArticle(ctx context.Context)(*[]model.Comment,error)
 	UpdateCommentsLike(ctx context.Context)(bool , error)
+	LoadComment(ctx context.Context)(*model.Comment,error)
+	RemoveComment(ctx context.Context)(bool , error)
 }
