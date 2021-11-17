@@ -1,6 +1,13 @@
 import { all, takeLatest } from 'redux-saga/effects';
 import { loginSuperAdminSaga, logoutSuperAdminSaga } from './auth/auth-sagas';
 import { authActionType } from './auth/auth-types';
+import {
+  createCourseSaga,
+  deleteCourseSaga,
+  listCourseSaga,
+  updateCourseSaga,
+} from './course/course-sagas';
+import { adminCourseTypes } from './course/course-types';
 
 import {
   addSuperAdminSaga,
@@ -23,6 +30,12 @@ function* rootSaga() {
     takeLatest(userActionTypes.DELETING_ADMIN, deleteSuperAdminSaga),
     takeLatest(userActionTypes.SEARCHING_BY_NAME, searchSuperAdminByNameSaga),
     takeLatest(userActionTypes.SEARCHING_BY_EMAIL, searchSuperAdminByEmailSaga),
+
+    // courses
+    takeLatest(adminCourseTypes.CREATING_COURSE, createCourseSaga),
+    takeLatest(adminCourseTypes.DELETING_COURSE, deleteCourseSaga),
+    takeLatest(adminCourseTypes.UPDATING_COURSE, updateCourseSaga),
+    takeLatest(adminCourseTypes.LISTING_COURSE, listCourseSaga),
   ]);
 }
 

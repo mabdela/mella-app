@@ -13,7 +13,10 @@ export function* loginEndUserSaga(action) {
       action.payload,
       'POST'
     );
-    yield put(loginUser(loginUserData));
+
+    const { data, token } = loginUserData;
+    localStorage.setItem('token-admin', token);
+    yield put(loginUser(data));
   } catch (error) {
     console.log(error);
     // yield put(setErrors(error));

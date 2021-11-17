@@ -15,14 +15,14 @@ import {
 
 export function* registerEndUserSaga(action) {
   try {
-    const registerUserData = yield call(
+    yield call(
       apiData,
       `${process.env.REACT_APP_SIGN_UP}`,
       action.payload.formData,
       'POST'
     );
 
-    yield put(registerUser(registerUserData));
+    yield put(registerUser());
     yield action.payload.history.push('/');
   } catch (error) {
     yield put(setErrors(error));
@@ -37,7 +37,9 @@ export function* loginEndUserSaga(action) {
       action.payload,
       'POST'
     );
-    yield put(loginUser(loginUserData));
+    const { data, token } = loginUserData;
+    localStorage.setItem('token', token);
+    yield put(loginUser(data));
   } catch (error) {
     yield put(setErrors(error));
   }

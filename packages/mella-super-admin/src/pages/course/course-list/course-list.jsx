@@ -4,22 +4,21 @@ import { useSelector, useDispatch } from 'react-redux';
 import PopUp from 'src/component/modal/pop-up';
 import CommonTitle from '@mono-repo/common/title/title';
 import CommonLoading from '@mono-repo/common/loading/loading';
-import {
-  getAdminRequest,
-  removeAdmin,
-  removeMessage,
-} from 'src/redux/users/user-action';
+import { removeAdmin } from 'src/redux/users/user-action';
 import CommonList from '@mono-repo/common/list-data/list-data';
 import CommonAlert from '@mono-repo/common/alert/alert';
 import { removeErrors } from 'src/redux/error/error-actions';
+import {
+  listCourseRequest,
+  removeMessage,
+} from 'src/redux/course/course-action';
 
-const AdminList = () => {
+const CourseList = () => {
   const dispatch = useDispatch();
-  const users = useSelector(state => state.users.admins);
+  const courses = useSelector(state => state.course.courses);
   const loading = useSelector(state => state.users.loading);
   const message = useSelector(state => state.users.message);
   const error = useSelector(state => state.errors.message);
-  const token = useSelector(state => state.auth.token);
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
@@ -49,12 +48,12 @@ const AdminList = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getAdminRequest(token));
-  }, [dispatch, token]);
+    dispatch(listCourseRequest());
+  }, [dispatch]);
 
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
-      <CommonTitle text="Admin List" />
+      <CommonTitle text="Course List" />
 
       {message && (
         <CommonAlert
@@ -91,10 +90,10 @@ const AdminList = () => {
 
           {/* take a look at it */}
 
-          {users.map(user => (
+          {courses.map(course => (
             <CommonList
-              key={user._id}
-              data={user}
+              key={course._id}
+              data={course}
               // handleEdit={handleModalOpen}
               handleDelete={handleOpen}
             />
@@ -105,4 +104,4 @@ const AdminList = () => {
   );
 };
 
-export default AdminList;
+export default CourseList;
