@@ -5,17 +5,20 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"fmt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mabdela/mella-backend/pkg/comment"
 	"github.com/mabdela/mella-backend/pkg/constants/model"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	"github.com/mabdela/mella-backend/pkg/constants/state"
 )
 
 type IcommentHandler interface {
 	AddComments(c *gin.Context)
 	LoadComments(c *gin.Context)
 	UpdateCommentsLike(c *gin.Context)
+	RemoveComment(c *gin.Context)
 }
 type CommentHandler struct {
 	Authenticator auth.Authenticator
@@ -123,4 +126,53 @@ func (handler *CommentHandler) UpdateCommentsLike(c *gin.Context) {
 	res.Message = "seccessfully added a like"
 	res.Success = true
 	c.JSON(http.StatusOK, res)
+}
+func (handler *CommentHandler) RemoveComment(c *gin.Context) {
+	CommentId := c.Param("commentId")
+	res := model.SimpleSuccessNotifier{}
+	res.Success = false
+	ctx := c.Request.Context()
+	session := ctx.Value("session").(*model.Session)
+
+	//first load a comment to be deleted
+	ctx = context.WithValue(ctx, "comment_id", CommentId)
+	comment, err := handler.CommentSer.LoadComment(ctx)
+	if err != nil {
+		if strings.Contains(err.Error(), "no documents") {
+			res.Message = "Comment with this id not found"
+			c.JSON(http.StatusNotFound, res)
+			return
+		}
+		res.Message = "INTERNAL_SERVER_ERROR"
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+	fmt.Println("session user id :", session.ID)
+	fmt.Println("comment user id :", comment.UserID)
+	if session.ID == comment.UserID {
+		fmt.Println("equal")
+	}
+	//only the commenter and superadmins are authorized to delete a comment
+	if session.ID == comment.UserID || session.Role == state.SUPERADMIN {
+
+		success, err := handler.CommentSer.RemoveComment(ctx)
+		if !success || err != nil {
+			if strings.Contains(err.Error(), "no documents") {
+				res.Message = "Comment with this id not found"
+				c.JSON(http.StatusNotFound, res)
+				return
+			}
+			res.Message = "INTERNAL_SERVER_ERROR"
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+		res.Message = "comment deleted successfully"
+		res.Success = true
+		c.JSON(http.StatusOK, res)
+		return
+	} else {
+		// ctx = context.WithValue(ctx,"comment_id)",CommentId)
+		res.Message = "unauthorized to delete a comment"
+		c.JSON(http.StatusUnauthorized, res)
+	}
 }

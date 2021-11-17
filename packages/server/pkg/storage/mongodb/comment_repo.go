@@ -83,3 +83,33 @@ func (repo *CommentRepo) UpdateCommentsLike(ctx context.Context) (bool ,error) {
 	}
 	return true , nil
 }
+func (repo *CommentRepo)RemoveComment(ctx context.Context)(bool , error){
+	commentId :=ctx.Value("comment_id").(string)
+	prCommentId , err := primitive.ObjectIDFromHex(commentId)
+	if err !=nil{
+		return false , err
+	}
+	filter:= bson.M{"_id":prCommentId}
+	collection:=repo.Conn.Collection("comment")
+	_, err=collection.DeleteOne(context.TODO(), filter)
+	if err !=nil{
+		return false , err
+	}
+	return true , nil
+}
+
+func (repo *CommentRepo)LoadComment(ctx context.Context)(*model.Comment,error){
+	commentId:=ctx.Value("comment_id").(string)
+	comment:= &model.Comment{}
+	prCommentId , err := primitive.ObjectIDFromHex(commentId)
+	if err !=nil{
+		return nil , err
+	}
+	collection:=repo.Conn.Collection("comment")
+	filter:=bson.M{"_id":prCommentId}
+	err=collection.FindOne(ctx,filter).Decode(&comment)
+	if err!=nil{
+		return nil , err
+	}
+	return comment, nil
+}
