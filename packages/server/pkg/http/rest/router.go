@@ -11,18 +11,16 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/gorilla/sessions"
 	"github.com/julienschmidt/httprouter"
-	
+	_ "github.com/mabdela/mella-backend/api"
+	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+
 	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
-	"github.com/markbates/goth"
-	"github.com/markbates/goth/gothic"
-	"github.com/markbates/goth/providers/google"
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler,
-	coursehandler ICourseHandler, articlehandler IArticleHandler,commenthandler IcommentHandler) *gin.Engine {
+func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler) *gin.Engine {
 	router := gin.Default()
-	
+
 	chirouter := chi.NewRouter()
 	router.Use(cors.New(cors.Config{
 		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
@@ -32,23 +30,6 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 		AllowAllOrigins:  true,
 	}))
 	// Initializing google sign in parameters.
-	{
-
-		gothic.Store = GetCookieStore()
-		// Registering the two call backs for the new sign in.....
-
-		val := google.Endpoint.AuthURL
-		println(val)
-
-		googleProvider := google.New(
-			os.Getenv("GOOGLE_CLIENT_ID"),
-			os.Getenv("GOOGLE_CLIENT_SECRET"),
-			"http://localhost:8080/auth/google/callback/")
-
-		goth.UseProviders(
-			googleProvider,
-		)
-	}
 	router.GET("/logout", rules.Logout)
 	router.POST("/api/admin/login", adminhandler.AdminLogin)
 	router.PUT("/api/admin/password/new", rules.Authenticated(), adminhandler.ChangePassword)
@@ -71,32 +52,31 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	router.PUT("/api/superadmin/course/picture", rules.Authenticated(), rules.Authorized(), coursehandler.UploadCourseImage)
 	router.DELETE("/api/superadmin/course/delete", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
+	// This course handlers are newly added  , JENO Test them and edit something if needed
+	router.GET("/api/course/", rules.Authenticated(), coursehandler.GetCourseByID)
+	router.GET("/api/courses/", rules.Authenticated(), coursehandler.GetAllCourses)
 	// Not Tested.
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
 	//comment routes
-	router.POST("/api/comments/new",commenthandler.AddComments)
-	router.GET("/api/article/comments/:article_id",commenthandler.LoadComments)
-	router.PUT("/api/article/comment/update_like",commenthandler.UpdateCommentsLike)
-	//
+	router.POST("/api/comments/new", commenthandler.AddComments)
+	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
+	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
 
-	// This Routing will be changed later.
-	// --------------------------------------------------------------------
-	chirouter.Get("/auth/red", gothic.BeginAuthHandler)
-	chirouter.Get("/auth/google/callback/", adminhandler.GoogleAdminLoginCallBack)
-	chirouter.Get("/auth/google/admin/signin", gothic.BeginAuthHandler)
-	chirouter.Get("/auth/google/user/signin", gothic.BeginAuthHandler)
-	chirouter.Get("/auth/google/user/signin", gothic.BeginAuthHandler)
-	chirouter.Get("/auth/google/user/signin/calllback/", userhandler.GoogleUserSigninCallBack)
-	chirouter.Get("/auth/google/user/signup/calllback/", userhandler.GoogleUserSignupCallBack)
-	// --------------------------------------------------------------------
+	// The Final Routes for Google and Facebook Authentication.
+	// -----------------------------------------------------------------------------
 
-	//test fb login
-
-	router.GET("fb/login",FbLogin)
-	router.GET("facebook/callback",FbCallback)
-	//
+	chirouter.Get("/auth/admin/signin", authenticator.GoogleAdminSignin)
+	chirouter.Get("/auth/user/signin", authenticator.GoogleUserSignin)
+	chirouter.Get("/auth/user/signup", authenticator.GoogleUserSignUP)
+	chirouter.Get("/auth/google/callback/", oauthHandler.GoogleHandleCallback)
+	// -----------------------Facebook ------------------------------------------
+	chirouter.Get("/auth/facebook/admin/signin", authenticator.FaceBookAdminSignin)
+	chirouter.Get("/auth/facebook/user/signin", authenticator.FaceBookUserSignin)
+	chirouter.Get("/auth/facebook/user/signup", authenticator.FaceBookUserSignUP)
+	chirouter.Get("/facebook/callback", oauthHandler.FacebookHandleCallback)
+	// -----------------------------------------------------------------------------
 
 	router.GET("/auth/*path", func(c *gin.Context) {
 		log.Println(c.Request.URL.Path)

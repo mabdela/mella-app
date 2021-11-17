@@ -14,7 +14,7 @@ import (
 	"github.com/mabdela/mella-backend/pkg/constants/state"
 )
 
-type IcommentHandler interface {
+type ICommentHandler interface {
 	AddComments(c *gin.Context)
 	LoadComments(c *gin.Context)
 	UpdateCommentsLike(c *gin.Context)
@@ -25,7 +25,7 @@ type CommentHandler struct {
 	CommentSer    comment.ICommentService
 }
 
-func NewCommentHandler(auth auth.Authenticator, commentser comment.ICommentService) IcommentHandler {
+func NewCommentHandler(auth auth.Authenticator, commentser comment.ICommentService) ICommentHandler {
 	return &CommentHandler{
 		Authenticator: auth,
 		CommentSer:    commentser,

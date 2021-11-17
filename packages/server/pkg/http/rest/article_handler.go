@@ -237,5 +237,23 @@ InternalServerErrorWhileSavingMessage:
 	}
 }
 
-// List of updates on the article.
-//
+// Update Article JSON information ....
+// UpdateArticle this handler function updates only the
+func (ahandler *ArticleHandler) UpdateArticle(c *gin.Context) {
+	article := &model.Article{}
+	er := c.BindJSON(article)
+	eres := &struct {
+		Error string `json:"error"`
+	}{}
+	if er != nil {
+		eres.Error = " bad request payload "
+		// ----------------------------------------------------------
+		if article.ID == "" {
+			eres.Error = " missing article id "
+		}
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	// title  ,  description  , imgurl  , /
+
+}
