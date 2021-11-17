@@ -35,6 +35,7 @@ type IAdminHandler interface {
 	UpdateAdmin(c *gin.Context)
 	GetAllAdmins(c *gin.Context)
 	GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
+	FacebookAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.FacebookUser)
 }
 
 // AdminHandler ... |  ...

@@ -35,6 +35,8 @@ type IUserHandler interface {
 	UpdateUser(c *gin.Context)
 	GoogleUserSigninCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
 	GoogleUserSignupCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
+	FacebookUserSigninCallBack(writer http.ResponseWriter, request *http.Request, user *model.FacebookUser)
+	FacebookUserSignupCallBack(writer http.ResponseWriter, request *http.Request, user *model.FacebookUser)
 }
 
 type UserHandler struct {

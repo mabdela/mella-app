@@ -14,6 +14,7 @@ import (
 
 type IOAuthHandler interface {
 	GoogleHandleCallback(w http.ResponseWriter, r *http.Request)
+	FacebookHandleCallback(w http.ResponseWriter, r *http.Request)
 }
 
 type OAuthHandler struct {
@@ -76,6 +77,47 @@ func (oauthh *OAuthHandler) GoogleHandleCallback(w http.ResponseWriter, r *http.
 	case os.Getenv("GOOGLE_USER_SIGNUP"):
 		{
 			oauthh.UserHandler.GoogleUserSignupCallBack(w, r, input)
+		}
+	}
+}
+
+func (oauthh *OAuthHandler) FacebookHandleCallback(w http.ResponseWriter, r *http.Request) {
+	code := r.FormValue("code")
+	ctx := r.Context()
+	token, err := oauthh.FacebookAuthConfig.Exchange(ctx, code)
+	if err != nil {
+		fmt.Println("couldnt generate token ", err.Error())
+
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	res, _ := http.Get("https://graph.facebook.com/me?fields=id,name,email,first_name,last_name,picture,languages&access_token=" + token.AccessToken)
+	if err != nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+
+	defer res.Body.Close()
+	jdecoder := json.NewDecoder(res.Body)
+	facebookUserInput := model.FacebookUserInput{}
+	decode_error := jdecoder.Decode(facebookUserInput)
+	if decode_error != nil {
+		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
+		return
+	}
+	facebookUser := facebookUserInput.GetFacebookUser()
+	switch r.FormValue("state") {
+	case os.Getenv("FACEBOOK_ADMIN_SIGNIN"):
+		{
+			oauthh.AdminHandler.FacebookAdminLoginCallBack(w, r, facebookUser)
+		}
+	case os.Getenv("FACEBOOK_USER_SIGNIN"):
+		{
+			oauthh.UserHandler.FacebookUserSigninCallBack(w, r, facebookUser)
+		}
+	case os.Getenv("FACEBOOK_USER_SIGNUP"):
+		{
+			oauthh.UserHandler.FacebookUserSignupCallBack(w, r, facebookUser)
 		}
 	}
 }

@@ -13,12 +13,14 @@ import (
 	"github.com/julienschmidt/httprouter"
 	_ "github.com/mabdela/mella-backend/api"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+
 	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler) *gin.Engine {
+func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler) *gin.Engine {
 	router := gin.Default()
+
 	chirouter := chi.NewRouter()
 	router.Use(cors.New(cors.Config{
 		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
@@ -54,15 +56,23 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
+	//comment routes
+	router.POST("/api/comments/new", commenthandler.AddComments)
+	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
+	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
 
-	// This Routing will be changed later.
+	// The Final Routes for Google and Facebook Authentication.
 	// -----------------------------------------------------------------------------
 
 	chirouter.Get("/auth/admin/signin", authenticator.GoogleAdminSignin)
 	chirouter.Get("/auth/user/signin", authenticator.GoogleUserSignin)
 	chirouter.Get("/auth/user/signup", authenticator.GoogleUserSignUP)
 	chirouter.Get("/auth/google/callback/", oauthHandler.GoogleHandleCallback)
-
+	// -----------------------Facebook ------------------------------------------
+	chirouter.Get("/auth/facebook/admin/signin", authenticator.FaceBookAdminSignin)
+	chirouter.Get("/auth/facebook/user/signin", authenticator.FaceBookUserSignin)
+	chirouter.Get("/auth/facebook/user/signup", authenticator.FaceBookUserSignUP)
+	chirouter.Get("/facebook/callback", oauthHandler.FacebookHandleCallback)
 	// -----------------------------------------------------------------------------
 
 	router.GET("/auth/*path", func(c *gin.Context) {
