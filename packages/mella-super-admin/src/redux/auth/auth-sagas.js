@@ -13,7 +13,8 @@ export function* loginSuperAdminSaga(action) {
       action.payload,
       'POST'
     );
-    yield put(loginUser(loginUserData));
+    localStorage.setItem('token-super', loginUserData.token);
+    yield put(loginUser(loginUserData.data));
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -23,6 +24,7 @@ export function* logoutSuperAdminSaga() {
   try {
     yield put({ type: authActionType.SET_AUTH_LOADING });
     yield call(apiData, `${process.env.REACT_APP_LOGOUT_ADMIN}`, null, 'GET');
+    localStorage.removeItem('token');
     yield put(logoutUser());
   } catch (error) {
     yield put(setErrors(error));

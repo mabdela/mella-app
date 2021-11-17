@@ -22,6 +22,18 @@ const navdata = {
       icon: <FormatListBulleted />,
     },
   ],
+  coursesNavOptions: [
+    {
+      link: 'add-course',
+      primary: 'Add Course',
+      icon: <AddCircleOutline />,
+    },
+    {
+      link: 'course-list',
+      primary: 'Course List',
+      icon: <FormatListBulleted />,
+    },
+  ],
 };
 
 export default navdata;
