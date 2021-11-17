@@ -19,6 +19,8 @@ type ICourseHandler interface {
 	UpdateCourse(c *gin.Context)
 	UploadCourseImage(c *gin.Context)
 	RemoveCourse(c *gin.Context)
+	GetCourseByID(c *gin.Context)
+	GetAllCourses(c *gin.Context)
 }
 
 type CourseHandler struct {
@@ -197,12 +199,34 @@ func (coursehr *CourseHandler) UploadCourseImage(c *gin.Context) {
 	}
 }
 
+// uses a param not a JSON
 func (coursehr *CourseHandler) GetCourseByID(c *gin.Context) {
+	courseID := c.Request.FormValue("id")
+	eres := &struct {
+		Error string `json:"error"`
+	}{"bad input  ; course id is not mensioned"}
+	if courseID == "" {
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
 
+	ctx := c.Request.Context()
+	ctx = context.WithValue(ctx, "course_id", courseID)
+	courser, er := coursehr.Service.GetCourseByID(ctx)
+	if er != nil || courser == nil {
+		eres.Error = " course not found "
+		c.JSON(http.StatusNotFound, eres)
+		return
+	}
+	c.JSON(http.StatusOK, courser)
 }
 
 func (coursehr *CourseHandler) GetAllCourses(c *gin.Context) {
-
+	courses, er := coursehr.Service.GetAllCourses(c.Request.Context())
+	if er != nil || courses == nil || len(courses) == 0 {
+		c.JSON(http.StatusNotFound, []*model.Course{})
+	}
+	c.JSON(http.StatusOK, courses)
 }
 
 func (coursehr *CourseHandler) DeleteCourseByID(c *gin.Context) {

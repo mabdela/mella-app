@@ -52,6 +52,9 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	router.PUT("/api/superadmin/course/picture", rules.Authenticated(), rules.Authorized(), coursehandler.UploadCourseImage)
 	router.DELETE("/api/superadmin/course/delete", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
+	// This course handlers are newly added  , JENO Test them and edit something if needed
+	router.GET("/api/course/", rules.Authenticated(), coursehandler.GetCourseByID)
+	router.GET("/api/courses/", rules.Authenticated(), coursehandler.GetAllCourses)
 	// Not Tested.
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)

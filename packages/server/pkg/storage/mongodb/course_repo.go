@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"errors"
 	"log"
 
 	"github.com/mabdela/mella-backend/pkg/constants/model"
@@ -124,4 +125,20 @@ func (repo *CourseRepo) RemoveCourse(ctx context.Context) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (repo *CourseRepo) GetAllCourses(ctx context.Context) ([]*model.Course, error) {
+	courses := []*model.Course{}
+	if cursor, er := repo.Conn.Collection(state.COURSES).Find(ctx, bson.D{}); cursor != nil && er == nil {
+		for cursor.Next(ctx) {
+			course := &model.Course{}
+			e := cursor.Decode(course)
+			if e == nil {
+				courses = append(courses, course)
+			}
+		}
+		return courses, nil
+	} else {
+		return courses, errors.New(" no record found ")
+	}
 }
