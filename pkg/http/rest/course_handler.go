@@ -19,6 +19,7 @@ type ICourseHandler interface {
 	UpdateCourse(c *gin.Context)
 	UploadCourseImage(c *gin.Context)
 	RemoveCourse(c *gin.Context)
+	AllCourses(c *gin.Context)
 }
 
 type CourseHandler struct {
@@ -242,4 +243,19 @@ func (handler *CourseHandler) RemoveCourse(c *gin.Context) {
 	resp.Msg = "course deleted succesfully"
 
 	c.JSON(http.StatusOK, resp)
+}
+func (handler *CourseHandler)AllCourses(c *gin.Context){
+	res:=model.CourseRes{}
+	res.Success=false
+	ctx := c.Request.Context()
+	response , err := handler.Service.GetAllCourses(ctx)
+	if response==nil || err!=nil {
+		//here we need to add the error case if no docment error or not
+		res.Message="Internal server error"
+		c.JSON(http.StatusInternalServerError,res)
+	}
+	res.Courses= *response
+	res.Message= "courses successfully loadded"
+	res.Success = true
+	c.JSON(http.StatusOK,res)
 }

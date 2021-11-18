@@ -32,6 +32,7 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount) // using email
+	router.GET("/api/admin/allusers",rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
 	// New Tested
 	router.GET("/api/admins", adminhandler.GetAllAdmins) //sent
 	// Users Route here
@@ -40,11 +41,12 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.GET("/api/user/password/forgot", userhandler.ForgotPassword)
 	router.POST("/api/user/new", userhandler.CreateUser)
 	router.PUT("/api/user", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
-
+	//course routes
 	router.POST("/api/superadmin/course/new", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	router.PUT("/api/superadmin/course/picture", rules.Authenticated(), rules.Authorized(), coursehandler.UploadCourseImage)
-	router.DELETE("/api/superadmin/course/delete",rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
+	router.DELETE("/api/superadmin/course/delete", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
+	router.GET("/api/superadmin/all_courses", coursehandler.AllCourses)
 	// Not Tested.
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
@@ -53,7 +55,7 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.POST("/api/comments/new", commenthandler.AddComments)
 	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
 	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
-	router.DELETE("api/article/comment/delete/:commentId", rules.Authenticated(), rules.Authorized(),commenthandler.RemoveComment)
+	router.DELETE("api/article/comment/delete/:commentId", rules.Authenticated(), rules.Authorized(), commenthandler.RemoveComment)
 	//
 	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
 	{

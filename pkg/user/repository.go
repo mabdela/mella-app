@@ -23,4 +23,6 @@ type IUserRepo interface {
 	// DeleteProfilePicture(ctx context.Context) error  uses the session in the context to get the user ID and profile
 	// and delete the profile picture.
 	DeleteProfilePicture(ctx context.Context) error
+	//to list all users
+	AllUsers(ctx context.Context) ([]*model.User, error)
 }

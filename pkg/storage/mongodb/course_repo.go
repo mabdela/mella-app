@@ -2,6 +2,7 @@ package mongodb
 
 import (
 	"context"
+	"fmt"
 	"log"
 
 	"github.com/mabdela/mella-backend/pkg/constants/model"
@@ -124,4 +125,30 @@ func (repo *CourseRepo) RemoveCourse(ctx context.Context) (bool, error) {
 		return false, err
 	}
 	return true, nil
+}
+
+func (repo *CourseRepo)GetAllCourses(ctx context.Context)(*[]model.Course,error){
+	course:=&model.Course{}
+	courses :=[]model.Course{}
+	filter:= bson.M{}
+	collecion:= repo.Conn.Collection(state.COURSES)
+
+	cursor,err:= collecion.Find(context.TODO(),filter)
+	if err!=nil{
+		fmt.Println(err)
+		return nil ,err
+	}
+
+	defer cursor.Close(context.TODO())
+	for cursor.Next(context.TODO()){
+		err=cursor.Decode(course)
+		if err!=nil{
+			fmt.Println(err,"insede cursor.decode")
+			return nil ,err
+		}
+		courses = append(courses, *course)
+	}
+	fmt.Println(courses)
+	cursor.Close(ctx)
+	return &courses , nil
 }

@@ -33,8 +33,19 @@ type ShortSuccess struct {
 	Msg string `json:"msg"`
 }
 
-type CommentRes struct{
-	Success bool `success`
-	Message string `msg`
+type CommentRes struct {
+	Success  bool      `success`
+	Message  string    `msg`
 	Comments []Comment //to be changed to commentResponse
+}
+
+type CourseRes struct {
+	Success bool   `success`
+	Message string `msg`
+	Courses []Course
+}
+type AllUsersReponse struct {
+	Success  bool    `json:"success"`
+	Message  string  `json:"msg"`
+	UserList []*User `json:"user"`
 }
