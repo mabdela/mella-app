@@ -33,7 +33,7 @@ type passwordChangePayload struct {
 
 func (passwordPayload *passwordChangePayload) HashPassword(password string) error {
 	bytes, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-
+	
 	if err != nil {
 		return err
 	}
