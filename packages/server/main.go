@@ -52,4 +52,61 @@ func main() {
 	println("Name ", pfile.GetFileKeyName())
 	println("Content-Type ", pfile.GetContentType())
 	println(string(helper.MarshalThis(pfile)))
+
+	// --------------------------------------------------------------
+	jsonString := `{
+ 
+		"title" : "atoms",
+		"desc" : [
+			{"key":"This article is about the " ,       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+			{"key":"This sdfjadkfjis about the ",       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+			{"key":"This article sdflads about the " ,  "value" :"yihe ye articlochu description yihonal jal aregagut "},
+			{"key":"This article is sdfakdfjalut the ", "value" :"yihe ye articlochu description yihonal jal aregagut "}
+			],
+		"course_id"  : "6186dc10c252a16864f82129",
+		"sub_articles": [
+				{
+					"index":1 , 
+					"sub_title" : " particles",
+					"sub_title_translation" : "la particle broda ",
+					"datas" : [
+						{"key":"This article is about the " ,       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This sdfjadkfjis about the ",       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This article sdflads about the " ,  "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This article is sdfakdfjalut the ", "value" :"yihe ye articlochu description yihonal jal aregagut "}
+					]
+				},
+				{
+					"index":2 , 
+					"sub_title" : " particles",
+					"sub_title_translation" : "la particle broda ",
+					"datas" : [
+						{"key":"This article is about the " ,       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This sdfjadkfjis about the ",       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This article sdflads about the " ,  "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This article is sdfakdfjalut the ", "value" :"yihe ye articlochu description yihonal jal aregagut "}
+					]
+				},
+				{
+					"index":3, 
+					"sub_title" : " particles",
+					"sub_title_translation" : "la particle broda ",
+					"datas" : [
+						{"key":"This article is about the " ,       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This sdfjadkfjis about the ",       "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This article sdflads about the " ,  "value" :"yihe ye articlochu description yihonal jal aregagut "},
+						{"key":"This article is sdfakdfjalut the ", "value" :"yihe ye articlochu description yihonal jal aregagut "}
+					]
+				}
+			]
+		}
+		`
+	article := &model.Article{}
+	jsonDecoder := json.NewDecoder(bytes.NewBuffer([]byte(jsonString)))
+	er := jsonDecoder.Decode(article)
+	if er != nil {
+		println("Error While Decoding ", er.Error())
+		return
+	}
+	println("\nJSON Decoded Succesfuly \n\n", string(helper.MarshalThis(article)))
 }

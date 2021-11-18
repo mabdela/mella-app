@@ -23,6 +23,7 @@ func NewPartFileHeader(header textproto.MIMEHeader) *PartFileHeader {
 	if e != nil {
 		return nil
 	}
+	part.Restructure()
 	return part
 }
 

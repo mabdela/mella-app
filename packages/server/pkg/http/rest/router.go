@@ -85,7 +85,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 
 	router.POST("/api/admin/article/new", articlehandler.CreateArticle)
 	// -------------------------------------------------------------
-	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
+	router.RouterGroup.Use(FilterDirectory())
 	{
 		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
 	}
