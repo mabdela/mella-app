@@ -45,8 +45,14 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 	send the corresponding images in a separate request. */
 	// let's search for a way to send a json and form file at the same time.
 	ctx := c.Request.Context()
-	errs := c.Request.ParseMultipartForm(state.ARTICLES_FILE_SIZE)
+	// errs := c.Request.ParseMultipartForm(state.ARTICLES_FILE_SIZE)
+	// if errs != nil {
+	// 	println(" ParseMultipart Error  ", errs.Error())
+	// }
 	mr, err := c.Request.MultipartReader()
+	if err != nil {
+		println(" Multipart Reader Error : ", err.Error())
+	}
 	// mr stands for multipart reader .
 	eres := &struct {
 		Error string `json:"error"`
@@ -59,7 +65,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 	}{}
 	println(res)
 	// This is where we take the Input from the request JSON.
-	if err != nil || errs != nil {
+	if err != nil /* || errs != nil */ {
 		c.JSON(http.StatusBadRequest, eres)
 		return
 	}
@@ -84,19 +90,21 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			c.JSON(http.StatusBadRequest, eres)
 			return
 		}
+		pfileHeader := model.NewPartFileHeader(part.Header)
 		if part.FormName() == "title" {
 			// This is the files is the image for the articles main image.
 			// the part is also the file.
-			oldFileName := part.FileName()
-			if helper.IsImage(oldFileName) {
+
+			println("Using the Header as an Input ", pfileHeader)
+			if helper.IsImage(pfileHeader.GetFileName()) {
 				// This file is not an image.
 				titleImage = part
+			} else {
+				eres.Error = ` 'title' Only image file types are allowed `
+				c.JSON(http.StatusUnsupportedMediaType, eres)
+				return
 			}
-			eres.Error = " \"title\" Only image file types are allowed "
-			c.JSON(http.StatusUnsupportedMediaType, eres)
-			return
 		} else if strings.HasPrefix(part.FormName(), "subtitle") {
-
 			val, erorr_subtitle_index := strconv.Atoi(strings.Replace(part.FormName(), "subtitle", "", 1))
 			if erorr_subtitle_index != nil || val <= 0 {
 				// This subtitle file is not valid.
@@ -104,9 +112,9 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 				c.JSON(http.StatusBadRequest, eres)
 				return
 			}
-			if !(helper.IsImage(part.FormName())) {
+			if !(helper.IsImage(pfileHeader.GetFileName())) {
 				// This file is not an image.
-				eres.Error = fmt.Sprintf(" \"%s\" Only image file types are allowed ", part.FormName())
+				eres.Error = fmt.Sprintf(" '%s' Only image file types are allowed ", helper.GetExtension(pfileHeader.GetFileName()))
 				c.JSON(http.StatusUnsupportedMediaType, eres)
 				return
 			}
@@ -116,7 +124,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			if vals != nil {
 				// There was a file with this sub article index. therefore,
 				// we can not add this part file to the list of article's image.
-				eres.Error = fmt.Sprintf(" duplicate image for single article is not allowed ")
+				eres.Error = " duplicate image for single article is not allowed "
 				c.JSON(http.StatusNotAcceptable, eres)
 				return
 			}
@@ -164,7 +172,6 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		defer titleImageFile.Close()
 	}
 	articleInput.Image = titleImageName
-	// -----------------------------------------------------------
 	if len(articleInput.Subarticles) > 0 {
 		for index, subarticle := range articleInput.Subarticles {
 			// check whether  the sub article is valid or not and delete it from the list.
@@ -192,7 +199,6 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 				subArticleImages[(index + 1)] = file
 				// Sub Article Images
 				defer subArticleImages[(index + 1)].Close()
-				// ------------------------------------------------------------
 				subarticle.SubImage = filename
 			} else {
 				subarticle.SubImage = ""
@@ -257,3 +263,7 @@ func (ahandler *ArticleHandler) UpdateArticle(c *gin.Context) {
 	// title  ,  description  , imgurl  , /
 
 }
+
+// what if sub articles of same index comes.
+// what if the number of images exceed the numbers of sub articles.
+// what if the subarticle1 image X

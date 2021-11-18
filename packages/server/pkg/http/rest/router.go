@@ -83,7 +83,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 		chirouter.ServeHTTP(c.Writer, c.Request)
 	})
 
-	router.POST("/api/admin/article/new/", articlehandler.CreateArticle)
+	router.POST("/api/admin/article/new", articlehandler.CreateArticle)
 	// -------------------------------------------------------------
 	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
 	{
