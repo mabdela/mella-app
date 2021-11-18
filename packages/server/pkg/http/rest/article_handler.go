@@ -1,12 +1,14 @@
 package rest
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
+	"net/textproto"
 	"os"
 	"strconv"
 	"strings"
@@ -45,10 +47,10 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 	send the corresponding images in a separate request. */
 	// let's search for a way to send a json and form file at the same time.
 	ctx := c.Request.Context()
-	// errs := c.Request.ParseMultipartForm(state.ARTICLES_FILE_SIZE)
-	// if errs != nil {
-	// 	println(" ParseMultipart Error  ", errs.Error())
-	// }
+	errs := c.Request.ParseMultipartForm(state.ARTICLES_FILE_SIZE)
+	if errs != nil {
+		println(" ParseMultipart Error  ", errs.Error())
+	}
 	mr, err := c.Request.MultipartReader()
 	if err != nil {
 		println(" Multipart Reader Error : ", err.Error())
@@ -71,7 +73,10 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		return
 	}
 	var titleImage = []byte{}
+	var titleImageHeader textproto.MIMEHeader
 	subTitleImages := map[int][]byte{}
+	subTitleImagesHeaders := map[int]textproto.MIMEHeader{}
+
 	var titleImageName string
 
 	var titleImageFile *os.File
@@ -95,7 +100,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		if part.FormName() == "title" && pfileHeader != nil {
 			// This is the files is the image for the articles main image.
 			// the part is also the file.
-			if titleImage != nil {
+			if titleImage != nil && len(titleImage) > 0 {
 				eres.Error = fmt.Sprintf(` duplicate title image '%s' `, pfileHeader.GetFileName())
 				c.JSON(http.StatusUnsupportedMediaType, eres)
 				return
@@ -105,6 +110,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			if helper.IsImage(pfileHeader.GetFileName()) {
 				// This file is not an image.
 				count, er := part.Read(titleImage)
+				titleImageHeader = part.Header
 				if er != nil || count == 0 {
 					etyp := "invalid "
 					if count == 0 {
@@ -136,7 +142,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			// check whether the file exist in the files list or not.
 			// if so , Jump the request with bad request message.
 			vals := subTitleImages[val]
-			if vals != nil {
+			if vals != nil && len(vals) > 0 {
 				// There was a file with this sub article index. therefore,
 				// we can not add this part file to the list of article's image.
 				eres.Error = " duplicate image for single sub article is not allowed "
@@ -155,6 +161,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 				c.JSON(http.StatusUnsupportedMediaType, eres)
 				return
 			}
+			subTitleImagesHeaders[val] = part.Header
 
 		} else if part.FormName() == "data" {
 			// This is the JSON data that we are supposed to unmarshal the title details from.
@@ -221,9 +228,9 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 	}
 
 	// create a file for the articles to save.
-	if titleImage != nil {
+	if titleImage != nil && len(titleImage) > 0 {
 		var error_title_image error
-		ptitlefheader := model.NewPartFileHeader(titleImage.Header)
+		ptitlefheader := model.NewPartFileHeader(titleImageHeader)
 		titleImageName = state.ARTICLE_IMAGES_RELATIVE_PATH + helper.GenerateRandomString(7, helper.CHARACTERS) + "." + helper.GetExtension(ptitlefheader.GetFileName())
 		titleImageFile, error_title_image = os.Create(os.Getenv("ASSETS_DIRECTORY") + titleImageName)
 		if error_title_image != nil {
@@ -247,7 +254,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 				continue
 			}
 			part := subTitleImages[(index + 1)]
-			psubarticlefileHeader := model.NewPartFileHeader(part.Header)
+			psubarticlefileHeader := model.NewPartFileHeader(subTitleImagesHeaders[index+1])
 			filename :=
 				state.SUBARTICLE_IMAGES_RELATIVE_PATH +
 					helper.GenerateRandomString(6, helper.CHARACTERS) +
@@ -280,11 +287,11 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 	}
 
 	// Copying the article main image file to the file opened.
-	_, era := io.Copy(titleImageFile, titleImage)
+	_, era := io.Copy(titleImageFile, bytes.NewBuffer(titleImage))
 	if era == nil {
 		for index, sub := range articleInput.Subarticles {
 			if sub.SubImage != "" {
-				_, er := io.Copy(subArticleImages[(index+1)], subTitleImages[(index+1)])
+				_, er := io.Copy(subArticleImages[(index+1)], bytes.NewBuffer(subTitleImages[(index+1)]))
 				if er != nil {
 					println("  ERROR : while saving sub title image  ", er.Error())
 					// Internal Server Error there fore delete the article .

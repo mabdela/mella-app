@@ -50,5 +50,5 @@ const (
 	// ARTICLE_IMAGES_RELATIVE_PATH  relative path to courses.
 	ARTICLE_IMAGES_RELATIVE_PATH    = "images/articles/"
 	SUBARTICLE_IMAGES_RELATIVE_PATH = "images/articles/subarticles/"
-	ARTICLES_FILE_SIZE              = 9999999999999999
+	ARTICLES_FILE_SIZE              = 999999999999999999
 )
