@@ -8,6 +8,7 @@ import (
 
 	"github.com/mabdela/mella-backend/pkg/admin"
 	"github.com/mabdela/mella-backend/pkg/article"
+	"github.com/mabdela/mella-backend/pkg/comment"
 	"github.com/mabdela/mella-backend/pkg/course"
 	"github.com/mabdela/mella-backend/pkg/http/rest"
 	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
@@ -16,6 +17,9 @@ import (
 	"github.com/mabdela/mella-backend/pkg/user"
 	"github.com/subosito/gotenv"
 	"go.mongodb.org/mongo-driver/mongo"
+	"golang.org/x/oauth2"
+	"golang.org/x/oauth2/facebook"
+	"golang.org/x/oauth2/google"
 )
 
 func init() {
@@ -26,7 +30,11 @@ var once sync.Once
 var conn *mongo.Database
 var connError error
 
-var templates *template.Template
+var (
+	templates          *template.Template
+	GoogleAuthConfig   *oauth2.Config
+	FacebookAuthConfig *oauth2.Config
+)
 
 func main() {
 	once.Do(func() {
@@ -39,7 +47,22 @@ func main() {
 		log.Println("DB Connected ...")
 	})
 
-	authenticator := auth.NewAuthenticator()
+	GoogleAuthConfig = &oauth2.Config{
+		RedirectURL:  "http://localhost:8080/auth/google/callback/",
+		ClientID:     os.Getenv("GOOGLE_CLIENT_ID"),
+		ClientSecret: os.Getenv("GOOGLE_CLIENT_SECRET"),
+		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
+		Endpoint:     google.Endpoint,
+	}
+	FacebookAuthConfig = &oauth2.Config{
+		RedirectURL:  "http://localhost:8080/facebook/callback",
+		ClientID:     os.Getenv("FACEBOOK_CLIENT_ID"),
+		ClientSecret: os.Getenv("FACEBOOK_CLIENT_SECRET"),
+		Scopes:       []string{"public_profile", "email"},
+		Endpoint:     facebook.Endpoint,
+	}
+
+	authenticator := auth.NewAuthenticator(GoogleAuthConfig, FacebookAuthConfig)
 	rules := middleware.NewRules(authenticator)
 
 	adminrepo := mongodb.NewAdminRepo(conn)
@@ -54,9 +77,14 @@ func main() {
 	courseser := course.NewCourseService(courserepo)
 	coursehandler := rest.NewCourseHandler(courseser, authenticator)
 
+	commentrepo := mongodb.NewCommentRepo(conn)
+	commentservice := comment.NewCommentService(commentrepo)
+	commenthandler := rest.NewCommentHandler(authenticator, commentservice)
+
 	articlerepo := mongodb.NewArticleRepo(conn)
 	articleservice := article.NewArticleService(articlerepo)
 	articlehandler := rest.NewArticleHandler(articleservice, authenticator)
+	oauthhandler := rest.NewOAuthHandler(userhandler, adminhandler, GoogleAuthConfig, FacebookAuthConfig)
 
-	rest.Route(rules, adminhandler, userhandler, coursehandler, articlehandler).Run(":8080")
+	rest.Route(rules, authenticator, oauthhandler, adminhandler, userhandler, coursehandler, articlehandler, commenthandler).Run(":8080")
 }
