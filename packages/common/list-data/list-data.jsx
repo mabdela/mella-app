@@ -39,8 +39,8 @@ const ListData = ({ data, handleEdit, handleDelete }) => {
               fontWeight: '600',
             }}
           >
-            {data.firstname.charAt(0).toUpperCase() + data.firstname.slice(1)}{' '}
-            {data.lastname.charAt(0).toUpperCase() + data.lastname.slice(1)}{' '}
+            {data.first_name.charAt(0).toUpperCase() + data.first_name.slice(1)}{' '}
+            {data.last_name.charAt(0).toUpperCase() + data.last_name.slice(1)}{' '}
           </Box>
           <span>
             <i
@@ -54,7 +54,7 @@ const ListData = ({ data, handleEdit, handleDelete }) => {
             <i
               onClick={() =>
                 handleDelete &&
-                handleDelete(data._id, data.firstname, data.lastname)
+                handleDelete(data._id, data.first_name, data.last_name)
               }
               className="far fa-trash-alt"
               style={{

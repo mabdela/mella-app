@@ -24,10 +24,12 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	chirouter := chi.NewRouter()
 	router.Use(cors.New(cors.Config{
 		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
-		// AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
-		AllowHeaders:     []string{"Content-type", "*"},
+		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
+		AllowHeaders:     []string{"Content-type", "Authorization"},
+		ExposeHeaders:    []string{"Authorization"},
 		AllowCredentials: true,
-		AllowAllOrigins:  true,
+		// AllowAllOrigins:  true,
+		
 	}))
 	// Initializing google sign in parameters.
 	router.GET("/logout", rules.Logout)

@@ -51,6 +51,26 @@ const NavDrawer = () => {
           </NavLink>
         ))}
       </List>
+
+      <Divider />
+      <Typography variant="h6" sx={{ color: '#000', p: '15px', m: 0 }}>
+        Courses
+      </Typography>
+      <Divider />
+      <List>
+        {navdata.coursesNavOptions.map(admin => (
+          <NavLink
+            className={classes.link}
+            to={`/admin/${admin.link}`}
+            key={admin.primary}
+          >
+            <ListItem button key={admin.primary}>
+              <ListItemIcon>{admin.icon}</ListItemIcon>
+              <ListItemText primary={admin.primary} />
+            </ListItem>
+          </NavLink>
+        ))}
+      </List>
     </Box>
   );
 };

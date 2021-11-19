@@ -30,11 +30,12 @@ func NewRules(auth auth.Authenticator) Rules {
 }
 
 // LoggedIn simple middleware to push value to the context
-func (m rules) Authenticated() gin.HandlerFunc {
+func (m *rules) Authenticated() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		log.Println(" Authenticated ... ")
 		t, err := m.auth.GetSession(c.Request)
 		if err != nil {
+			log.Println("Error message: " ,err.Error())
 			http.Error(c.Writer, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			c.Abort()
 			return
@@ -100,9 +101,10 @@ func (m *rules) HasPermission(path, role, method string) bool {
 // Logout function api Logging out
 // METHOD GET
 // VAriables NONE
-func (m rules) Logout(c *gin.Context) {
-	c.Writer.Header().Set("Content-Type", "application/json")
-	c.Writer.Header().Set("Authorization", "")
+func (m *rules) Logout(c *gin.Context) {
+	// c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+	// c.Writer.Header().Set("Content-Type", "application/json")
+	// c.Writer.Header().Set("Authorization", "")
 	c.Writer.WriteHeader(http.StatusOK)
 	c.Writer.Write(helper.MarshalThis(model.LoginResponse{Success: true}))
 }
