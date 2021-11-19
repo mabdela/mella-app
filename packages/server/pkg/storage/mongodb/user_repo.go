@@ -3,6 +3,7 @@ package mongodb
 import (
 	"context"
 	"errors"
+	"fmt"
 	"log"
 
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
@@ -166,4 +167,30 @@ func (repo *UserRepo) UserByEmail(ctx context.Context) (*model.User, error) {
 	} else {
 		return nil, erro
 	}
+}
+func (repo *UserRepo) AllUsers(ctx context.Context) ([]*model.User, error) {
+	
+	fmt.Println("inside all users repo")
+	
+	userList := []*model.User{}
+	collection := repo.Conn.Collection(state.USERS)
+
+	cursor, err := collection.Find(ctx, bson.M{})
+	if err != nil {
+		return nil, err
+	}
+	defer cursor.Close(ctx)
+
+	for cursor.Next(ctx) {
+		mUser := &mongo_models.MUser{}
+		err = cursor.Decode(mUser)
+		if err != nil {
+			return nil, err
+		}
+		user := mUser.GetUser()
+		userList = append(userList, user)
+	}
+	fmt.Println("userList ", userList)
+	cursor.Close(ctx)
+	return userList, nil
 }

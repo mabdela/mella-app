@@ -41,6 +41,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount)
+	router.GET("/api/admin/allusers",rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -49,6 +50,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/user/password/forgot", rules.Authenticated(), userhandler.ForgotPassword)
 	router.POST("/api/user/new", userhandler.CreateUser)
 	router.PUT("/api/user", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
+	
 
 	router.POST("/api/superadmin/course/new", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)

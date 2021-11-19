@@ -683,3 +683,26 @@ func (userhandler *UserHandler) GoogleUserSignupCallBack(writer http.ResponseWri
 	writer.WriteHeader(http.StatusBadRequest)
 	writer.Write(helper.MarshalThis(resp))
 }
+func (handler *UserHandler) AllUsers(c *gin.Context) {
+	res := model.AllUsersReponse{}
+	res.Success = false
+	ctx := c.Request.Context()
+	session := c.Request.Context().Value("session").(*model.Session)
+	if session == nil  {
+		res.Message = "not authorized"
+		c.JSON(http.StatusUnauthorized, res)
+		return
+	}
+
+	users, err := handler.Service.AllUsers(ctx)
+	if users == nil || err != nil {
+		res.Message = "Internal SErver Error"
+		res.UserList = nil
+		c.JSON(http.StatusInternalServerError, res)
+		return
+	}
+	res.Message = "successfully loaded all users"
+	res.Success = true
+	res.UserList = users
+	c.JSON(http.StatusOK, res)
+}

@@ -27,6 +27,8 @@ type IUserService interface {
 	// This session instance is instantiated at the time of authentication.
 	// thre for you don't have to intialize it at the handler function.
 	DeleteProfilePicture(ctx context.Context) bool
+	//to list all users on admin side
+	AllUsers(ctx context.Context) ([]*model.User, error)
 }
 
 type UserService struct {
@@ -73,4 +75,7 @@ func (userser *UserService) ChangeImageUrl(ctx context.Context) bool {
 // DeleteProfilePicture(ctx context.Context) error
 func (userser *UserService) DeleteProfilePicture(ctx context.Context) bool {
 	return userser.Repo.DeleteProfilePicture(ctx) == nil
+}
+func (userSer *UserService)AllUsers(ctx context.Context) ([]*model.User, error){
+	return userSer.Repo.AllUsers(ctx)
 }
