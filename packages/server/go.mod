@@ -1,6 +1,6 @@
 module github.com/mabdela/mella-backend
 
-go 1.13
+go 1.16
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -13,6 +13,7 @@ require (
 	github.com/subosito/gotenv v1.2.0
 	go.mongodb.org/mongo-driver v1.7.4
 	golang.org/x/crypto v0.0.0-20211108221036-ceb1ce70b4fa
+	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
 	gopkg.in/alexcesaro/quotedprintable.v3 v3.0.0-20150716171945-2caba252f4dc // indirect
 	gopkg.in/mail.v2 v2.3.1
 )

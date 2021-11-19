@@ -20,6 +20,8 @@ type ICourseService interface {
 	GetCourseImageByID(ctx context.Context) (string, error)
 	//to remove course from the list of courses
 	RemoveCourse(ctx context.Context) (bool, error)
+	// GetAllCourses   users "ctx" context.Context instance only to return all the courses in the server.
+	GetAllCourses(ctx context.Context) ([]*model.Course, error)
 }
 
 type CourseService struct {
@@ -52,4 +54,7 @@ func (cser *CourseService) GetCourseImageByID(ctx context.Context) (string, erro
 }
 func (cser *CourseService) RemoveCourse(ctx context.Context) (bool, error) {
 	return cser.Repo.RemoveCourse(ctx)
+}
+func (cser *CourseService) GetAllCourses(ctx context.Context) ([]*model.Course, error) {
+	return cser.Repo.GetAllCourses(ctx)
 }
