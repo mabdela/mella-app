@@ -8,7 +8,7 @@ import (
 	"net/smtp"
 	"os"
 
-	"github.com/mabdela/mella-backend/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
 	gomail "gopkg.in/mail.v2"
 )
 

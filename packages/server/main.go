@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 )
 
 func main() {

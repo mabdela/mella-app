@@ -3,7 +3,7 @@ package comment
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 type ICommentService interface {
