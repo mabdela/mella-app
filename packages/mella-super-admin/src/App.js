@@ -10,6 +10,8 @@ import Navigation from './component/navigation/navigation';
 import AdminAdd from './pages/admin-page/admin-add/admin-add';
 import AdminList from './pages/admin-page/admin-list/admin-list';
 import AdminSearch from './pages/admin-page/admin-search/admin-search';
+import CourseAdd from './pages/course/course-add/course-add';
+import CourseList from './pages/course/course-list/course-list';
 import SignIn from './pages/sign-in/sign-in';
 
 function App() {
@@ -37,6 +39,11 @@ function App() {
             />
             <Route
               exact
+              path="/admin/add-course"
+              component={() => (!user ? <Redirect to="/" /> : <CourseAdd />)}
+            />
+            <Route
+              exact
               path="/admin/search"
               component={() => (!user ? <Redirect to="/" /> : <AdminSearch />)}
             />
@@ -44,6 +51,11 @@ function App() {
               exact
               path="/admin/admin-list"
               component={() => (!user ? <Redirect to="/" /> : <AdminList />)}
+            />
+            <Route
+              exact
+              path="/admin/course-list"
+              component={() => (!user ? <Redirect to="/" /> : <CourseList />)}
             />
           </Switch>
         </Box>

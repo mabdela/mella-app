@@ -1,4 +1,3 @@
-// import { datas } from '../../components/data/data';
 import { userTypes } from './user-types';
 
 const initialState = {
@@ -27,12 +26,12 @@ export const authReducer = (state = initialState, action) => {
       return {
         ...state,
         isAuthenticated: false,
-        user: action.payload,
       };
     case userTypes.LOGOUT_USER:
       return {
         ...state,
         isAuthenticated: false,
+        token: null,
         user: {},
       };
 

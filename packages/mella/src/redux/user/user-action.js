@@ -1,8 +1,7 @@
 import { userTypes } from './user-types';
 
-export const registerUser = userData => ({
+export const registerUser = () => ({
   type: userTypes.REGISTER_USER,
-  payload: userData,
 });
 
 export const loginUser = userData => ({

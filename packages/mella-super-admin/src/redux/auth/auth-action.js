@@ -12,8 +12,8 @@ export const setLoading = () => ({
 export const logoutUser = () => ({
   type: authActionType.LOGOUT_USER,
 });
-// action creators
 
+// action creators
 export const loginUserRequest = form => ({
   type: authActionType.LOGING_USER,
   payload: form,

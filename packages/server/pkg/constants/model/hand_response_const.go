@@ -2,6 +2,8 @@
 // this model file  holds structs that are to be used by the admin handler.
 package model
 
+import "mime/multipart"
+
 // AdminLoginResponse to be usedby the admin response class
 type AdminLoginResponse struct {
 	Success bool   `json:"success"`
@@ -37,4 +39,10 @@ type CommentRes struct {
 	Success  bool      `success`
 	Message  string    `msg`
 	Comments []Comment //to be changed to commentResponse
+}
+
+type MultipartData struct {
+	File   multipart.File
+	Header *multipart.FileHeader
+	Error  error
 }

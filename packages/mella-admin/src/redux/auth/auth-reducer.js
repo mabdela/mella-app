@@ -20,6 +20,7 @@ export const authReducer = (state = initialState, action) => {
         ...state,
         auth: {},
         isAuthenticated: false,
+        token: null,
         loading: false,
       };
     case authActionType.SET_AUTH_LOADING:
