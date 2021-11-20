@@ -41,7 +41,12 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount)
+	
 	router.GET("/api/admin/allusers",rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
+	router.GET("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersById)
+	router.GET("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersByEmail)
+	router.DELETE("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersById)
+	router.DELETE("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersByEmail)
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -78,8 +83,8 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	// -----------------------Facebook ------------------------------------------
 	chirouter.Get("/auth/facebook/admin/signin", authenticator.FaceBookAdminSignin)
 	chirouter.Get("/auth/facebook/user/signin", authenticator.FaceBookUserSignin)
-	chirouter.Get("/auth/facebook/user/signup", authenticator.FaceBookUserSignUP)
-	chirouter.Get("/facebook/callback", oauthHandler.FacebookHandleCallback)
+	// chirouter.Get("/auth/facebook/user/signup", authenticator.FaceBookUserSignUP)
+	// chirouter.Get("/facebook/callback", oauthHandler.FacebookHandleCallback)
 	// -----------------------------------------------------------------------------
 
 	router.GET("/auth/*path", func(c *gin.Context) {

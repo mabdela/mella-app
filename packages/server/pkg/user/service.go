@@ -29,6 +29,14 @@ type IUserService interface {
 	DeleteProfilePicture(ctx context.Context) bool
 	//to list all users on admin side
 	AllUsers(ctx context.Context) ([]*model.User, error)
+	//to get user by Id
+	GetUsersById(ctx context.Context) (*model.User, error) //---------
+	//to get user by email
+	GetUsersByEmail(ctx context.Context) (*model.User, error) //--------
+	//to delete user by Id
+	DeleteUserById(ctx context.Context) (bool, error) //-----------
+	//to delete user by email
+	DeleteUserByEmail(ctx context.Context) (bool, error) //--------
 }
 
 type UserService struct {
@@ -78,4 +86,19 @@ func (userser *UserService) DeleteProfilePicture(ctx context.Context) bool {
 }
 func (userSer *UserService)AllUsers(ctx context.Context) ([]*model.User, error){
 	return userSer.Repo.AllUsers(ctx)
+}
+func (userser *UserService) GetUsersById(ctx context.Context) (*model.User, error) {
+	return userser.Repo.GetUsersById(ctx) //----------
+}
+
+func (userser *UserService) GetUsersByEmail(ctx context.Context) (*model.User, error) {
+	return userser.Repo.GetUsersByEmail(ctx) //----------
+}
+
+func (userser *UserService) DeleteUserById(ctx context.Context) (bool, error){
+	return userser.Repo.DeleteUserById(ctx) //----------
+}
+
+func (userser *UserService) DeleteUserByEmail(ctx context.Context) (bool, error) {
+	return userser.Repo.DeleteUserByEmail(ctx) //----------
 }

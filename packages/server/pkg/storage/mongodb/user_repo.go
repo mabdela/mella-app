@@ -194,3 +194,58 @@ func (repo *UserRepo) AllUsers(ctx context.Context) ([]*model.User, error) {
 	cursor.Close(ctx)
 	return userList, nil
 }
+//new
+
+func (repo *UserRepo) GetUsersById(ctx context.Context) (*model.User, error) {
+	user_id := ctx.Value("user_id").(string)
+	Muser := &mongo_models.MUser{}
+	Puser_id, err := primitive.ObjectIDFromHex(user_id)
+	if err != nil {
+		return nil, err
+	}
+	filter := bson.M{"_id": Puser_id}
+	collection := repo.Conn.Collection(state.USERS)
+	err = collection.FindOne(ctx, filter).Decode(Muser)
+	if err != nil {
+		return nil, err
+	}
+	user := Muser.GetUser()
+	return user, nil
+}
+func (repo *UserRepo) GetUsersByEmail(ctx context.Context) (*model.User, error) {
+	user_email := ctx.Value("email").(string)
+	Muser := &mongo_models.MUser{}
+	filter := bson.M{"email": user_email}
+	collection := repo.Conn.Collection(state.USERS)
+	err := collection.FindOne(ctx, filter).Decode(Muser)
+	if err != nil {
+		return nil, err
+	}
+	user := Muser.GetUser()
+	fmt.Println(user)
+	return user, nil
+}
+func (repo *UserRepo) DeleteUserById(ctx context.Context) (bool, error) {
+	user_id := ctx.Value("user_id").(string)
+	Puser_id, err := primitive.ObjectIDFromHex(user_id)
+	if err != nil {
+		return false, err
+	}
+	filter := bson.M{"_id": Puser_id}
+	collection := repo.Conn.Collection(state.USERS)
+	_, err = collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+func (repo *UserRepo) DeleteUserByEmail(ctx context.Context) (bool, error) {
+	user_email := ctx.Value("email").(string)
+	filter := bson.M{"email": user_email}
+	collection := repo.Conn.Collection(state.USERS)
+	_, err := collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
