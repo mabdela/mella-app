@@ -34,6 +34,10 @@ type IUserHandler interface {
 	Logout(c *gin.Context)
 	UpdateUser(c *gin.Context)
 	AllUsers(c *gin.Context)
+	GetUsersById(c *gin.Context)
+	GetUsersByEmail(c *gin.Context)
+	DeleteUsersById(c *gin.Context)
+	DeleteUsersByEmail(c *gin.Context)
 }
 
 type UserHandler struct {
@@ -556,7 +560,7 @@ func (handler *UserHandler) AllUsers(c *gin.Context) {
 	res.Success = false
 	ctx := c.Request.Context()
 	session := c.Request.Context().Value("session").(*model.Session)
-	if session == nil  {
+	if session == nil {
 		res.Message = "not authorized"
 		c.JSON(http.StatusUnauthorized, res)
 		return
@@ -573,4 +577,133 @@ func (handler *UserHandler) AllUsers(c *gin.Context) {
 	res.Success = true
 	res.UserList = users
 	c.JSON(http.StatusOK, res)
+}
+
+
+//new api's
+func (handler *UserHandler) GetUsersById(c *gin.Context) {
+	userId := c.Param("user_id")
+	ctx := c.Request.Context()
+	// session:=ctx.Value("session").(*model.Session)
+	res := model.UserResponse{}
+	res.Success = false
+	res.User = nil
+	if userId == "" {
+		res.Message = "the request should contain user Id"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role!=state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx = context.WithValue(ctx, "user_id", userId)
+	user, err := handler.Service.UserByID(ctx)
+	if err != nil || user == nil {
+		if strings.Contains(err.Error(), "no documet") {
+			res.Message = "user not found"
+			c.JSON(http.StatusNotFound, res)
+			return
+		} else {
+			res.Message = "Internal server error"
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+	}
+	res.Message = "successfully loaded a user"
+	res.Success = true
+	res.User = user
+	c.JSON(http.StatusOK, res)
+
+}
+func (handler *UserHandler) GetUsersByEmail(c *gin.Context) {
+	email := c.Param("email")
+	ctx := c.Request.Context()
+	// session:=ctx.Value("session").(*model.Session)
+	res := model.UserResponse{}
+	res.Success = false
+	res.User = nil
+	if email == "" {
+		res.Message = "the request should contain user Id"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role!=state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx = context.WithValue(ctx, "email", email)
+	user, err := handler.Service.GetUsersByEmail(ctx)
+
+	if err != nil || user == nil {
+		if strings.Contains(err.Error(), "no documet") {
+			res.Message = "user not found"
+			c.JSON(http.StatusNotFound, res)
+			return
+		} else {
+			res.Message = "Internal server error"
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+	}
+	res.Message = "successfully loaded a user"
+	res.Success = true
+	res.User = user
+	c.JSON(http.StatusOK, res)
+}
+func (handler *UserHandler) DeleteUsersById(c *gin.Context) {
+	userId:=c.Param("user_id")
+	res:= model.SimpleSuccessNotifier{}
+	ctx:=c.Request.Context()
+	// session:=ctx.Value("session").(model.Session)
+	res.Success=false
+	if userId ==""{
+		res.Message="Bad request"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role==state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx=context.WithValue(ctx,"user_id",userId)
+	success , err := handler.Service.DeleteUserById(ctx)
+	if !success || err!=nil{
+		res.Message ="Internal server error"
+		c.JSON(http.StatusInternalServerError , res)
+		return
+	}
+	res.Message="successfully deleted a user"
+	res.Success=true
+	c.JSON(http.StatusOK,res)
+}
+func (handler *UserHandler) DeleteUsersByEmail(c *gin.Context) {
+	email:=c.Param("email")
+	res:= model.SimpleSuccessNotifier{}
+	ctx:=c.Request.Context()
+	// session:=ctx.Value("session").(model.Session)
+	res.Success=false
+	if email ==""{
+		res.Message="Bad request"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role==state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx=context.WithValue(ctx,"email",email)
+	success , err := handler.Service.DeleteUserByEmail(ctx)
+	if !success || err!=nil{
+		res.Message ="Internal server error"
+		c.JSON(http.StatusInternalServerError , res)
+		return
+	}
+	res.Message="successfully deleted a user"
+	res.Success=true
+	c.JSON(http.StatusOK,res)
 }

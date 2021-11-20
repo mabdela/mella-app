@@ -49,3 +49,10 @@ type AllUsersReponse struct {
 	Message  string  `json:"msg"`
 	UserList []*User `json:"user"`
 }
+
+//new
+type UserResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"msg"`
+	User    *User
+}

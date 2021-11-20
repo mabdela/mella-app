@@ -33,6 +33,11 @@ func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUser
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount) // using email
 	router.GET("/api/admin/allusers",rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
+	
+	router.GET("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersById)
+	router.GET("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersByEmail)
+	router.DELETE("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersById)
+	router.DELETE("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersByEmail)
 	// New Tested
 	router.GET("/api/admins", adminhandler.GetAllAdmins) //sent
 	// Users Route here
