@@ -392,7 +392,7 @@ func (ahandler *ArticleHandler) GetArticleByID(c *gin.Context) {
 // Inputs "id" for article ID and "image" a multipart file for the image.
 func (ahandler *ArticleHandler) ChangeArticleImage(c *gin.Context) {
 	ctx := c.Request.Context()
-	articleID := c.Query("id")
+	articleID := c.Request.FormValue("id")
 	eres := &struct {
 		Error string `json:"error"`
 	}{" missing an article parameter query value 'id' "}
