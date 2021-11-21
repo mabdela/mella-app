@@ -38,3 +38,13 @@ type CommentRes struct {
 	Message  string    `msg`
 	Comments []Comment //to be changed to commentResponse
 }
+type AllUsersReponse struct {
+	Success  bool    `json:"success"`
+	Message  string  `json:"msg"`
+	UserList []*User `json:"user"`
+}
+type UserResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"msg"`
+	User    *User
+}

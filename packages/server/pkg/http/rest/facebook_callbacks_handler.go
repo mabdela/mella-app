@@ -7,10 +7,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/pkg/constants/state"
-	"github.com/mabdela/mella-backend/platforms/helper"
-	"github.com/mabdela/mella-backend/platforms/mail"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
+	"github.com/mabdela/mella-app/packages/server/platforms/mail"
 )
 
 // FacebookAdminLogin ...

@@ -11,10 +11,10 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/gorilla/sessions"
 	"github.com/julienschmidt/httprouter"
-	_ "github.com/mabdela/mella-backend/api"
-	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	_ "github.com/mabdela/mella-app/packages/server/api"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
 
-	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/middleware"
 )
 
 // Route returns an http handler for the api.
@@ -41,6 +41,12 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount)
+	
+	router.GET("/api/admin/allusers",rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
+	router.GET("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersById)
+	router.GET("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersByEmail)
+	router.DELETE("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersById)
+	router.DELETE("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersByEmail)
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -49,6 +55,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/user/password/forgot", rules.Authenticated(), userhandler.ForgotPassword)
 	router.POST("/api/user/new", userhandler.CreateUser)
 	router.PUT("/api/user", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
+	
 
 	router.POST("/api/superadmin/course/new", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
@@ -76,8 +83,8 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	// -----------------------Facebook ------------------------------------------
 	chirouter.Get("/auth/facebook/admin/signin", authenticator.FaceBookAdminSignin)
 	chirouter.Get("/auth/facebook/user/signin", authenticator.FaceBookUserSignin)
-	chirouter.Get("/auth/facebook/user/signup", authenticator.FaceBookUserSignUP)
-	chirouter.Get("/facebook/callback", oauthHandler.FacebookHandleCallback)
+	// chirouter.Get("/auth/facebook/user/signup", authenticator.FaceBookUserSignUP)
+	// chirouter.Get("/facebook/callback", oauthHandler.FacebookHandleCallback)
 	// -----------------------------------------------------------------------------
 
 	router.GET("/auth/*path", func(c *gin.Context) {

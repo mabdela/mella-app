@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/mabdela/mella-backend/pkg/comment"
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/pkg/constants/model/mongo_models"
+	"github.com/mabdela/mella-app/packages/server/pkg/comment"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model/mongo_models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"

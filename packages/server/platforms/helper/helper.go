@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mabdela/mella-backend/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
 )
 
 var seededRand *rand.Rand = rand.New(
