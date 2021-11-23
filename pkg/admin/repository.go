@@ -11,6 +11,9 @@ type IAdminRepo interface {
 	AdminByEmail(ctx context.Context) (*model.Admin, error)
 	ChangePassword(ctx context.Context) bool
 	DeleteAccountByEmail(context.Context) error
+	//-----------
+	DeleteAccountById(context.Context) (bool , error)
+	//-----------
 	CreateAdmin(ctx context.Context) (*model.Admin, error)
 	AdminByID(ctx context.Context) (*model.Admin, error)
 	UpdateAdmin(ctx context.Context) (*model.Admin, error)
