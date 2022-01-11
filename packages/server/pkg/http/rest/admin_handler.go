@@ -329,10 +329,11 @@ func (adminhr *AdminHandler) CreateAdmin(c *gin.Context) {
 				return
 			}
 			admin := &model.Admin{
-				Firstname: input.Firstname,
-				Lastname:  input.Lastname,
-				Email:     input.Email, //
-				Password:  hash,
+				Firstname:  input.Firstname,
+				Lastname:   input.Lastname,
+				Email:      input.Email, //
+				Superadmin: input.Superadmin,
+				Password:   hash,
 			}
 
 			// Send Email for the password if this doesn't work raise internal server error.

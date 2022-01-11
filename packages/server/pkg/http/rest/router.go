@@ -23,13 +23,13 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 
 	chirouter := chi.NewRouter()
 	router.Use(cors.New(cors.Config{
-		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
+		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
 		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
 		AllowHeaders:     []string{"Content-type", "Authorization"},
 		ExposeHeaders:    []string{"Authorization"},
 		AllowCredentials: true,
 		// AllowAllOrigins:  true,
-		
+
 	}))
 	// Initializing google sign in parameters.
 	router.GET("/logout", rules.Logout)
@@ -97,9 +97,13 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 		chirouter.ServeHTTP(c.Writer, c.Request)
 	})
 
-	router.POST("/api/admin/article/new/", articlehandler.CreateArticle)
-	// -------------------------------------------------------------
-	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
+	// ----------------------------------------------------------------
+	router.POST("/api/admin/article/new", rules.Authenticated(), rules.Authorized(), articlehandler.CreateArticle)
+	router.PUT("/api/admin/article", rules.Authenticated(), rules.Authorized(), articlehandler.UpdateArticle)
+	router.GET("/api/admin/article", rules.Authenticated(), articlehandler.GetArticleByID)
+	router.POST("/api/admin/article/image/new", rules.Authenticated(), articlehandler.ChangeArticleImage)
+	// ----------------------------------------------------------------
+	router.RouterGroup.Use(FilterDirectory())
 	{
 		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
 	}
