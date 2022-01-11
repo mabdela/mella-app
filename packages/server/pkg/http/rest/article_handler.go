@@ -12,11 +12,11 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mabdela/mella-backend/pkg/article"
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/pkg/constants/state"
-	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
-	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-app/packages/server/pkg/article"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 )
 
 type IArticleHandler interface {

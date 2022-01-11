@@ -4,11 +4,11 @@ package main
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/pkg/constants/model/mongo_models"
-	"github.com/mabdela/mella-backend/pkg/constants/state"
-	"github.com/mabdela/mella-backend/pkg/storage/mongodb"
-	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model/mongo_models"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/pkg/storage/mongodb"
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 	"github.com/subosito/gotenv"
 )
 

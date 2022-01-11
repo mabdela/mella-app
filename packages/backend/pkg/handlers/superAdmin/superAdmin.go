@@ -117,11 +117,8 @@ func AllAdmins(c *gin.Context) {
 
 	cursor, err := collection.Find(ctx, bson.M{})
 	if err != nil {
-		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
-			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
-		}
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
 		return
 	}
 	defer cursor.Close(ctx)
@@ -149,11 +146,7 @@ func GetAdminByEmail(c *gin.Context) {
 	err := collection.FindOne(ctx, filter).Decode(&admins)
 	if err != nil {
 		log.Println(err.Error())
-		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
-			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
-		}
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
 		return
 	}
 	
@@ -171,11 +164,9 @@ func GetAdminByName(c *gin.Context) {
 	cursor, err := collection.Find(ctx, filter)
 	fmt.Println("Cursor: ", cursor)
 	if err != nil {
-		if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
-			c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
-		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
-		}
+		log.Println(err.Error())
+		c.JSON(http.StatusInternalServerError, gin.H{"msg": "No acount found"})
+		c.Abort()
 		return
 	}
 	defer cursor.Close(ctx)
@@ -188,11 +179,9 @@ func GetAdminByName(c *gin.Context) {
 		log.Println("Looping through cursor")
 		err := cursor.Decode(&admins)
 		if err != nil {
-			if strings.Contains(err.Error(), "no documents") { //if the error is related with document not found
-				c.JSON(http.StatusNotFound, gin.H{"msg": "Not found"})
-			} else {
-				c.JSON(http.StatusInternalServerError, gin.H{"msg": "server error"})
-			}
+			log.Println(err.Error())
+			c.JSON(http.StatusInternalServerError, gin.H{"msg": "Not found"})
+			c.Abort()
 			return
 		}
 		admins.Password = ""

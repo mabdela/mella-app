@@ -3,7 +3,7 @@ package admin
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 type IAdminRepo interface {
@@ -11,6 +11,7 @@ type IAdminRepo interface {
 	AdminByEmail(ctx context.Context) (*model.Admin, error)
 	ChangePassword(ctx context.Context) bool
 	DeleteAccountByEmail(context.Context) error
+	DeleteAccountById(context.Context) (bool , error)
 	CreateAdmin(ctx context.Context) (*model.Admin, error)
 	AdminByID(ctx context.Context) (*model.Admin, error)
 	UpdateAdmin(ctx context.Context) (*model.Admin, error)

@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 // IUserRepo interface represernts the methods that a user repo struct shoulkd implements
@@ -23,4 +23,14 @@ type IUserRepo interface {
 	// DeleteProfilePicture(ctx context.Context) error  uses the session in the context to get the user ID and profile
 	// and delete the profile picture.
 	DeleteProfilePicture(ctx context.Context) error
+	//list of all users
+	AllUsers(ctx context.Context) ([]*model.User, error) //------
+	//to get user by Id
+	GetUsersById(ctx context.Context) (*model.User, error) //---------
+	//to get user by email
+	GetUsersByEmail(ctx context.Context) (*model.User, error) //--------
+	//to delete user by Id
+	DeleteUserById(ctx context.Context) (bool, error) //-----------
+	//to delete user by email
+	DeleteUserByEmail(ctx context.Context) (bool, error) //---------
 }

@@ -2,7 +2,7 @@ package rest
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mabdela/mella-backend/pkg/quiz"
+	"github.com/mabdela/mella-app/packages/server/pkg/quiz"
 )
 
 type IQuizHandler interface {

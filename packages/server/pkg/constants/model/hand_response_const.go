@@ -46,3 +46,21 @@ type MultipartData struct {
 	Header *multipart.FileHeader
 	Error  error
 }
+
+type AllUsersReponse struct {
+	Success  bool    `json:"success"`
+	Message  string  `json:"msg"`
+	UserList []*User `json:"user"`
+}
+
+type UserResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"msg"`
+	User    *User
+}
+
+type AdminResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"msg"`
+	Admin    *Admin
+}

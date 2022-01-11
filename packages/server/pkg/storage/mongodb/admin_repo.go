@@ -5,11 +5,11 @@ import (
 	"errors"
 	"log"
 
-	"github.com/mabdela/mella-backend/pkg/admin"
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/pkg/constants/model/mongo_models"
-	"github.com/mabdela/mella-backend/pkg/constants/state"
-	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-app/packages/server/pkg/admin"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model/mongo_models"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
@@ -192,4 +192,18 @@ func (repo *AdminRepo) GetAllAdmins(ctx context.Context) ([]*model.Admin, error)
 		}
 		return admins, nil
 	}
+}
+func (repo *AdminRepo) DeleteAccountById(ctx context.Context) (bool,error){
+	admin_id := ctx.Value("admin_id").(string)
+	Padmin_id, err := primitive.ObjectIDFromHex(admin_id)
+	if err != nil {
+		return false, err
+	}
+	filter := bson.M{"_id": Padmin_id}
+	collection := repo.Conn.Collection(state.ADMINS)
+	_, err = collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }

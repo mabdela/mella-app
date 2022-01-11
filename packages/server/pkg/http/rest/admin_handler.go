@@ -12,14 +12,14 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mabdela/mella-backend/pkg/admin"
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/pkg/constants/state"
-	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
-	"github.com/mabdela/mella-backend/platforms/form"
-	"github.com/mabdela/mella-backend/platforms/hash"
-	"github.com/mabdela/mella-backend/platforms/helper"
-	"github.com/mabdela/mella-backend/platforms/mail"
+	"github.com/mabdela/mella-app/packages/server/pkg/admin"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
+	"github.com/mabdela/mella-app/packages/server/platforms/form"
+	"github.com/mabdela/mella-app/packages/server/platforms/hash"
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
+	"github.com/mabdela/mella-app/packages/server/platforms/mail"
 )
 
 // IAdminHandler interface
@@ -36,6 +36,11 @@ type IAdminHandler interface {
 	GetAllAdmins(c *gin.Context)
 	GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
 	FacebookAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.FacebookUser)
+
+	GetAdminById(c *gin.Context)
+	GetAdminByEmail(c *gin.Context)
+	DeleteAdminById(c *gin.Context)
+	DeleteAdminByEmail(c *gin.Context)
 }
 
 // AdminHandler ... |  ...
@@ -647,4 +652,128 @@ func (adminhr *AdminHandler) GoogleAdminLoginCallBack(writer http.ResponseWriter
 		writer.Write(helper.MarshalThis(resp))
 		return
 	}
+}
+func (handler *AdminHandler) GetAdminById(c *gin.Context){
+	adminId := c.Param("admin_id")
+	ctx := c.Request.Context()
+	// session:=ctx.Value("session").(*model.Session)
+	res := model.AdminResponse{}
+	res.Success = false
+	res.Admin = nil
+	if adminId == "" {
+		res.Message = "the request should contain user Id"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role!=state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx = context.WithValue(ctx, "admin_id", adminId)
+	admin, err := handler.AdminSer.AdminByID(ctx)
+	if err != nil || admin == nil {
+		if strings.Contains(err.Error(), "no documet") {
+			res.Message = "user not found"
+			c.JSON(http.StatusNotFound, res)
+			return
+		} else {
+			res.Message = "Internal server error"
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+	}
+	res.Message = "successfully loaded a user"
+	res.Success = true
+	res.Admin = admin
+	c.JSON(http.StatusOK, res)
+}
+func (handler *AdminHandler) GetAdminByEmail(c *gin.Context){
+	email := c.Param("email")
+	ctx := c.Request.Context()
+	// session:=ctx.Value("session").(*model.Session)
+	res := model.AdminResponse{}
+	res.Success = false
+	res.Admin = nil
+	if email == "" {
+		res.Message = "the request should contain user Id"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role!=state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx = context.WithValue(ctx, "email", email)
+	admin, err := handler.AdminSer.AdminByEmail(ctx)
+	if err != nil || admin == nil {
+		if strings.Contains(err.Error(), "no documet") {
+			res.Message = "user not found"
+			c.JSON(http.StatusNotFound, res)
+			return
+		} else {
+			res.Message = "Internal server error"
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+	}
+	res.Message = "successfully loaded a user"
+	res.Success = true
+	res.Admin = admin
+	c.JSON(http.StatusOK, res)
+}
+func (handler *AdminHandler) DeleteAdminById(c *gin.Context){
+	admin_id:=c.Param("admin_id")
+	res:= model.SimpleSuccessNotifier{}
+	ctx:=c.Request.Context()
+	// session:=ctx.Value("session").(model.Session)
+	res.Success=false
+	if admin_id ==""{
+		res.Message="Bad request"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role==state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx=context.WithValue(ctx,"admin_ad",admin_id)
+	success , err:= handler.AdminSer.DeleteAcountById(ctx)
+	if !success ||err!=nil {
+		res.Message ="Internal server error"
+		c.JSON(http.StatusInternalServerError , res)
+		return
+	}
+	res.Message="successfully deleted an admin"
+	res.Success=true
+	c.JSON(http.StatusOK,res)
+}
+func (handler *AdminHandler) DeleteAdminByEmail(c *gin.Context){
+	email:=c.Param("email")
+	res:= model.SimpleSuccessNotifier{}
+	ctx:=c.Request.Context()
+	// session:=ctx.Value("session").(model.Session)
+	res.Success=false
+	if email ==""{
+		res.Message="Bad request"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	// if session.Role==state.SUPERADMIN{
+	// 	res.Message="unauthorized request"
+	// 	c.JSON(http.StatusUnauthorized,res)
+	// 	return
+	// }
+	ctx=context.WithValue(ctx,"email",email)
+	success := handler.AdminSer.DeleteAccountByEmail(ctx)
+	if !success {
+		res.Message ="Internal server error"
+		c.JSON(http.StatusInternalServerError , res)
+		return
+	}
+	res.Message="successfully deleted an admin"
+	res.Success=true
+	c.JSON(http.StatusOK,res)
 }
