@@ -47,6 +47,11 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersByEmail)
 	router.DELETE("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersById)
 	router.DELETE("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersByEmail)
+
+	router.GET("/api/admin/admin_by_id/:admin_id" ,rules.Authenticated(), rules.Authorized(),adminhandler.GetAdminById)
+	router.GET("/api/admin/admin_by_Email/:email" ,rules.Authenticated(), rules.Authorized(),adminhandler.GetAdminByEmail)
+	router.DELETE("/api/admin/admin_by_email/:email" ,rules.Authenticated(), rules.Authorized(),adminhandler.DeleteAdminByEmail)
+	router.DELETE("/api/admin/admin_by_id/:admin_id" ,rules.Authenticated(), rules.Authorized(),adminhandler.DeleteAdminById)
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here

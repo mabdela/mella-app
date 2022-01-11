@@ -48,3 +48,8 @@ type UserResponse struct {
 	Message string `json:"msg"`
 	User    *User
 }
+type AdminResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"msg"`
+	Admin    *Admin
+}
