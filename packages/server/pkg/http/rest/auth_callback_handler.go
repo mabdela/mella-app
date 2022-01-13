@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 	"golang.org/x/oauth2"
 )
 

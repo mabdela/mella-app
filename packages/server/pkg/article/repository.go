@@ -3,7 +3,7 @@ package article
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 type IArticleRepo interface {
@@ -11,6 +11,6 @@ type IArticleRepo interface {
 	DeleteArticleByID(ctx context.Context) error
 	UpdateArticle(ctx context.Context) (*model.Article, error)
 	GetArticleByID(ctx context.Context) (*model.Article, error)
-	GetArticleMainImage(ctx context.Context) (string, error)
+	GetArticleMainImage(ctx context.Context) (*model.ImageWithDescription, error)
 	UpdateArticleMainImageByID(ctx context.Context) (string, error)
 }

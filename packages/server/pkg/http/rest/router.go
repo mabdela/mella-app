@@ -11,10 +11,10 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/gorilla/sessions"
 	"github.com/julienschmidt/httprouter"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
 	_ "github.com/mabdela/mella-backend/api"
-	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
 
-	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/middleware"
 )
 
 // Route returns an http handler for the api.

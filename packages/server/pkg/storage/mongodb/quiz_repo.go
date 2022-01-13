@@ -3,7 +3,7 @@ package mongodb
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/quiz"
+	"github.com/mabdela/mella-app/packages/server/pkg/quiz"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 

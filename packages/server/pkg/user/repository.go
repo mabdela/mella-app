@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 // IUserRepo interface represernts the methods that a user repo struct shoulkd implements

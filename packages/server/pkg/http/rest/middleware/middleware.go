@@ -8,10 +8,10 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mabdela/mella-backend/pkg/constants/model"
-	"github.com/mabdela/mella-backend/pkg/constants/state"
-	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
-	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 )
 
 type Rules interface {
@@ -35,7 +35,7 @@ func (m *rules) Authenticated() gin.HandlerFunc {
 		log.Println(" Authenticated ... ")
 		t, err := m.auth.GetSession(c.Request)
 		if err != nil {
-			log.Println("Error message: " ,err.Error())
+			log.Println("Error message: ", err.Error())
 			http.Error(c.Writer, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			c.Abort()
 			return

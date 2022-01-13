@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 type IUserService interface {
@@ -70,6 +70,7 @@ func (userser *UserService) GetImageUrl(ctx context.Context) string {
 func (userser *UserService) ChangeImageUrl(ctx context.Context) bool {
 	return userser.Repo.ChangeImageUrl(ctx) == nil
 }
+
 // DeleteProfilePicture(ctx context.Context) error
 func (userser *UserService) DeleteProfilePicture(ctx context.Context) bool {
 	return userser.Repo.DeleteProfilePicture(ctx) == nil

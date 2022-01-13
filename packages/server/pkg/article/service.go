@@ -3,7 +3,7 @@ package article
 import (
 	"context"
 
-	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 type IArticleService interface {
@@ -16,7 +16,7 @@ type IArticleService interface {
 	// GetArticleByID  uses "article_id"  string to get the article instance using the ID.
 	GetArticleByID(ctx context.Context) (*model.Article, error)
 	// GetArticleMainImage uses "article_id"  string and returns article's profile image.
-	GetArticleMainImage(ctx context.Context) (string, error)
+	GetArticleMainImage(ctx context.Context) (*model.ImageWithDescription, error)
 	// UpdateArticleMainImageByID uses "article_id" string and "article_title_image_url" string
 	UpdateArticleMainImageByID(ctx context.Context) (string, error)
 }
@@ -47,7 +47,7 @@ func (aser *ArticleService) GetArticleByID(ctx context.Context) (*model.Article,
 	return aser.Repo.GetArticleByID(ctx)
 }
 
-func (aser *ArticleService) GetArticleMainImage(ctx context.Context) (string, error) {
+func (aser *ArticleService) GetArticleMainImage(ctx context.Context) (*model.ImageWithDescription, error) {
 	return aser.Repo.GetArticleMainImage(ctx)
 }
 

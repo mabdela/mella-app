@@ -2,8 +2,11 @@ package model
 
 type (
 	// Quiz ...
+	// In this case Topic is an equivalent of Quiz and it holds
+	// the reference to the article on which the question is attached to.
 	Topic struct {
 		ID          string     `json:"id"`
+		ArticleID   string     `json:"article_id"`
 		Title       string     `json:"title"`
 		Description string     `json:"desc"`
 		Questions   []Question `json:"questions"`
