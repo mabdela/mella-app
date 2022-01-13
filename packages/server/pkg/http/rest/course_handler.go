@@ -229,9 +229,6 @@ func (coursehr *CourseHandler) GetAllCourses(c *gin.Context) {
 	c.JSON(http.StatusOK, courses)
 }
 
-func (coursehr *CourseHandler) DeleteCourseByID(c *gin.Context) {
-
-}
 func (handler *CourseHandler) RemoveCourse(c *gin.Context) {
 	ctx := c.Request.Context()
 	input := &struct {

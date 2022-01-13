@@ -49,17 +49,17 @@ func (repo *CommentRepo) LoadCommentsByArticle(ctx context.Context) (*[]model.Co
 	cursor.Close(context.TODO())
 	return &commentArray, nil
 }
-func (repo *CommentRepo) UpdateCommentsLike(ctx context.Context) (bool ,error) {
-	collection:=repo.Conn.Collection("comment")
+func (repo *CommentRepo) UpdateCommentsLike(ctx context.Context) (bool, error) {
+	collection := repo.Conn.Collection("comment")
 	commentInfo := ctx.Value("commentInfo").(*model.UpdateCommentInfo)
 	doc_comment_ID, err := primitive.ObjectIDFromHex(commentInfo.CommentId)
 	if err != nil {
-		return false ,err
+		return false, err
 	}
 	find := bson.M{"_id": doc_comment_ID, "likes": commentInfo.UserId}
-	count , err := collection.CountDocuments(context.TODO(), find)
-	if err !=nil{
-		return false,err 
+	count, err := collection.CountDocuments(context.TODO(), find)
+	if err != nil {
+		return false, err
 	}
 	if count != 0 { //this is when the user is allready in the likes list on that comment
 
@@ -67,7 +67,7 @@ func (repo *CommentRepo) UpdateCommentsLike(ctx context.Context) (bool ,error) {
 		filter := bson.M{"_id": doc_comment_ID}
 		_, err := collection.UpdateOne(ctx, filter, change)
 		if err != nil {
-			return false , err
+			return false, err
 		}
 		// c.JSON(http.StatusOK, result)
 		fmt.Println("the user already liked so disliked")
@@ -77,39 +77,39 @@ func (repo *CommentRepo) UpdateCommentsLike(ctx context.Context) (bool ,error) {
 		filter := bson.M{"_id": doc_comment_ID}
 		_, err := collection.UpdateOne(ctx, filter, change)
 		if err != nil {
-			return false , err
+			return false, err
 		}
 		fmt.Println("the like added")
 	}
-	return true , nil
+	return true, nil
 }
-func (repo *CommentRepo)RemoveComment(ctx context.Context)(bool , error){
-	commentId :=ctx.Value("comment_id").(string)
-	prCommentId , err := primitive.ObjectIDFromHex(commentId)
-	if err !=nil{
-		return false , err
+func (repo *CommentRepo) RemoveComment(ctx context.Context) (bool, error) {
+	commentId := ctx.Value("comment_id").(string)
+	prCommentId, err := primitive.ObjectIDFromHex(commentId)
+	if err != nil {
+		return false, err
 	}
-	filter:= bson.M{"_id":prCommentId}
-	collection:=repo.Conn.Collection("comment")
-	_, err=collection.DeleteOne(context.TODO(), filter)
-	if err !=nil{
-		return false , err
+	filter := bson.M{"_id": prCommentId}
+	collection := repo.Conn.Collection("comment")
+	_, err = collection.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return false, err
 	}
-	return true , nil
+	return true, nil
 }
 
-func (repo *CommentRepo)LoadComment(ctx context.Context)(*model.Comment,error){
-	commentId:=ctx.Value("comment_id").(string)
-	comment:= &model.Comment{}
-	prCommentId , err := primitive.ObjectIDFromHex(commentId)
-	if err !=nil{
-		return nil , err
+func (repo *CommentRepo) LoadComment(ctx context.Context) (*model.Comment, error) {
+	commentId := ctx.Value("comment_id").(string)
+	comment := &model.Comment{}
+	prCommentId, err := primitive.ObjectIDFromHex(commentId)
+	if err != nil {
+		return nil, err
 	}
-	collection:=repo.Conn.Collection("comment")
-	filter:=bson.M{"_id":prCommentId}
-	err=collection.FindOne(ctx,filter).Decode(&comment)
-	if err!=nil{
-		return nil , err
+	collection := repo.Conn.Collection("comment")
+	filter := bson.M{"_id": prCommentId}
+	err = collection.FindOne(ctx, filter).Decode(&comment)
+	if err != nil {
+		return nil, err
 	}
 	return comment, nil
 }
