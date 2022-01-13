@@ -14,7 +14,11 @@ import (
 // ConnectMongodb function to connect mongodb
 func ConnectMongoDB() *mongo.Database {
 <<<<<<< HEAD
+<<<<<<< HEAD
 	// clientOption := options.Client().ApplyURI("mongodb://localhost:27017")
+=======
+	//clientOption := options.Client().ApplyURI("mongodb://localhost:27017")
+>>>>>>> 0d8e9b798204b203d68f3fef60e9c77ef8f6c71c
 =======
 	//clientOption := options.Client().ApplyURI("mongodb://localhost:27017")
 >>>>>>> 0d8e9b798204b203d68f3fef60e9c77ef8f6c71c
