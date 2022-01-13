@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
-
 	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 )
 

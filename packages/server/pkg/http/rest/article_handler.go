@@ -28,7 +28,6 @@ type IArticleHandler interface {
 	GetArticleByID(c *gin.Context)
 	// ChangeArticleImage  updating the article main image.
 	ChangeArticleImage(c *gin.Context)
-
 	SetSubArticleImage(c *gin.Context)
 	// SearchArticle seraches for a string from the article that has  matche for
 	// title , sub-title , title_translation  , translated_subtitle ,
@@ -265,7 +264,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			return
 		}
 
-		articleInput.Image = titleImageName
+		articleInput.Figure.Imageurl = titleImageName
 		defer titleImageFile.Close()
 		defer titleImageInfo.File.Close()
 	}
@@ -296,7 +295,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			subArticleImageFiles[subarticle.Index] = file
 			defer subArticleImageFiles[subarticle.Index].Close()
 			subArticleImages[subarticle.Index] = sf
-			subarticle.SubImage = filename
+			subarticle.SubFigure.Imageurl = filename
 		}
 	}
 	// Let's Save the Founded article file and Update it.
@@ -307,7 +306,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, eres)
 		return
 	}
-	if article.Image != "" && titleImageFile != nil && titleImageInfo != nil && titleImageInfo.File != nil && titleImageInfo.Header != nil && titleImageInfo.Error == nil {
+	if article.Figure.Imageurl != "" && titleImageFile != nil && titleImageInfo != nil && titleImageInfo.File != nil && titleImageInfo.Header != nil && titleImageInfo.Error == nil {
 		// Copying the article main image file to the file opened.
 		copied, era := io.Copy(titleImageFile, titleImageInfo.File)
 		if copied == 0 {
@@ -317,7 +316,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		}
 		if era == nil {
 			for _, sub := range articleInput.Subarticles {
-				if sub.SubImage != "" {
+				if sub.SubFigure.Imageurl != "" {
 					rfile := subArticleImages[sub.Index]
 					_, er := io.Copy(subArticleImageFiles[sub.Index], rfile.File)
 					if er != nil {
@@ -342,8 +341,8 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			log.Println("while saving the sub title image ")
 			goto InternalServerErrorWhileSavingMessage
 		}
-	} else if article.Image != "" {
-		article.Image = ""
+	} else if article.Figure.Imageurl != "" {
+		article.Figure.Imageurl = ""
 		ctx = context.WithValue(ctx, "article", article)
 		article, _ = ahandler.Service.UpdateArticle(ctx)
 		res.Article = article
@@ -461,8 +460,8 @@ func (ahandler *ArticleHandler) ChangeArticleImage(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, eres)
 		return
 	}
-	if oldProfilePic != "" && helper.IsImage(oldProfilePic) {
-		os.Remove(os.Getenv("ASSETS_DIRECTORY") + oldProfilePic)
+	if oldProfilePic != nil && helper.IsImage(oldProfilePic.Imageurl) {
+		os.Remove(os.Getenv("ASSETS_DIRECTORY") + oldProfilePic.Imageurl)
 	}
 	res.ArticleID = articleID
 	res.ArticleImageUrl = newArticlePicture

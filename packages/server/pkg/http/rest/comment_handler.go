@@ -2,16 +2,17 @@ package rest
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"strings"
 	"time"
-	"fmt"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 	"github.com/mabdela/mella-app/packages/server/pkg/comment"
-	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
+	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 type ICommentHandler interface {

@@ -21,6 +21,6 @@ func NewQuizHandler(service quiz.IQuizService) IQuizHandler {
 
 func CreateQuiz(c *gin.Context) {
 	// quiz := struct{
-		
+
 	// }{}
 }

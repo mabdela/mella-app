@@ -67,7 +67,7 @@ func (repo *ArticleRepo) UpdateArticle(ctx context.Context) (*model.Article, err
 				{"title", article.Title},
 				{"title_translation", article.TitleTranslation},
 				{"desc", article.Desc},
-				{"imgurl", article.Image},
+				{"imgurl", article.Figure},
 				{"sub_articles", article.Subarticles},
 			}}}); uc.ModifiedCount != 0 && er == nil {
 		return article, nil
@@ -95,19 +95,19 @@ func (repo *ArticleRepo) GetArticleByID(ctx context.Context) (*model.Article, er
 	}
 }
 
-func (repo *ArticleRepo) GetArticleMainImage(ctx context.Context) (string, error) {
+func (repo *ArticleRepo) GetArticleMainImage(ctx context.Context) (*model.ImageWithDescription, error) {
 	oid, er := primitive.ObjectIDFromHex(ctx.Value("article_id").(string))
 	if er != nil {
-		return "", er
+		return nil, er
 	}
 	filter := bson.D{{"_id", oid}}
 	findOneOption := options.FindOne().SetProjection(bson.D{{"imgurl", 1}})
 	article := &(mongo_models.MArticle{Subarticles: []*model.SubArticle{}})
 	if er = repo.Conn.Collection(state.ARTICLES).FindOne(ctx, filter, findOneOption).Decode(article); er == nil {
-		return article.Image, nil
+		return article.Figure, nil
 	} else {
 		log.Println(er.Error())
-		return "", er
+		return nil, er
 	}
 }
 

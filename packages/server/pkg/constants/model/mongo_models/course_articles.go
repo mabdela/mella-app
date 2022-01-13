@@ -17,13 +17,13 @@ type (
 	}
 
 	MArticle struct {
-		ID               primitive.ObjectID  `bson:"_id,omitempty"` // ID
-		CourseID         string              `bson:"course_id"`
-		Title            string              `bson:"title"` // Title
-		TitleTranslation string              `bson:"title_translation,omitempty"`
-		Desc             []*model.Desc       `bson:"desc"` // Description
-		Image            string              `bson:"imgurl,omitempty"`
-		Subarticles      []*model.SubArticle `bson:"sub_articles,omitempty"`
+		ID               primitive.ObjectID          `bson:"_id,omitempty"` // ID
+		CourseID         string                      `bson:"course_id"`
+		Title            string                      `bson:"title"` // Title
+		TitleTranslation string                      `bson:"title_translation,omitempty"`
+		Desc             []string                    `bson:"desc"` // Description
+		Figure           *model.ImageWithDescription `bson:"figure,omitempty"`
+		Subarticles      []*model.SubArticle         `bson:"sub_articles,omitempty"`
 	}
 )
 
@@ -58,7 +58,7 @@ func (marticle *MArticle) GetArticle() *model.Article {
 		Title:            marticle.Title,
 		TitleTranslation: marticle.TitleTranslation,
 		Desc:             marticle.Desc,
-		Image:            marticle.Image,
+		Figure:           marticle.Figure,
 		Subarticles:      marticle.Subarticles,
 	}
 }
@@ -71,7 +71,7 @@ func GetMArticle(article *model.Article) *MArticle {
 		Title:            article.Title,
 		TitleTranslation: article.TitleTranslation,
 		Desc:             article.Desc,
-		Image:            article.Image,
+		Figure:           article.Figure,
 		Subarticles:      article.Subarticles,
 	}
 }

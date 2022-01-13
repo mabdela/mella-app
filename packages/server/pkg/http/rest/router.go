@@ -11,9 +11,9 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/gorilla/sessions"
 	"github.com/julienschmidt/httprouter"
+
 	_ "github.com/mabdela/mella-app/packages/server/api"
 	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
-
 	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/middleware"
 )
 
