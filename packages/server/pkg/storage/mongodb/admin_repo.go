@@ -193,3 +193,17 @@ func (repo *AdminRepo) GetAllAdmins(ctx context.Context) ([]*model.Admin, error)
 		return admins, nil
 	}
 }
+func (repo *AdminRepo) DeleteAccountById(ctx context.Context) (bool,error){
+	admin_id := ctx.Value("admin_id").(string)
+	Padmin_id, err := primitive.ObjectIDFromHex(admin_id)
+	if err != nil {
+		return false, err
+	}
+	filter := bson.M{"_id": Padmin_id}
+	collection := repo.Conn.Collection(state.ADMINS)
+	_, err = collection.DeleteOne(ctx, filter)
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}

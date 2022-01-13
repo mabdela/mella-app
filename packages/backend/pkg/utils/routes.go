@@ -33,8 +33,6 @@ func SetupRouter() *gin.Engine {
 			public.POST("/login", user.Login)
 			public.POST("/signup", user.Signup)
 			public.POST("/logout", user.Logout)
-			public.POST("/google",oauth.GoogleOauth)
-			public.POST("/facebook",oauth.FacebookOauth)
 		}
 
 		protected := api.Group("/protected")

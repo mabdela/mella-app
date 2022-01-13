@@ -14,6 +14,7 @@ type IAdminService interface {
 	ChangePassword(ctx context.Context) bool
 	// DeleteAccountByEmail uses "email" string to delete an admin
 	DeleteAccountByEmail(context.Context) bool
+	DeleteAcountById(ctx context.Context) (bool , error)
 	// CreateAdmin uses "admin" *model.Admin to create a new Admin instance.
 	CreateAdmin(context.Context) (*model.Admin, error)
 	// AdminByID uses "admin_id" stringto return an admin instance.
@@ -89,4 +90,7 @@ func (adminser *AdminService) DeleteProfilePicture(ctx context.Context) bool {
 
 func (adminser *AdminService) GetAllAdmins(ctx context.Context) ([]*model.Admin, error) {
 	return adminser.Repo.GetAllAdmins(ctx)
+}
+func (adminser *AdminService) DeleteAcountById(ctx context.Context) (bool,error){
+	return adminser.DeleteAcountById(ctx)
 }

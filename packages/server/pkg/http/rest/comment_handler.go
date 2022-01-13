@@ -12,6 +12,7 @@ import (
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
 	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
 
 type ICommentHandler interface {
