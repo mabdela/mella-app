@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -311,8 +312,10 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				Email:     input.Email, //
 				Password:  hash,
 			}
+			fmt.Println("password : ", password)
 			// Send Email for the password if this doesn't work raise internal server error.
-			if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, c.Request.Host); success {
+			// success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, c.Request.Host);
+			if true {
 				ctx = c.Request.Context()
 				ctx = context.WithValue(ctx, "user", user)
 				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {

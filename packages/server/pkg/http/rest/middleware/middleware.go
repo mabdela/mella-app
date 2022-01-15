@@ -35,7 +35,7 @@ func (m *rules) Authenticated() gin.HandlerFunc {
 		log.Println(" Authenticated ... ")
 		t, err := m.auth.GetSession(c.Request)
 		if err != nil {
-			log.Println("Error message: " ,err.Error())
+			log.Println("Error message: ", err.Error())
 			http.Error(c.Writer, http.StatusText(http.StatusForbidden), http.StatusForbidden)
 			c.Abort()
 			return
