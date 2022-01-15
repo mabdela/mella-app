@@ -13,15 +13,7 @@ import (
 
 // ConnectMongodb function to connect mongodb
 func ConnectMongoDB() *mongo.Database {
-<<<<<<< HEAD
-<<<<<<< HEAD
-	// clientOption := options.Client().ApplyURI("mongodb://localhost:27017")
-=======
-	//clientOption := options.Client().ApplyURI("mongodb://localhost:27017")
->>>>>>> 0d8e9b798204b203d68f3fef60e9c77ef8f6c71c
-=======
-	//clientOption := options.Client().ApplyURI("mongodb://localhost:27017")
->>>>>>> 0d8e9b798204b203d68f3fef60e9c77ef8f6c71c
+
 	clientOption := options.Client().ApplyURI(fmt.Sprintf("mongodb+srv://%s:%s@cluster0.ptoqa.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", os.Getenv("MONGODB_USERNAME"), os.Getenv("MONGODB_PASSWORD")))
 	client, era := mongo.Connect(context.TODO(), clientOption)
 	if era != nil {
