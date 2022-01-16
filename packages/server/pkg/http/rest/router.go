@@ -36,22 +36,23 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.POST("/api/admin/login", adminhandler.AdminLogin)
 	router.PUT("/api/admin/password/new", rules.Authenticated(), adminhandler.ChangePassword)
 	router.GET("/api/admin/password/forgot", rules.Authenticated(), adminhandler.ForgotPassword)
-	router.POST("/api/superadmin/new", rules.Authenticated(), rules.Authorized(), adminhandler.CreateAdmin)
+	router.POST("/api/superadmin/new",  adminhandler.CreateAdmin)
 	router.PUT("/api/admin", rules.Authenticated(), rules.Authorized(), adminhandler.UpdateAdmin)
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount)
-	
-	router.GET("/api/admin/allusers",rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
-	router.GET("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersById)
-	router.GET("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.GetUsersByEmail)
-	router.DELETE("/api/admin/user_by_id/:user_id" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersById)
-	router.DELETE("/api/admin/user_by_email/:email" ,rules.Authenticated(), rules.Authorized(),userhandler.DeleteUsersByEmail)
 
-	router.GET("/api/admin/admin_by_id/:admin_id" ,rules.Authenticated(), rules.Authorized(),adminhandler.GetAdminById)
-	router.GET("/api/admin/admin_by_Email/:email" ,rules.Authenticated(), rules.Authorized(),adminhandler.GetAdminByEmail)
-	router.DELETE("/api/admin/admin_by_email/:email" ,rules.Authenticated(), rules.Authorized(),adminhandler.DeleteAdminByEmail)
-	router.DELETE("/api/admin/admin_by_id/:admin_id" ,rules.Authenticated(), rules.Authorized(),adminhandler.DeleteAdminById)
+	router.GET("/api/admin/allusers", rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
+	router.GET("/api/admin/user_by_id/:user_id", rules.Authenticated(), rules.Authorized(), userhandler.GetUsersById)
+	router.GET("/api/admin/user_by_email/:email", rules.Authenticated(), rules.Authorized(), userhandler.GetUsersByEmail)
+	router.DELETE("/api/admin/user_by_id/:user_id", rules.Authenticated(), rules.Authorized(), userhandler.DeleteUsersById)
+	router.DELETE("/api/admin/user_by_email/:email", rules.Authenticated(), rules.Authorized(), userhandler.DeleteUsersByEmail)
+
+	router.GET("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminById)
+	router.GET("/api/admin/admin_by_Email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminByEmail)
+	router.DELETE("/api/admin/admin_by_email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminByEmail)
+	router.DELETE("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminById)
+	
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -60,7 +61,6 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/user/password/forgot", rules.Authenticated(), userhandler.ForgotPassword)
 	router.POST("/api/user/new", userhandler.CreateUser)
 	router.PUT("/api/user", rules.Authenticated(), rules.Authorized(), userhandler.UpdateUser)
-	
 
 	router.POST("/api/superadmin/course/new", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
@@ -70,14 +70,13 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/course/", rules.Authenticated(), coursehandler.GetCourseByID)
 	router.GET("/api/courses/", rules.Authenticated(), coursehandler.GetAllCourses)
 	// Not Tested.
-	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
 	//comment routes
-	router.POST("/api/comments/new", commenthandler.AddComments)
-	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
-	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
-
+	router.POST("/api/comments/new", rules.Authenticated(), rules.Authorized(), commenthandler.AddComments)
+	router.GET("/api/article/comments/:article_id", rules.Authenticated(), rules.Authorized(), commenthandler.LoadComments)
+	router.PUT("/api/article/comment/update_like", rules.Authenticated(), rules.Authorized(), commenthandler.UpdateCommentsLike)
+	router.DELETE("api/article/comment/delete_comment/:commentId",rules.Authenticated(), rules.Authorized(),commenthandler.RemoveComment)
 	// The Final Routes for Google and Facebook Authentication.
 	// -----------------------------------------------------------------------------
 

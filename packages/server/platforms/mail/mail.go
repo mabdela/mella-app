@@ -68,6 +68,7 @@ func SendPasswordEmailSMTP(to []string, password string, newpassword bool, fulln
 	smtpHost := "smtp.gmail.com"
 	smtpPort := "587"
 	from := os.Getenv("EMAIL_ADDRESS")
+	// log.Println(from, " email address")
 	auth := smtp.PlainAuth("", from, os.Getenv("EMAIL_PASSWORD"), smtpHost)
 	t, _ := template.New("forgot-password").Parse(dpassword)
 	var body bytes.Buffer
@@ -93,7 +94,7 @@ func SendPasswordEmailSMTP(to []string, password string, newpassword bool, fulln
 	})
 	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("error while sending email ", err)
 		return false
 	}
 	fmt.Println("Email Sent!")
@@ -125,7 +126,7 @@ func SendEmail(from, to, password string) bool {
 	d := gomail.NewDialer("smtp.gmail.com", 587, from, "0774samuael")
 	d.TLSConfig = &tls.Config{InsecureSkipVerify: true}
 	if err := d.DialAndSend(m); err != nil {
-		println(err.Error())
+		println(" ERROR", err.Error())
 		return false
 	}
 	return true

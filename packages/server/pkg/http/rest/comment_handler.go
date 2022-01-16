@@ -128,6 +128,8 @@ func (handler *CommentHandler) UpdateCommentsLike(c *gin.Context) {
 	res.Success = true
 	c.JSON(http.StatusOK, res)
 }
+
+// to remove a comment either by superadmin or the commmentor itself
 func (handler *CommentHandler) RemoveComment(c *gin.Context) {
 	CommentId := c.Param("commentId")
 	res := model.SimpleSuccessNotifier{}
@@ -148,13 +150,14 @@ func (handler *CommentHandler) RemoveComment(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, res)
 		return
 	}
+	fmt.Println("role ", session.Role)
 	fmt.Println("session user id :", session.ID)
 	fmt.Println("comment user id :", comment.UserID)
 	if session.ID == comment.UserID {
 		fmt.Println("equal")
 	}
 	//only the commenter and superadmins are authorized to delete a comment
-	if session.ID == comment.UserID || session.Role == state.SUPERADMIN {
+	if session.ID == comment.UserID || session.Role == state.ADMIN {
 
 		success, err := handler.CommentSer.RemoveComment(ctx)
 		if !success || err != nil {
