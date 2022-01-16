@@ -1,7 +1,5 @@
 package state
 
-import "time"
-
 var (
 	// ImageExtensions list of valid image extensions
 	ImageExtensions = []string{"jpeg", "png", "jpg", "gif", "btmp"}
@@ -25,9 +23,6 @@ const (
 	USER = "user"
 	// HOST
 	HOST = "http://192.168.1.7:8080"
-
-	// VALIE_SECRET_EMAIL_DURATION the duration value for secret email and a secret information in to to be valid.
-	VALIE_SECRET_EMAIL_DURATION = time.Minute * 30
 )
 
 const (
@@ -55,5 +50,5 @@ const (
 	// ARTICLE_IMAGES_RELATIVE_PATH  relative path to courses.
 	ARTICLE_IMAGES_RELATIVE_PATH    = "images/articles/"
 	SUBARTICLE_IMAGES_RELATIVE_PATH = "images/articles/subarticles/"
-	ARTICLES_FILE_SIZE              = 999999999999999999
+	ARTICLES_FILE_SIZE              = (2 << 50) * 24
 )

@@ -11,14 +11,15 @@ import (
 	"strings"
 
 	"github.com/gin-gonic/gin"
-	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
-	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
-	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
-	"github.com/mabdela/mella-app/packages/server/pkg/user"
-	"github.com/mabdela/mella-app/packages/server/platforms/form"
-	"github.com/mabdela/mella-app/packages/server/platforms/hash"
-	"github.com/mabdela/mella-app/packages/server/platforms/helper"
-	"github.com/mabdela/mella-app/packages/server/platforms/mail"
+	"github.com/mabdela/mella-backend/pkg/constants/model"
+	"github.com/mabdela/mella-backend/pkg/constants/state"
+	"github.com/mabdela/mella-backend/pkg/http/rest/auth"
+	"github.com/mabdela/mella-backend/pkg/user"
+	"github.com/mabdela/mella-backend/platforms/form"
+	"github.com/mabdela/mella-backend/platforms/hash"
+	"github.com/mabdela/mella-backend/platforms/helper"
+	"github.com/mabdela/mella-backend/platforms/mail"
+	"github.com/markbates/goth/gothic"
 )
 
 // IUserHandler interface representing the user handler
@@ -33,15 +34,8 @@ type IUserHandler interface {
 	CreateUser(c *gin.Context)
 	Logout(c *gin.Context)
 	UpdateUser(c *gin.Context)
-	GoogleUserSigninCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
-	GoogleUserSignupCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
-	FacebookUserSigninCallBack(writer http.ResponseWriter, request *http.Request, user *model.FacebookUser)
-	FacebookUserSignupCallBack(writer http.ResponseWriter, request *http.Request, user *model.FacebookUser)
-	AllUsers(c *gin.Context)
-	GetUsersById(c *gin.Context)
-	GetUsersByEmail(c *gin.Context)
-	DeleteUsersById(c *gin.Context)
-	DeleteUsersByEmail(c *gin.Context)
+	GoogleUserSigninCallBack(writer http.ResponseWriter, request *http.Request)
+	GoogleUserSignupCallBack(writer http.ResponseWriter, request *http.Request)
 }
 
 type UserHandler struct {
@@ -215,6 +209,7 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 	input := &struct {
 		Email string `json:"email"`
 	}{}
+
 	respo := &struct {
 		Message string `json:"msg"`
 	}{}
@@ -226,7 +221,7 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 	// session, _ := userhandler.Authenticator.GetSession(request)
 	ctx := c.Request.Context()
 	if !form.MatchesPattern(input.Email, form.EmailRX) {
-		respo.Message = "invalid email address"
+		respo.Message = "Invalid email address!"
 		c.JSON(http.StatusBadRequest, respo)
 		return
 	}
@@ -234,26 +229,23 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 	log.Println("The Email is ", input.Email)
 	user, er := userhandler.Service.UserByEmail(ctx)
 	if user != nil && er == nil {
-		secret, succ := userhandler.Authenticator.GetSecreteEmailInfo(user.Email)
-		if !succ {
-			c.JSON(http.StatusInternalServerError, nil)
-		}
-		if success := mail.SendApprovalEmail([]string{user.Email}, secret, user.Firstname+" "+user.Lastname, c.Request.Host, true); success {
-			// hashed, era := hash.HashPassword(password)
-			// if era != nil {
-			// 	respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-			// 	c.JSON(http.StatusInternalServerError, respo)
-			// 	return
-			// }
+		password := helper.GenerateRandomString(5, helper.NUMBERS)
+		if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, false, user.Firstname+" "+user.Lastname, c.Request.Host); success {
+			hashed, era := hash.HashPassword(password)
+			if era != nil {
+				respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+				c.JSON(http.StatusInternalServerError, respo)
+				return
+			}
 			ctx = context.WithValue(ctx, "user_id", user.ID)
-			// ctx = context.WithValue(ctx, "password", hashed)
-			// changesuccess := userhandler.Service.ChangePassword(ctx)
-			// if !changesuccess {
-			// 	respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-			// 	c.JSON(http.StatusInternalServerError, respo)
-			// 	return
-			// }
-			respo.Message = "email is sent to your account " + user.Email + "\nyou can change your password by clicking the link we have sent you through your account "
+			ctx = context.WithValue(ctx, "password", hashed)
+			changesuccess := userhandler.Service.ChangePassword(ctx)
+			if !changesuccess {
+				respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+				c.JSON(http.StatusInternalServerError, respo)
+				return
+			}
+			respo.Message = "Email is sent to Your email account " + user.Email
 			c.JSON(http.StatusOK, respo)
 			return
 		}
@@ -262,7 +254,7 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 		return
 	} else {
 		c.JSON(http.StatusNotFound, respo)
-		respo.Message = "account with this email doesn't exist"
+		respo.Message = "Account with this ID doesn't exist"
 		return
 	}
 
@@ -271,11 +263,9 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 // Createuser creates user instance.
 func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 	input := &struct {
-		Firstname       string `json:"firstname"`
-		Lastname        string `json:"lastname"`
-		Email           string `json:"email"`
-		Password        string `json:"password"`
-		ConfirmPassword string `json:"confirm_password"`
+		Firstname string `json:"firstname"`
+		Lastname  string `json:"lastname"`
+		Email     string `json:"email"`
 	}{}
 	resp := &model.CreateUser{
 		false,
@@ -291,14 +281,10 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 			resp.Message = " Invalid Fullname \n Your full name should include yours and your father's name!"
 			fail = true
 		}
-		if input.Password == input.ConfirmPassword {
-			resp.Message = "password mismatch"
-			fail = true
-		}
 		if !fail {
 			// Generate Random password
-			// password := helper.GenerateRandomString(5, helper.NUMBERS)
-			hash, er := helper.HashPassword(input.Password)
+			password := helper.GenerateRandomString(5, helper.NUMBERS)
+			hash, er := helper.HashPassword(password)
 			ctx := c.Request.Context()
 			ctx = context.WithValue(ctx, "email", input.Email)
 			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
@@ -306,6 +292,7 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				c.JSON(http.StatusUnauthorized, resp) //it should respond statusForbiden (check)
 				return
 			}
+
 			if er != nil {
 				resp.Message = " Internal Server error "
 				resp.Success = false
@@ -318,12 +305,8 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				Email:     input.Email, //
 				Password:  hash,
 			}
-			secretInfo, success := userhandler.Authenticator.GetSecreteEmailInfo(user.Email)
-			if !success {
-				c.JSON(http.StatusInternalServerError, nil)
-			}
 			// Send Email for the password if this doesn't work raise internal server error.
-			if success := mail.SendApprovalEmail([]string{user.Email}, secretInfo /* The secrete here */, user.Firstname+" "+user.Lastname, c.Request.Host, false); success {
+			if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, c.Request.Host); success {
 				ctx = c.Request.Context()
 				ctx = context.WithValue(ctx, "user", user)
 				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {
@@ -347,9 +330,6 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, resp)
 				return
 			}
-		} else {
-			c.JSON(http.StatusBadRequest, resp)
-			return
 		}
 	}
 	c.JSON(http.StatusBadRequest, resp)
@@ -357,28 +337,23 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 
 // DeactivateAccount to deactivate an account usign the username and password
 func (userhandler *UserHandler) DeactivateAccount(c *gin.Context) {
-	secret := c.Request.FormValue("secret")
+	email := c.Request.FormValue("email")
+	password := c.Request.FormValue("password")
 	resp := &struct {
 		Msg string `json:"msg"`
 	}{}
-
-	if secret == "" {
+	if email == "" || password == "" {
 		resp.Msg = os.Getenv("INVALID_INPUT")
 		c.JSON(http.StatusUnauthorized, resp)
 		return
 	}
-	emailinfo, err := userhandler.Authenticator.GetEmailInfo(secret)
-	if err != nil || emailinfo == nil {
-		c.JSON(http.StatusUnauthorized, nil)
-		return
-	}
 	ctx := c.Request.Context()
-	if !form.MatchesPattern(emailinfo.Email, form.EmailRX) {
+	if !form.MatchesPattern(email, form.EmailRX) {
 		resp.Msg = "Invalid email address!"
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
-	ctx = context.WithValue(ctx, "email", emailinfo.Email)
+	ctx = context.WithValue(ctx, "email", email)
 	newuser, err := userhandler.Service.UserByEmail(ctx)
 	if err != nil || newuser == nil {
 		resp.Msg = "Invalid Username or Password!"
@@ -388,7 +363,12 @@ func (userhandler *UserHandler) DeactivateAccount(c *gin.Context) {
 		if newuser == nil {
 			goto InvalidEmailsOrPassword
 		}
-		ctx = context.WithValue(ctx, "email", emailinfo.Email)
+		// comparing the hashed password and the password
+		matches := hash.ComparePassword(newuser.Password, password)
+		if !matches {
+			goto InvalidEmailsOrPassword
+		}
+		ctx = context.WithValue(ctx, "email", email)
 		if success := userhandler.Service.DeleteAccountByEmail(ctx); success {
 			resp.Msg = "succesfuly deleted!"
 			c.JSON(http.StatusOK, resp)
@@ -574,18 +554,18 @@ func (userhandler *UserHandler) DeleteProfilePicture(c *gin.Context) {
 }
 
 // GoogleAdminLogin ...
-func (userhandler *UserHandler) GoogleUserSigninCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser) {
+func (userhandler *UserHandler) GoogleUserSigninCallBack(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	// LoginResponse ...
 	resp := &model.LoginResponse{}
 	resp.Success = false
-	// user, err := gothic.CompleteUserAuth(writer, request)
-	// if err != nil || &user == nil || user.Email == "" {
-	// 	writer.WriteHeader(http.StatusUnauthorized)
-	// 	resp.Message = " bad and unauthorized access "
-	// 	writer.Write(helper.MarshalThis(resp))
-	// 	return
-	// }
+	user, err := gothic.CompleteUserAuth(writer, request)
+	if err != nil || &user == nil || user.Email == "" {
+		writer.WriteHeader(http.StatusUnauthorized)
+		resp.Message = " bad and unauthorized access "
+		writer.Write(helper.MarshalThis(resp))
+		return
+	}
 	ctx := request.Context()
 	ctx = context.WithValue(ctx, "email", user.Email)
 	newAdmin, err := userhandler.Service.UserByEmail(ctx)
@@ -619,239 +599,93 @@ func (userhandler *UserHandler) GoogleUserSigninCallBack(writer http.ResponseWri
 	}
 }
 
-func (userhandler *UserHandler) GoogleUserSignupCallBack(writer http.ResponseWriter, request *http.Request, guser *model.GoogleUser) {
+func (userhandler *UserHandler) GoogleUserSignupCallBack(writer http.ResponseWriter, request *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
+	guser, err := gothic.CompleteUserAuth(writer, request)
+	if err != nil || &guser == nil || guser.Email == "" {
+		writer.WriteHeader(http.StatusUnauthorized)
+		writer.Write(helper.MarshalThis([]string{}))
+		return
+	}
 	resp := &model.CreateUser{
 		false,
 		"Bad Request Body",
 	}
-	fail := false
-	if !form.MatchesPattern(guser.Email, form.EmailRX) {
-		resp.Message = "Invalid email address!"
-		fail = true
-	}
-	if len(strings.Trim(guser.GivenName, " ")) <= 2 {
-		guser.GivenName = guser.Email[0:7]
-	}
-	if len(strings.Trim(guser.FamilyName, " ")) <= 2 {
-		guser.FamilyName = "unknown"
-	}
-	if !fail {
-		// Generate Random password
-		password := helper.GenerateRandomString(5, helper.NUMBERS)
-		hash, er := helper.HashPassword(password)
-		ctx := request.Context()
-		ctx = context.WithValue(ctx, "email", guser.Email)
-		if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
-			resp.Message = "account with this email already exist."
-			writer.WriteHeader(http.StatusUnauthorized)
-			writer.Write(helper.MarshalThis(resp)) //it should respond statusForbiden (check)
-			return
+	if err == nil {
+		fail := false
+		if !form.MatchesPattern(guser.Email, form.EmailRX) {
+			resp.Message = "Invalid email address!"
+			fail = true
 		}
-		if er != nil {
-			resp.Message = " Internal Server error "
-			resp.Success = false
-			writer.WriteHeader(http.StatusInternalServerError)
-			writer.Write(helper.MarshalThis(resp))
-			return
+		if len(strings.Trim(guser.FirstName, " ")) <= 2 {
+			guser.FirstName = guser.Email[0:4]
 		}
-		user := &model.User{
-			Firstname: guser.GivenName,
-			Lastname:  guser.FamilyName,
-			Email:     guser.Email, //
-			Password:  hash,
+		if len(strings.Trim(guser.LastName, " ")) <= 2 {
+			guser.LastName = "UNKNOWN"
 		}
-		// Send Email for the password if this doesn't work raise internal server error.
-		if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, request.Host); success {
-			ctx = request.Context()
-			if guser.Picture != "" {
-				imageName, er := helper.DownloadResource(guser.Picture, os.Getenv("ASSETS_DIRECTORY")+state.PROFILE_IMAGES_RELATIVE_PATH, "jpg")
-				if er == nil && imageName != "" {
-					// mnm madreg ayichalm
-					user.Imgurl = state.PROFILE_IMAGES_RELATIVE_PATH + imageName
-				}
-			}
-			ctx = context.WithValue(ctx, "user", user)
-			if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {
-				// Save the Profile Picture and
-				resp.Success = true
-				resp.Message = func() string {
-					return " user "
-				}() + " created succesfully!"
-				writer.WriteHeader(http.StatusOK)
-				writer.Write(helper.MarshalThis(resp))
+		if !fail {
+			// Generate Random password
+			password := helper.GenerateRandomString(5, helper.NUMBERS)
+			hash, er := helper.HashPassword(password)
+			ctx := request.Context()
+			ctx = context.WithValue(ctx, "email", guser.Email)
+			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
+				resp.Message = "account with this email already exist."
+				writer.WriteHeader(http.StatusUnauthorized)
+				writer.Write(helper.MarshalThis(resp)) //it should respond statusForbiden (check)
 				return
-			} else {
-				if user != nil && er != nil {
-					resp.Message = er.Error()
-				} else {
-					resp.Message = "Internal server error!"
-				}
+			}
+			if er != nil {
+				resp.Message = " Internal Server error "
+				resp.Success = false
 				writer.WriteHeader(http.StatusInternalServerError)
 				writer.Write(helper.MarshalThis(resp))
 				return
 			}
-		} else {
-			resp.Message = "Internal server error!"
-			writer.WriteHeader(http.StatusInternalServerError)
-			writer.Write(helper.MarshalThis(resp))
-			return
+			user := &model.User{
+				Firstname: guser.FirstName,
+				Lastname:  guser.LastName,
+				Email:     guser.Email, //
+				Password:  hash,
+			}
+			// Send Email for the password if this doesn't work raise internal server error.
+			if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, request.Host); success {
+				ctx = request.Context()
+				imageName, er := helper.DownloadResource(guser.AvatarURL, os.Getenv("ASSETS_DIRECTORY")+state.PROFILE_IMAGES_RELATIVE_PATH, "jpg")
+				if er == nil && imageName != "" {
+					// mnm madreg ayichalm
+					user.Imgurl = imageName
+				}
+				ctx = context.WithValue(ctx, "user", user)
+				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {
+
+					// Save the Profile Picture and
+
+					resp.Success = true
+					resp.Message = func() string {
+						return " user "
+					}() + " created succesfully!"
+					writer.WriteHeader(http.StatusOK)
+					writer.Write(helper.MarshalThis(resp))
+					return
+				} else {
+					if user != nil && er != nil {
+						resp.Message = er.Error()
+					} else {
+						resp.Message = "Internal server error!"
+					}
+					writer.WriteHeader(http.StatusInternalServerError)
+					writer.Write(helper.MarshalThis(resp))
+					return
+				}
+			} else {
+				resp.Message = "Internal server error!"
+				writer.WriteHeader(http.StatusInternalServerError)
+				writer.Write(helper.MarshalThis(resp))
+				return
+			}
 		}
 	}
-	// }
 	writer.WriteHeader(http.StatusBadRequest)
 	writer.Write(helper.MarshalThis(resp))
-}
-
-func (handler *UserHandler) AllUsers(c *gin.Context) {
-	res := model.AllUsersReponse{}
-	res.Success = false
-	ctx := c.Request.Context()
-	session := c.Request.Context().Value("session").(*model.Session)
-	if session == nil {
-		res.Message = "not authorized"
-		c.JSON(http.StatusUnauthorized, res)
-		return
-	}
-
-	users, err := handler.Service.AllUsers(ctx)
-	if users == nil || err != nil {
-		res.Message = "Internal SErver Error"
-		res.UserList = nil
-		c.JSON(http.StatusInternalServerError, res)
-		return
-	}
-	res.Message = "successfully loaded all users"
-	res.Success = true
-	res.UserList = users
-	c.JSON(http.StatusOK, res)
-}
-
-//new
-
-func (handler *UserHandler) GetUsersById(c *gin.Context) {
-	userId := c.Param("user_id")
-	ctx := c.Request.Context()
-	// session:=ctx.Value("session").(*model.Session)
-	res := model.UserResponse{}
-	res.Success = false
-	res.User = nil
-	if userId == "" {
-		res.Message = "the request should contain user Id"
-		c.JSON(http.StatusBadRequest, res)
-		return
-	}
-	// if session.Role!=state.SUPERADMIN{
-	// 	res.Message="unauthorized request"
-	// 	c.JSON(http.StatusUnauthorized,res)
-	// 	return
-	// }
-	ctx = context.WithValue(ctx, "user_id", userId)
-	user, err := handler.Service.UserByID(ctx)
-	if err != nil || user == nil {
-		if strings.Contains(err.Error(), "no documet") {
-			res.Message = "user not found"
-			c.JSON(http.StatusNotFound, res)
-			return
-		} else {
-			res.Message = "Internal server error"
-			c.JSON(http.StatusInternalServerError, res)
-			return
-		}
-	}
-	res.Message = "successfully loaded a user"
-	res.Success = true
-	res.User = user
-	c.JSON(http.StatusOK, res)
-
-}
-func (handler *UserHandler) GetUsersByEmail(c *gin.Context) {
-	email := c.Param("email")
-	ctx := c.Request.Context()
-	// session:=ctx.Value("session").(*model.Session)
-	res := model.UserResponse{}
-	res.Success = false
-	res.User = nil
-	if email == "" {
-		res.Message = "the request should contain user Id"
-		c.JSON(http.StatusBadRequest, res)
-		return
-	}
-	// if session.Role!=state.SUPERADMIN{
-	// 	res.Message="unauthorized request"
-	// 	c.JSON(http.StatusUnauthorized,res)
-	// 	return
-	// }
-	ctx = context.WithValue(ctx, "email", email)
-	user, err := handler.Service.GetUsersByEmail(ctx)
-
-	if err != nil || user == nil {
-		if strings.Contains(err.Error(), "no documet") {
-			res.Message = "user not found"
-			c.JSON(http.StatusNotFound, res)
-			return
-		} else {
-			res.Message = "Internal server error"
-			c.JSON(http.StatusInternalServerError, res)
-			return
-		}
-	}
-	res.Message = "successfully loaded a user"
-	res.Success = true
-	res.User = user
-	c.JSON(http.StatusOK, res)
-}
-func (handler *UserHandler) DeleteUsersById(c *gin.Context) {
-	userId := c.Param("user_id")
-	res := model.SimpleSuccessNotifier{}
-	ctx := c.Request.Context()
-	// session:=ctx.Value("session").(model.Session)
-	res.Success = false
-	if userId == "" {
-		res.Message = "Bad request"
-		c.JSON(http.StatusBadRequest, res)
-		return
-	}
-	// if session.Role==state.SUPERADMIN{
-	// 	res.Message="unauthorized request"
-	// 	c.JSON(http.StatusUnauthorized,res)
-	// 	return
-	// }
-	ctx = context.WithValue(ctx, "user_id", userId)
-	success, err := handler.Service.DeleteUserById(ctx)
-	if !success || err != nil {
-		res.Message = "Internal server error"
-		c.JSON(http.StatusInternalServerError, res)
-		return
-	}
-	res.Message = "successfully deleted a user"
-	res.Success = true
-	c.JSON(http.StatusOK, res)
-}
-func (handler *UserHandler) DeleteUsersByEmail(c *gin.Context) {
-	email := c.Param("email")
-	res := model.SimpleSuccessNotifier{}
-	ctx := c.Request.Context()
-	// session:=ctx.Value("session").(model.Session)
-	res.Success = false
-	if email == "" {
-		res.Message = "Bad request"
-		c.JSON(http.StatusBadRequest, res)
-		return
-	}
-	// if session.Role==state.SUPERADMIN{
-	// 	res.Message="unauthorized request"
-	// 	c.JSON(http.StatusUnauthorized,res)
-	// 	return
-	// }
-	ctx = context.WithValue(ctx, "email", email)
-	success, err := handler.Service.DeleteUserByEmail(ctx)
-	if !success || err != nil {
-		res.Message = "Internal server error"
-		c.JSON(http.StatusInternalServerError, res)
-		return
-	}
-	res.Message = "successfully deleted a user"
-	res.Success = true
-	c.JSON(http.StatusOK, res)
 }

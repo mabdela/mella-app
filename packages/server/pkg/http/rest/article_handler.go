@@ -163,7 +163,7 @@ func (ahandler *ArticleHandler) UpdateArticle(c *gin.Context) {
 
 func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 	ctx := c.Request.Context()
-	articleInput := &model.Article{Subarticles: []*model.SubArticle{}}
+	articleInput := &model.InArticle{Subarticles: []*model.InSubArticle{}}
 	eres := &struct {
 		Error string `json:"error"`
 	}{
@@ -264,7 +264,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			return
 		}
 
-		articleInput.Figure.Imageurl = titleImageName
+		articleInput.Figure = titleImageName
 		defer titleImageFile.Close()
 		defer titleImageInfo.File.Close()
 	}
@@ -295,7 +295,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			subArticleImageFiles[subarticle.Index] = file
 			defer subArticleImageFiles[subarticle.Index].Close()
 			subArticleImages[subarticle.Index] = sf
-			subarticle.SubFigure.Imageurl = filename
+			subarticle.SubFigure = filename
 		}
 	}
 	// Let's Save the Founded article file and Update it.
@@ -316,7 +316,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		}
 		if era == nil {
 			for _, sub := range articleInput.Subarticles {
-				if sub.SubFigure.Imageurl != "" {
+				if sub.SubFigure != "" {
 					rfile := subArticleImages[sub.Index]
 					_, er := io.Copy(subArticleImageFiles[sub.Index], rfile.File)
 					if er != nil {
@@ -466,6 +466,10 @@ func (ahandler *ArticleHandler) ChangeArticleImage(c *gin.Context) {
 	res.ArticleID = articleID
 	res.ArticleImageUrl = newArticlePicture
 	c.JSON(http.StatusOK, res)
+}
+
+func (ahandler *ArticleHandler) ChangeArticleDescription(response http.ResponseWriter, request *http.Request) {
+
 }
 
 // ------------------------------handler functions yet to be implemented ----------------

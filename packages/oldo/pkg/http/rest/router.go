@@ -11,27 +11,42 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/gorilla/sessions"
 	"github.com/julienschmidt/httprouter"
-
-	_ "github.com/mabdela/mella-app/packages/server/api"
-	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
-	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/middleware"
+	_ "github.com/mabdela/mella-backend/api"
+	"github.com/mabdela/mella-backend/pkg/http/rest/middleware"
+	"github.com/markbates/goth"
+	"github.com/markbates/goth/gothic"
+	"github.com/markbates/goth/providers/google"
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler) *gin.Engine {
+func Route(rules middleware.Rules, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler) *gin.Engine {
 	router := gin.Default()
-
 	chirouter := chi.NewRouter()
 	router.Use(cors.New(cors.Config{
-		AllowMethods:     []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
-		AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
-		AllowHeaders:     []string{"Content-type", "Authorization"},
-		ExposeHeaders:    []string{"Authorization"},
+		AllowMethods: []string{"GET", "PUT", "POST", "DELETE", "OPTIONS"},
+		// AllowOrigins:     []string{"http://localhost:3000", "http://localhost:3001", "http://localhost:8080", "http://localhost:808", "https://facebook.com"},
+		AllowHeaders:     []string{"Content-type", "*"},
 		AllowCredentials: true,
-		// AllowAllOrigins:  true,
-
+		AllowAllOrigins:  true,
 	}))
 	// Initializing google sign in parameters.
+	{
+
+		gothic.Store = GetCookieStore()
+		// Registering the two call backs for the new sign in.....
+
+		val := google.Endpoint.AuthURL
+		println(val)
+
+		googleProvider := google.New(
+			os.Getenv("GOOGLE_CLIENT_ID"),
+			os.Getenv("GOOGLE_CLIENT_SECRET"),
+			"http://localhost:8080/auth/google/callback/")
+
+		goth.UseProviders(
+			googleProvider,
+		)
+	}
 	router.GET("/logout", rules.Logout)
 	router.POST("/api/admin/login", adminhandler.AdminLogin)
 	router.PUT("/api/admin/password/new", rules.Authenticated(), adminhandler.ChangePassword)
@@ -41,17 +56,6 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
 	router.DELETE("/api/admin/deactivate", adminhandler.DeactivateAccount)
-
-	router.GET("/api/admin/allusers", rules.Authenticated(), rules.Authorized(), userhandler.AllUsers)
-	router.GET("/api/admin/user_by_id/:user_id", rules.Authenticated(), rules.Authorized(), userhandler.GetUsersById)
-	router.GET("/api/admin/user_by_email/:email", rules.Authenticated(), rules.Authorized(), userhandler.GetUsersByEmail)
-	router.DELETE("/api/admin/user_by_id/:user_id", rules.Authenticated(), rules.Authorized(), userhandler.DeleteUsersById)
-	router.DELETE("/api/admin/user_by_email/:email", rules.Authenticated(), rules.Authorized(), userhandler.DeleteUsersByEmail)
-
-	router.GET("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminById)
-	router.GET("/api/admin/admin_by_Email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminByEmail)
-	router.DELETE("/api/admin/admin_by_email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminByEmail)
-	router.DELETE("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminById)
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -65,42 +69,30 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	router.PUT("/api/superadmin/course/picture", rules.Authenticated(), rules.Authorized(), coursehandler.UploadCourseImage)
 	router.DELETE("/api/superadmin/course/delete", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
-	// This course handlers are newly added  , JENO Test them and edit something if needed
-	router.GET("/api/course/", rules.Authenticated(), coursehandler.GetCourseByID)
-	router.GET("/api/courses/", rules.Authenticated(), coursehandler.GetAllCourses)
-	//
+	// Not Tested.
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
-	//comment routes
-	router.POST("/api/comments/new", commenthandler.AddComments)
-	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
-	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
 
-	// The Final Routes for Google and Facebook Authentication.
-	// -----------------------------------------------------------------------------
-
-	chirouter.Get("/auth/admin/signin", authenticator.GoogleAdminSignin)
-	chirouter.Get("/auth/user/signin", authenticator.GoogleUserSignin)
-	chirouter.Get("/auth/user/signup", authenticator.GoogleUserSignUP)
-	chirouter.Get("/auth/google/callback/", oauthHandler.GoogleHandleCallback)
-	// -----------------------Facebook ------------------------------------------
-	chirouter.Get("/auth/facebook/admin/signin", authenticator.FaceBookAdminSignin)
-	chirouter.Get("/auth/facebook/user/signin", authenticator.FaceBookUserSignin)
-	// -----------------------------------------------------------------------------
+	// This Routing will be changed later.
+	// --------------------------------------------------------------------
+	chirouter.Get("/auth/red", gothic.BeginAuthHandler)
+	chirouter.Get("/auth/google/callback/", adminhandler.GoogleAdminLoginCallBack)
+	chirouter.Get("/auth/google/admin/signin", gothic.BeginAuthHandler)
+	chirouter.Get("/auth/google/user/signin", gothic.BeginAuthHandler)
+	chirouter.Get("/auth/google/user/signin", gothic.BeginAuthHandler)
+	chirouter.Get("/auth/google/user/signin/calllback/", userhandler.GoogleUserSigninCallBack)
+	chirouter.Get("/auth/google/user/signup/calllback/", userhandler.GoogleUserSignupCallBack)
+	// --------------------------------------------------------------------
 
 	router.GET("/auth/*path", func(c *gin.Context) {
 		log.Println(c.Request.URL.Path)
 		chirouter.ServeHTTP(c.Writer, c.Request)
 	})
 
-	// ----------------------------------------------------------------
-	router.POST("/api/admin/article/new", rules.Authenticated(), rules.Authorized(), articlehandler.CreateArticle)
-	router.PUT("/api/admin/article", rules.Authenticated(), rules.Authorized(), articlehandler.UpdateArticle)
-	router.GET("/api/admin/article", rules.Authenticated(), articlehandler.GetArticleByID)
-	router.POST("/api/admin/article/image/new", rules.Authenticated(), articlehandler.ChangeArticleImage)
-	// ----------------------------------------------------------------
-	router.RouterGroup.Use(FilterDirectory())
+	router.POST("/api/admin/article/new/", articlehandler.CreateArticle)
+	// -------------------------------------------------------------
+	router.RouterGroup.Use(FilterDirectory(), rules.Authenticated())
 	{
 		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
 	}

@@ -8,8 +8,7 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
-	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
-	"golang.org/x/oauth2"
+	"github.com/mabdela/mella-backend/pkg/constants/model"
 )
 
 // Authenticator representing the Methods to be implemented by the authenticators
@@ -19,30 +18,15 @@ type Authenticator interface {
 	GetSession(request *http.Request) (*model.Session, error)
 	RandomToken() string
 	ValidateToken(tokenstring string) bool
-	// -----------------------------------------------------------------
-	GoogleAdminSignin(response http.ResponseWriter, request *http.Request)
-	GoogleUserSignin(response http.ResponseWriter, request *http.Request)
-	GoogleUserSignUP(response http.ResponseWriter, request *http.Request)
-	FaceBookAdminSignin(response http.ResponseWriter, request *http.Request)
-	FaceBookUserSignin(response http.ResponseWriter, request *http.Request)
-	FaceBookUserSignUP(response http.ResponseWriter, request *http.Request)
-	// ---------
-	GetEmailInfo(secretInfo string) (*model.EmailInfo, error)
-	GetSecreteEmailInfo(email string) (string, bool)
 }
 
 // authenticator representing the Cookie methods and handler in jwt
 type authenticator struct {
-	GoogleAuthConfig   *oauth2.Config
-	FacebookAuthConfig *oauth2.Config
 }
 
 // NewCookieHandler representing New Cookie thing
-func NewAuthenticator(GoogleAuthConfig *oauth2.Config, FacebookAuthConfig *oauth2.Config) Authenticator {
-	return &authenticator{
-		GoogleAuthConfig:   GoogleAuthConfig,
-		FacebookAuthConfig: FacebookAuthConfig,
-	}
+func NewAuthenticator() Authenticator {
+	return &authenticator{}
 }
 
 // SaveSession to save the Session in the User Session Header

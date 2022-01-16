@@ -1,8 +1,6 @@
 package model
 
 import (
-	"time"
-
 	"github.com/dgrijalva/jwt-go"
 )
 
@@ -18,13 +16,4 @@ type Session struct {
 
 // LoginInProgress  a struct to login with the password
 type LoginInProgress struct {
-}
-
-// SecretEmailInformation
-type EmailInfo struct {
-	jwt.StandardClaims
-	Email string
-	Time  time.Time // this time constraint will help us in limiting the activation time
-	// we can have the information of data time of when the email is sent and when the the secret with the information is used to do some thing.
-
 }
