@@ -36,7 +36,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.POST("/api/admin/login", adminhandler.AdminLogin)
 	router.PUT("/api/admin/password/new", rules.Authenticated(), adminhandler.ChangePassword)
 	router.GET("/api/admin/password/forgot", rules.Authenticated(), adminhandler.ForgotPassword)
-	router.POST("/api/superadmin/new", rules.Authenticated(), rules.Authorized(), adminhandler.CreateAdmin)
+	router.POST("/api/superadmin/new",  adminhandler.CreateAdmin)
 	router.PUT("/api/admin", rules.Authenticated(), rules.Authorized(), adminhandler.UpdateAdmin)
 	router.PUT("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.ChangeProfilePicture)
 	router.DELETE("/api/admin/profile/img", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteProfilePicture)
@@ -68,15 +68,14 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	// This course handlers are newly added  , JENO Test them and edit something if needed
 	router.GET("/api/course/", rules.Authenticated(), coursehandler.GetCourseByID)
 	router.GET("/api/courses/", rules.Authenticated(), coursehandler.GetAllCourses)
-	//
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
 	//comment routes
-	router.POST("/api/comments/new", commenthandler.AddComments)
-	router.GET("/api/article/comments/:article_id", commenthandler.LoadComments)
-	router.PUT("/api/article/comment/update_like", commenthandler.UpdateCommentsLike)
-
+	router.POST("/api/comments/new", rules.Authenticated(), rules.Authorized(), commenthandler.AddComments)
+	router.GET("/api/article/comments/:article_id", rules.Authenticated(), rules.Authorized(), commenthandler.LoadComments)
+	router.PUT("/api/article/comment/update_like", rules.Authenticated(), rules.Authorized(), commenthandler.UpdateCommentsLike)
+	router.DELETE("api/article/comment/delete_comment/:commentId",rules.Authenticated(), rules.Authorized(),commenthandler.RemoveComment)
 	// The Final Routes for Google and Facebook Authentication.
 	// -----------------------------------------------------------------------------
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"os"
+	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -18,7 +19,8 @@ func ConnectMongoDB() *mongo.Database {
 		log.Println(era)
 		return nil
 	}
-	era = client.Ping(context.TODO(), nil)
+	ctx, _ := context.WithTimeout(context.Background(), time.Second*20)
+	era = client.Ping(ctx, nil)
 	if era != nil {
 		log.Println("Error WHILE PINGING ", era)
 		return nil
