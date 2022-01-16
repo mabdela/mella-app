@@ -46,7 +46,7 @@ type (
 	InSubArticle struct {
 		Index                int      `bson:"index,omitempty" json:"index,omitempty"`
 		Subtitle             string   `bson:"sub_title" json:"sub_title" `
-		SubFigureDescription string   `bson:"figure_desc,omitempty"   json:"figure,omitempty" `
+		SubFigureDescription string   `json:"figure_desc,omitempty" `
 		SubFigure            string   `bson:"figure,omitempty"   json:"figure,omitempty" `
 		Datas                []string `bson:"datas" json:"datas" `
 	}

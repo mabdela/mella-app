@@ -99,6 +99,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/admin/article", rules.Authenticated(), rules.Authorized(), articlehandler.UpdateArticle)
 	router.GET("/api/admin/article", rules.Authenticated(), articlehandler.GetArticleByID)
 	router.POST("/api/admin/article/image/new", rules.Authenticated(), articlehandler.ChangeArticleImage)
+	router.POST("/api/admin/article/subarticle/image/new", rules.Authenticated(), articlehandler.ChangeSubArticleImage)
 	// ----------------------------------------------------------------
 	router.RouterGroup.Use(FilterDirectory())
 	{

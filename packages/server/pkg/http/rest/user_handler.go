@@ -253,7 +253,8 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 			// 	c.JSON(http.StatusInternalServerError, respo)
 			// 	return
 			// }
-			respo.Message = "email is sent to your account " + user.Email + "\nyou can change your password by clicking the link we have sent you through your account "
+			respo.Message = "email is sent to your account " + user.Email +
+				"\nyou can change your password by clicking the link we have sent you through your account "
 			c.JSON(http.StatusOK, respo)
 			return
 		}

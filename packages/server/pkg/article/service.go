@@ -18,7 +18,14 @@ type IArticleService interface {
 	// GetArticleMainImage uses "article_id"  string and returns article's profile image.
 	GetArticleMainImage(ctx context.Context) (*model.ImageWithDescription, error)
 	// UpdateArticleMainImageByID uses "article_id" string and "article_title_image_url" string
-	UpdateArticleMainImageByID(ctx context.Context) (string, error)
+	UpdateArticleMainImageByID(ctx context.Context) (*model.ImageWithDescription, error)
+	// GetSubArticleImage  uses "article_id" string, "subarticle_index" uint
+	GetSubArticleImage(ctx context.Context) (*model.ImageWithDescription, error, int)
+	// UpdateSubArticleImageByID uses
+	// "subarticle_figure" *model.ImageWithDescription and
+	// "article_id" string
+	// "article_index"  uint
+	UpdateSubArticleImageByID(ctx context.Context) (*model.ImageWithDescription, error)
 }
 
 type ArticleService struct {
@@ -52,6 +59,13 @@ func (aser *ArticleService) GetArticleMainImage(ctx context.Context) (*model.Ima
 }
 
 // UpdateArticleMainImageByID ...
-func (aser *ArticleService) UpdateArticleMainImageByID(ctx context.Context) (string, error) {
+func (aser *ArticleService) UpdateArticleMainImageByID(ctx context.Context) (*model.ImageWithDescription, error) {
 	return aser.Repo.UpdateArticleMainImageByID(ctx)
+}
+
+func (aser *ArticleService) GetSubArticleImage(ctx context.Context) (*model.ImageWithDescription, error, int) {
+	return aser.Repo.GetSubArticleImage(ctx)
+}
+func (aser *ArticleService) UpdateSubArticleImageByID(ctx context.Context) (*model.ImageWithDescription, error) {
+	return aser.Repo.UpdateSubArticleImageByID(ctx)
 }

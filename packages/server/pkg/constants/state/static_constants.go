@@ -57,3 +57,18 @@ const (
 	SUBARTICLE_IMAGES_RELATIVE_PATH = "images/articles/subarticles/"
 	ARTICLES_FILE_SIZE              = 999999999999999999
 )
+
+const (
+	BAD_REQUEST_VALUES = iota
+	OK
+	NOT_FOUND
+	QUERY_ERROR
+	NO_SUBARTICLE_MODOFIED
+)
+
+var STATUS_CODES = map[int]string{
+	BAD_REQUEST_VALUES:     "bad request values ",
+	OK:                     "ok",
+	QUERY_ERROR:            "error while querying",
+	NO_SUBARTICLE_MODOFIED: "no sub article is nmodified",
+}
