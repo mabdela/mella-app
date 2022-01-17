@@ -3,7 +3,6 @@ package rest
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"mime/multipart"
@@ -216,7 +215,6 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 	input := &struct {
 		Email string `json:"email"`
 	}{}
-
 	respo := &struct {
 		Message string `json:"msg"`
 	}{}
@@ -228,7 +226,7 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 	// session, _ := userhandler.Authenticator.GetSession(request)
 	ctx := c.Request.Context()
 	if !form.MatchesPattern(input.Email, form.EmailRX) {
-		respo.Message = "Invalid email address!"
+		respo.Message = "invalid email address"
 		c.JSON(http.StatusBadRequest, respo)
 		return
 	}
@@ -236,23 +234,27 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 	log.Println("The Email is ", input.Email)
 	user, er := userhandler.Service.UserByEmail(ctx)
 	if user != nil && er == nil {
-		password := helper.GenerateRandomString(5, helper.NUMBERS)
-		if success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, false, user.Firstname+" "+user.Lastname, c.Request.Host); success {
-			hashed, era := hash.HashPassword(password)
-			if era != nil {
-				respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-				c.JSON(http.StatusInternalServerError, respo)
-				return
-			}
+		secret, succ := userhandler.Authenticator.GetSecreteEmailInfo(user.Email)
+		if !succ {
+			c.JSON(http.StatusInternalServerError, nil)
+		}
+		if success := mail.SendApprovalEmail([]string{user.Email}, secret, user.Firstname+" "+user.Lastname, c.Request.Host, true); success {
+			// hashed, era := hash.HashPassword(password)
+			// if era != nil {
+			// 	respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+			// 	c.JSON(http.StatusInternalServerError, respo)
+			// 	return
+			// }
 			ctx = context.WithValue(ctx, "user_id", user.ID)
-			ctx = context.WithValue(ctx, "password", hashed)
-			changesuccess := userhandler.Service.ChangePassword(ctx)
-			if !changesuccess {
-				respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
-				c.JSON(http.StatusInternalServerError, respo)
-				return
-			}
-			respo.Message = "Email is sent to Your email account " + user.Email
+			// ctx = context.WithValue(ctx, "password", hashed)
+			// changesuccess := userhandler.Service.ChangePassword(ctx)
+			// if !changesuccess {
+			// 	respo.Message = os.Getenv("INTERNAL_SERVER_ERROR")
+			// 	c.JSON(http.StatusInternalServerError, respo)
+			// 	return
+			// }
+			respo.Message = "email is sent to your account " + user.Email +
+				"\nyou can change your password by clicking the link we have sent you through your account "
 			c.JSON(http.StatusOK, respo)
 			return
 		}
@@ -261,7 +263,7 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 		return
 	} else {
 		c.JSON(http.StatusNotFound, respo)
-		respo.Message = "Account with this ID doesn't exist"
+		respo.Message = "account with this email doesn't exist"
 		return
 	}
 
@@ -270,9 +272,11 @@ func (userhandler *UserHandler) ForgotPassword(c *gin.Context) {
 // Createuser creates user instance.
 func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 	input := &struct {
-		Firstname string `json:"firstname"`
-		Lastname  string `json:"lastname"`
-		Email     string `json:"email"`
+		Firstname       string `json:"firstname"`
+		Lastname        string `json:"lastname"`
+		Email           string `json:"email"`
+		Password        string `json:"password"`
+		ConfirmPassword string `json:"confirm_password"`
 	}{}
 	resp := &model.CreateUser{
 		false,
@@ -288,10 +292,14 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 			resp.Message = " Invalid Fullname \n Your full name should include yours and your father's name!"
 			fail = true
 		}
+		if input.Password == input.ConfirmPassword {
+			resp.Message = "password mismatch"
+			fail = true
+		}
 		if !fail {
 			// Generate Random password
-			password := helper.GenerateRandomString(5, helper.NUMBERS)
-			hash, er := helper.HashPassword(password)
+			// password := helper.GenerateRandomString(5, helper.NUMBERS)
+			hash, er := helper.HashPassword(input.Password)
 			ctx := c.Request.Context()
 			ctx = context.WithValue(ctx, "email", input.Email)
 			if user, err := userhandler.Service.UserByEmail(ctx); user != nil || err == nil {
@@ -299,7 +307,6 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				c.JSON(http.StatusUnauthorized, resp) //it should respond statusForbiden (check)
 				return
 			}
-
 			if er != nil {
 				resp.Message = " Internal Server error "
 				resp.Success = false
@@ -312,10 +319,12 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				Email:     input.Email, //
 				Password:  hash,
 			}
-			fmt.Println("password : ", password)
+			secretInfo, success := userhandler.Authenticator.GetSecreteEmailInfo(user.Email)
+			if !success {
+				c.JSON(http.StatusInternalServerError, nil)
+			}
 			// Send Email for the password if this doesn't work raise internal server error.
-			// success := mail.SendPasswordEmailSMTP([]string{user.Email}, password, true, user.Firstname+" "+user.Lastname, c.Request.Host);
-			if true {
+			if success := mail.SendApprovalEmail([]string{user.Email}, secretInfo /* The secrete here */, user.Firstname+" "+user.Lastname, c.Request.Host, false); success {
 				ctx = c.Request.Context()
 				ctx = context.WithValue(ctx, "user", user)
 				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {
@@ -339,6 +348,9 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError, resp)
 				return
 			}
+		} else {
+			c.JSON(http.StatusBadRequest, resp)
+			return
 		}
 	}
 	c.JSON(http.StatusBadRequest, resp)
@@ -346,23 +358,28 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 
 // DeactivateAccount to deactivate an account usign the username and password
 func (userhandler *UserHandler) DeactivateAccount(c *gin.Context) {
-	email := c.Request.FormValue("email")
-	password := c.Request.FormValue("password")
+	secret := c.Request.FormValue("secret")
 	resp := &struct {
 		Msg string `json:"msg"`
 	}{}
-	if email == "" || password == "" {
+
+	if secret == "" {
 		resp.Msg = os.Getenv("INVALID_INPUT")
 		c.JSON(http.StatusUnauthorized, resp)
 		return
 	}
+	emailinfo, err := userhandler.Authenticator.GetEmailInfo(secret)
+	if err != nil || emailinfo == nil {
+		c.JSON(http.StatusUnauthorized, nil)
+		return
+	}
 	ctx := c.Request.Context()
-	if !form.MatchesPattern(email, form.EmailRX) {
+	if !form.MatchesPattern(emailinfo.Email, form.EmailRX) {
 		resp.Msg = "Invalid email address!"
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
-	ctx = context.WithValue(ctx, "email", email)
+	ctx = context.WithValue(ctx, "email", emailinfo.Email)
 	newuser, err := userhandler.Service.UserByEmail(ctx)
 	if err != nil || newuser == nil {
 		resp.Msg = "Invalid Username or Password!"
@@ -372,12 +389,7 @@ func (userhandler *UserHandler) DeactivateAccount(c *gin.Context) {
 		if newuser == nil {
 			goto InvalidEmailsOrPassword
 		}
-		// comparing the hashed password and the password
-		matches := hash.ComparePassword(newuser.Password, password)
-		if !matches {
-			goto InvalidEmailsOrPassword
-		}
-		ctx = context.WithValue(ctx, "email", email)
+		ctx = context.WithValue(ctx, "email", emailinfo.Email)
 		if success := userhandler.Service.DeleteAccountByEmail(ctx); success {
 			resp.Msg = "succesfuly deleted!"
 			c.JSON(http.StatusOK, resp)

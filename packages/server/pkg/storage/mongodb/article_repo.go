@@ -111,18 +111,81 @@ func (repo *ArticleRepo) GetArticleMainImage(ctx context.Context) (*model.ImageW
 	}
 }
 
-func (repo *ArticleRepo) UpdateArticleMainImageByID(ctx context.Context) (string, error) {
+func (repo *ArticleRepo) UpdateArticleMainImageByID(ctx context.Context) (*model.ImageWithDescription, error) {
 	oid, er := primitive.ObjectIDFromHex(ctx.Value("article_id").(string))
 	if er != nil {
-		return "", er
+		return nil, er
 	}
-	imgurl := ctx.Value("article_title_image_url").(string)
+	imgurl := ctx.Value("article_title_image").(*model.ImageWithDescription)
 	filter := bson.D{{"_id", oid}}
 	uc, err := repo.Conn.Collection(state.ARTICLES).UpdateOne(ctx, filter, bson.D{
-		{"$set", bson.D{{"imgurl", imgurl}}},
+		{"$set", bson.D{{"figure", imgurl}}},
 	})
 	if err != nil || uc.ModifiedCount == 0 {
-		return "", fmt.Errorf("%d articles modified ", uc.ModifiedCount)
+		return nil, fmt.Errorf("%d articles modified ", uc.ModifiedCount)
 	}
 	return imgurl, nil
+}
+
+func (repo *ArticleRepo) GetSubArticleImage(ctx context.Context) (*model.ImageWithDescription, error, int) {
+	oid, ers := primitive.ObjectIDFromHex(ctx.Value("article_id").(string))
+	index := ctx.Value("subarticle_index").(uint)
+	println(" The Index is ", index)
+	if ers != nil || index <= 0 {
+		return nil, errors.New(state.STATUS_CODES[state.BAD_REQUEST_VALUES]), state.BAD_REQUEST_VALUES
+	}
+	subarticles := []*model.SubArticle{}
+	filter := bson.D{{"_id", oid}}
+	findOneOption := options.FindOne().SetProjection(bson.D{{"sub_articles", 1}})
+	article := &(mongo_models.MArticle{Subarticles: []*model.SubArticle{}})
+
+	if err := repo.Conn.Collection(state.ARTICLES).FindOne(ctx, filter, findOneOption).Decode(article); err == nil {
+		subarticles = article.Subarticles
+		for _, sa := range subarticles {
+			if uint(sa.Index) == index {
+				if sa.SubFigure == nil {
+					return &model.ImageWithDescription{}, nil, state.OK
+				}
+				return sa.SubFigure, nil, state.OK
+			}
+		}
+		return nil, errors.New(" sub article with the specified index not found  "), state.NOT_FOUND
+	} else {
+		println("The Error is : ", err.Error())
+		return nil, errors.New("article_repo:151: error while querying the subarticle "), state.QUERY_ERROR
+	}
+}
+
+func (repo *ArticleRepo) UpdateSubArticleImageByID(ctx context.Context) (*model.ImageWithDescription, error) {
+	oid, ers := primitive.ObjectIDFromHex(ctx.Value("article_id").(string))
+	index := ctx.Value("subarticle_index").(uint)
+	if ers != nil || index <= 0 {
+		return nil, errors.New(state.STATUS_CODES[state.BAD_REQUEST_VALUES])
+	}
+	subarticles := []*model.SubArticle{}
+	imgurl := ctx.Value("subarticle_figure").(*model.ImageWithDescription)
+	filter := bson.D{{"_id", oid}}
+	article := &(mongo_models.MArticle{Subarticles: []*model.SubArticle{}})
+	if err := repo.Conn.Collection(state.ARTICLES).FindOne(ctx, filter).Decode(article); err == nil {
+		subarticles = article.Subarticles
+		changed := false
+		for _, sa := range subarticles {
+			if uint(sa.Index) == index {
+				sa.SubFigure = imgurl
+				changed = true
+			}
+		}
+		if !changed {
+			return nil, errors.New(" no sub article is motified ")
+		}
+		uc, err := repo.Conn.Collection(state.ARTICLES).UpdateOne(ctx, filter, bson.D{
+			{"$set", bson.D{{"sub_articles", subarticles}}},
+		})
+		if err != nil || uc.ModifiedCount == 0 {
+			return nil, fmt.Errorf(" sub article is modified ", uc.ModifiedCount)
+		}
+		return imgurl, nil
+	} else {
+		return nil, errors.New("no article was found")
+	}
 }
