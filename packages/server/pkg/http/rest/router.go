@@ -52,7 +52,6 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/admin/admin_by_Email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminByEmail)
 	router.DELETE("/api/admin/admin_by_email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminByEmail)
 	router.DELETE("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminById)
-	
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -69,7 +68,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	// This course handlers are newly added  , JENO Test them and edit something if needed
 	router.GET("/api/course/", rules.Authenticated(), coursehandler.GetCourseByID)
 	router.GET("/api/courses/", rules.Authenticated(), coursehandler.GetAllCourses)
-	// Not Tested.
+	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
 	//comment routes
@@ -87,8 +86,6 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	// -----------------------Facebook ------------------------------------------
 	chirouter.Get("/auth/facebook/admin/signin", authenticator.FaceBookAdminSignin)
 	chirouter.Get("/auth/facebook/user/signin", authenticator.FaceBookUserSignin)
-	// chirouter.Get("/auth/facebook/user/signup", authenticator.FaceBookUserSignUP)
-	// chirouter.Get("/facebook/callback", oauthHandler.FacebookHandleCallback)
 	// -----------------------------------------------------------------------------
 
 	router.GET("/auth/*path", func(c *gin.Context) {
@@ -101,6 +98,7 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.PUT("/api/admin/article", rules.Authenticated(), rules.Authorized(), articlehandler.UpdateArticle)
 	router.GET("/api/admin/article", rules.Authenticated(), articlehandler.GetArticleByID)
 	router.POST("/api/admin/article/image/new", rules.Authenticated(), articlehandler.ChangeArticleImage)
+	router.POST("/api/admin/article/subarticle/image/new", rules.Authenticated(), articlehandler.ChangeSubArticleImage)
 	// ----------------------------------------------------------------
 	router.RouterGroup.Use(FilterDirectory())
 	{

@@ -1,5 +1,7 @@
 package state
 
+import "time"
+
 var (
 	// ImageExtensions list of valid image extensions
 	ImageExtensions = []string{"jpeg", "png", "jpg", "gif", "btmp"}
@@ -23,6 +25,9 @@ const (
 	USER = "user"
 	// HOST
 	HOST = "http://192.168.1.7:8080"
+
+	// VALIE_SECRET_EMAIL_DURATION the duration value for secret email and a secret information in to to be valid.
+	VALIE_SECRET_EMAIL_DURATION = time.Minute * 30
 )
 
 const (
@@ -52,3 +57,18 @@ const (
 	SUBARTICLE_IMAGES_RELATIVE_PATH = "images/articles/subarticles/"
 	ARTICLES_FILE_SIZE              = 999999999999999999
 )
+
+const (
+	BAD_REQUEST_VALUES = iota
+	OK
+	NOT_FOUND
+	QUERY_ERROR
+	NO_SUBARTICLE_MODOFIED
+)
+
+var STATUS_CODES = map[int]string{
+	BAD_REQUEST_VALUES:     "bad request values ",
+	OK:                     "ok",
+	QUERY_ERROR:            "error while querying",
+	NO_SUBARTICLE_MODOFIED: "no sub article is nmodified",
+}

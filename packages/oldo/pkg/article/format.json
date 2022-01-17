@@ -1,0 +1,44 @@
+{
+    "course_id": "this_is_course_id",
+    "title": "this is the title ",
+    "description": "This is the description general to all the sub titles.",
+    "image": "image/article/dasjfkajsdlfajsl.jpeg  <-- this will be an image representing general image for all sub articles",
+    "subarticles": [
+        {
+            "index": 1,
+            "subtitle": "this is sub title",
+            "subimage": "image/article/dasjfkajsdlfaj.jpeg sub title's image",
+            "data": {
+                "this line is one of the statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አንዱ ነው።",
+                "this line is second statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ ሁለተኛው ነው።",
+                "this line is third statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ ሦስተኛው ነው።",
+                "this line is fourth statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አራተኛው ነው።",
+                "this line is fifth statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አምስተኛው ነው።"
+            }
+        },
+        {
+            "index": 2,
+            "subtitle": "this is sub title",
+            "subimage": "image/article/dasjfkajsdlfaj.jpeg sub title's image",
+            "data": {
+                "this line is one of the statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አንዱ ነው።",
+                "this line is second statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ ሁለተኛው ነው።",
+                "this line is third statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ ሦስተኛው ነው።",
+                "this line is fourth statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አራተኛው ነው።",
+                "this line is fifth statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አምስተኛው ነው።"
+            }
+        },
+        {
+            "index": 3,
+            "subtitle": "this is sub title",
+            "subimage": "image/article/dasjfkajsdlfaj.jpeg sub title's image",
+            "data": {
+                "this line is one of the statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አንዱ ነው።",
+                "this line is second statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ ሁለተኛው ነው።",
+                "this line is third statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ ሦስተኛው ነው።",
+                "this line is fourth statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አራተኛው ነው።",
+                "this line is fifth statment of this subtitle": "ይህ መስመር የዚህ ንዑስ ርዕስ መግለጫ አምስተኛው ነው።"
+            }
+        }
+    ]
+}

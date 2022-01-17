@@ -28,7 +28,7 @@ type IArticleHandler interface {
 	GetArticleByID(c *gin.Context)
 	// ChangeArticleImage  updating the article main image.
 	ChangeArticleImage(c *gin.Context)
-	SetSubArticleImage(c *gin.Context)
+	ChangeSubArticleImage(c *gin.Context)
 	// SearchArticle seraches for a string from the article that has  matche for
 	// title , sub-title , title_translation  , translated_subtitle ,
 	// and if a parameter all=true the search will include "descriptions" of each title.
@@ -163,7 +163,7 @@ func (ahandler *ArticleHandler) UpdateArticle(c *gin.Context) {
 
 func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 	ctx := c.Request.Context()
-	articleInput := &model.Article{Subarticles: []*model.SubArticle{}}
+	articleInput := &model.InArticle{Subarticles: []*model.InSubArticle{}}
 	eres := &struct {
 		Error string `json:"error"`
 	}{
@@ -264,7 +264,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			return
 		}
 
-		articleInput.Figure.Imageurl = titleImageName
+		articleInput.Figure = titleImageName
 		defer titleImageFile.Close()
 		defer titleImageInfo.File.Close()
 	}
@@ -295,11 +295,11 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 			subArticleImageFiles[subarticle.Index] = file
 			defer subArticleImageFiles[subarticle.Index].Close()
 			subArticleImages[subarticle.Index] = sf
-			subarticle.SubFigure.Imageurl = filename
+			subarticle.SubFigure = filename
 		}
 	}
 	// Let's Save the Founded article file and Update it.
-	ctx = context.WithValue(ctx, "article", articleInput)
+	ctx = context.WithValue(ctx, "article", articleInput.ToArticle())
 	article, create_article_error := ahandler.Service.CreateArticle(ctx)
 	if create_article_error != nil || article == nil {
 		eres.Error = " internal problem please try again "
@@ -316,7 +316,7 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		}
 		if era == nil {
 			for _, sub := range articleInput.Subarticles {
-				if sub.SubFigure.Imageurl != "" {
+				if sub.SubFigure != "" {
 					rfile := subArticleImages[sub.Index]
 					_, er := io.Copy(subArticleImageFiles[sub.Index], rfile.File)
 					if er != nil {
@@ -388,44 +388,92 @@ func (ahandler *ArticleHandler) GetArticleByID(c *gin.Context) {
 	c.JSON(http.StatusOK, article)
 }
 
-// Inputs "id" for article ID and "image" a multipart file for the image.
+// This handler function inputs an image and a data containint a json which is to update the article image and description.
+/*
+
+	The Format of the Data is
+	{
+		"article_id" : "35834753j45i3u45i3dsgfhsd",
+		"img_desc" : "This is the image description that will be used for describing the image of figure which is to be used in the web article."
+	}
+
+*/
 func (ahandler *ArticleHandler) ChangeArticleImage(c *gin.Context) {
 	ctx := c.Request.Context()
-	articleID := c.Request.FormValue("id")
+	articleImageChangeInfo := &struct {
+		ArticleID      string `json:"article_id"`
+		ImgDescription string `json:"img_desc,omitempty"`
+	}{}
+	// articleID := c.Request.FormValue("id")
+	// articleDescription := c.Request.FormValue("article_description")
 	eres := &struct {
 		Error string `json:"error"`
 	}{" missing an article parameter query value 'id' "}
-	if articleID == "" {
+	print(c.Request.FormValue("data"))
+	jsonDecde := json.NewDecoder(bytes.NewBuffer([]byte(c.Request.FormValue("data"))))
+	dere := jsonDecde.Decode(articleImageChangeInfo)
+	if dere != nil {
+		eres.Error = dere.Error()
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+
+	if articleImageChangeInfo.ArticleID == "" {
 		c.JSON(http.StatusBadRequest, eres)
 		return
 	}
 	// this is a structure to send OK
 	res := &struct {
-		ArticleID       string `json:"article_id"`
-		ArticleImageUrl string `json:"article_image_url"`
+		ArticleID    string                      `json:"article_id"`
+		ArticleImage *model.ImageWithDescription `json:"article_image"`
 	}{}
 	err := c.Request.ParseMultipartForm(state.ARTICLES_FILE_SIZE)
 	if err != nil /* || errs != nil */ {
 		c.JSON(http.StatusBadRequest, eres)
 		return
 	}
-	ctx = context.WithValue(ctx, "article_id", articleID)
+	ctx = context.WithValue(ctx, "article_id", articleImageChangeInfo.ArticleID)
 	oldProfilePic, erro := ahandler.Service.GetArticleMainImage(ctx)
+	print("Old Picture Profile Picture  ", oldProfilePic)
 	if erro != nil {
 		eres.Error = "article not found "
 		c.JSON(http.StatusNotFound, eres)
 		return
 	}
+	articleImageWithDescription := &model.ImageWithDescription{}
+
 	var titleImageFile *os.File
 	titleImageInfo := &model.MultipartData{}
 	titleImageInfo.File, titleImageInfo.Header, titleImageInfo.Error = c.Request.FormFile("image")
 	if titleImageInfo.File == nil || titleImageInfo.Header == nil || titleImageInfo.Error != nil {
+		// there is no valid image instance.
+		// if the article description has changed or while there is article image available in the article,
+		// then change the article description only.
+		if (oldProfilePic.Description != articleImageChangeInfo.ImgDescription) || oldProfilePic.Imageurl != "" {
+			// change the description.
+			articleImageWithDescription.Description = articleImageChangeInfo.ImgDescription
+			articleImageWithDescription.Imageurl = oldProfilePic.Imageurl
+			ctx = context.WithValue(ctx, "article_title_image", articleImageWithDescription)
+			ctx = context.WithValue(ctx, "article_id", articleImageChangeInfo.ArticleID)
+			newArticlePicture, err := ahandler.Service.UpdateArticleMainImageByID(ctx)
+			res.ArticleImage = newArticlePicture
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, res)
+			} else {
+				c.JSON(http.StatusOK, res)
+			}
+			return
+		} else if oldProfilePic.Description != articleImageChangeInfo.ImgDescription {
+			eres.Error = " no update "
+			c.JSON(http.StatusNotModified, eres)
+			return
+		}
 		eres.Error = " error while extracting the media file "
 		c.JSON(http.StatusUnsupportedMediaType, eres)
 		return
 	}
 	defer titleImageInfo.File.Close()
-	// check whether the file is an image or not
+	// check whether the file is an image or not. therefore
 	if !helper.IsImage(titleImageInfo.Header.Filename) {
 		eres.Error = " supported image files are " + `"jpeg", "png", "jpg", "gif",and "btmp" only `
 		c.JSON(http.StatusUnsupportedMediaType, eres)
@@ -436,16 +484,24 @@ func (ahandler *ArticleHandler) ChangeArticleImage(c *gin.Context) {
 
 	titleImageFile, erro = os.Create(os.Getenv("ASSETS_DIRECTORY") + randomArticleName)
 	if titleImageFile == nil || erro != nil {
+		if articleImageChangeInfo.ArticleID != "" && articleImageChangeInfo.ImgDescription != "" {
+			// saving or Updating the article
+			articleImageWithDescription.Description = articleImageChangeInfo.ImgDescription
+
+		}
 		eres.Error = " internal problem , please try again later "
 		log.Println("Article Handler::Update Articles Picture :internal problem while creating article image ")
 		c.JSON(http.StatusInternalServerError, eres)
 		return
 	}
 	defer titleImageFile.Close()
-	ctx = context.WithValue(ctx, "article_title_image_url", randomArticleName)
-	ctx = context.WithValue(ctx, "article_id", articleID)
+	articleImageWithDescription.Description = articleImageChangeInfo.ImgDescription
+	articleImageWithDescription.Imageurl = randomArticleName
+
+	ctx = context.WithValue(ctx, "article_title_image", articleImageWithDescription)
+	ctx = context.WithValue(ctx, "article_id", articleImageChangeInfo.ArticleID)
 	newArticlePicture, erro := ahandler.Service.UpdateArticleMainImageByID(ctx)
-	if erro != nil || newArticlePicture == "" {
+	if erro != nil || newArticlePicture == nil {
 		eres.Error = " internal problem , please try again later "
 		log.Println("Article Handler::Update Articles Picture :article image update problem while saving the new image url")
 		os.Remove(os.Getenv("ASSETS_DIRECTORY") + randomArticleName)
@@ -463,8 +519,8 @@ func (ahandler *ArticleHandler) ChangeArticleImage(c *gin.Context) {
 	if oldProfilePic != nil && helper.IsImage(oldProfilePic.Imageurl) {
 		os.Remove(os.Getenv("ASSETS_DIRECTORY") + oldProfilePic.Imageurl)
 	}
-	res.ArticleID = articleID
-	res.ArticleImageUrl = newArticlePicture
+	res.ArticleID = articleImageChangeInfo.ArticleID
+	res.ArticleImage = newArticlePicture
 	c.JSON(http.StatusOK, res)
 }
 
@@ -472,11 +528,152 @@ func (ahandler *ArticleHandler) ChangeArticleImage(c *gin.Context) {
 
 // This handler function works by using a form value and sub articles index.
 //
-func (ahandler *ArticleHandler) SetSubArticleImage(c *gin.Context) {
+func (ahandler *ArticleHandler) ChangeSubArticleImage(c *gin.Context) {
+	ctx := c.Request.Context()
+	articleImageChangeInfo := &struct {
+		Ind            string `json:"index"`
+		Index          int
+		ArticleID      string `json:"article_id"`
+		ImgDescription string `json:"img_desc,omitempty"`
+	}{}
+	var er error
 
+	eres := &struct {
+		Error string `json:"error"`
+	}{" missing an article parameter query value 'id' "}
+	print(c.Request.FormValue("data"))
+	jsonDecde := json.NewDecoder(bytes.NewBuffer([]byte(c.Request.FormValue("data"))))
+	dere := jsonDecde.Decode(articleImageChangeInfo)
+	articleImageChangeInfo.Index, er = strconv.Atoi(articleImageChangeInfo.Ind)
+	if dere != nil || er != nil || articleImageChangeInfo == nil || articleImageChangeInfo.Index == 0 {
+		eres.Error = "bad request data"
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	if articleImageChangeInfo.ArticleID == "" || articleImageChangeInfo.Index == 0 {
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	res := &struct {
+		ArticleID    string                      `json:"subarticle_id"`
+		ArticleImage *model.ImageWithDescription `json:"subarticle_image"`
+	}{}
+	err := c.Request.ParseMultipartForm(state.ARTICLES_FILE_SIZE)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	ctx = context.WithValue(ctx, "article_id", articleImageChangeInfo.ArticleID)
+	ctx = context.WithValue(ctx, "subarticle_index", uint(articleImageChangeInfo.Index))
+	oldProfilePic, erro, status := ahandler.Service.GetSubArticleImage(ctx)
+	// print("Old Picture Profile Picture  ", oldProfilePic)
+	if erro != nil {
+		eres.Error = "article not found "
+		if status == state.NOT_FOUND {
+			c.JSON(http.StatusNotFound, eres)
+		} else if status == state.BAD_REQUEST_VALUES {
+			eres.Error = state.STATUS_CODES[status]
+			c.JSON(http.StatusBadRequest, eres)
+		} else {
+			c.JSON(http.StatusBadRequest, eres)
+		}
+		return
+	}
+
+	subarticleImageWithDescription := &model.ImageWithDescription{}
+
+	var titleImageFile *os.File
+	titleImageInfo := &model.MultipartData{}
+	titleImageInfo.File, titleImageInfo.Header, titleImageInfo.Error = c.Request.FormFile("image")
+	if titleImageInfo.File == nil || titleImageInfo.Header == nil || titleImageInfo.Error != nil {
+		// there is no valid image instance.
+		// if the article description has changed or while there is article image available in the article,
+		// then change the article description only.
+		if (oldProfilePic.Description != articleImageChangeInfo.ImgDescription) || oldProfilePic.Imageurl != "" {
+			// change the description.
+			subarticleImageWithDescription.Description = articleImageChangeInfo.ImgDescription
+			subarticleImageWithDescription.Imageurl = oldProfilePic.Imageurl
+			ctx = context.WithValue(ctx, "subarticle_figure", subarticleImageWithDescription)
+			ctx = context.WithValue(ctx, "article_index", uint(articleImageChangeInfo.Index))
+			ctx = context.WithValue(ctx, "article_id", articleImageChangeInfo.ArticleID)
+			newArticlePicture, err := ahandler.Service.UpdateSubArticleImageByID(ctx)
+			res.ArticleImage = newArticlePicture
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, res)
+			} else {
+				c.JSON(http.StatusOK, res)
+			}
+			return
+		} else if oldProfilePic.Description != articleImageChangeInfo.ImgDescription {
+			eres.Error = " no update "
+			c.JSON(http.StatusNotModified, eres)
+			return
+		}
+		eres.Error = " error while extracting the media file "
+		c.JSON(http.StatusUnsupportedMediaType, eres)
+		return
+	}
+	defer titleImageInfo.File.Close()
+	// check whether the file is an image or not. therefore
+	if !helper.IsImage(titleImageInfo.Header.Filename) {
+		eres.Error = " supported image files are " + `"jpeg", "png", "jpg", "gif",and "btmp" only `
+		c.JSON(http.StatusUnsupportedMediaType, eres)
+		return
+	}
+	// generate Random Name for the incloming image
+	randomArticleName := state.ARTICLE_IMAGES_RELATIVE_PATH + helper.GenerateRandomString(6, helper.CHARACTERS) + "." + helper.GetExtension(titleImageInfo.Header.Filename)
+	titleImageFile, erro = os.Create(os.Getenv("ASSETS_DIRECTORY") + randomArticleName)
+	if titleImageFile == nil || erro != nil {
+		if erro != nil {
+			println(erro.Error())
+		}
+		if articleImageChangeInfo.ArticleID != "" && articleImageChangeInfo.ImgDescription != "" {
+			// saving or Updating the article
+			subarticleImageWithDescription.Description = articleImageChangeInfo.ImgDescription
+		}
+		eres.Error = " internal problem , please try again later "
+		log.Println("Article Handler::Update Articles Picture :internal problem while creating article image ")
+		c.JSON(http.StatusInternalServerError, eres)
+		return
+	}
+	defer titleImageFile.Close()
+	subarticleImageWithDescription.Description = articleImageChangeInfo.ImgDescription
+	subarticleImageWithDescription.Imageurl = randomArticleName
+	ctx = context.WithValue(ctx, "subarticle_figure", subarticleImageWithDescription)
+	ctx = context.WithValue(ctx, "article_index", uint(articleImageChangeInfo.Index))
+	ctx = context.WithValue(ctx, "article_id", articleImageChangeInfo.ArticleID)
+	newArticlePicture, erro := ahandler.Service.UpdateSubArticleImageByID(ctx)
+	if erro != nil || newArticlePicture == nil {
+		if erro != nil {
+			println(erro.Error())
+		}
+		eres.Error = " internal problem , please try again later "
+		log.Println("Article Handler::Update Sub Articles Picture :sub article image update problem while saving the new image url")
+		os.Remove(os.Getenv("ASSETS_DIRECTORY") + randomArticleName)
+		c.JSON(http.StatusInternalServerError, eres)
+		return
+	}
+	_, er = io.Copy(titleImageFile, titleImageInfo.File)
+	if er != nil {
+		eres.Error = " internal problem , please try again later "
+		log.Println("Article Handler::Update Articles Picture : internal problem while copying the input file to the destination ")
+		os.Remove(os.Getenv("ASSETS_DIRECTORY") + randomArticleName)
+		c.JSON(http.StatusInternalServerError, eres)
+		return
+	}
+	if oldProfilePic != nil && helper.IsImage(oldProfilePic.Imageurl) {
+		os.Remove(os.Getenv("ASSETS_DIRECTORY") + oldProfilePic.Imageurl)
+	}
+	res.ArticleID = articleImageChangeInfo.ArticleID
+	res.ArticleImage = newArticlePicture
+	c.JSON(http.StatusOK, res)
 }
 
 func (ahandler *ArticleHandler) SearchArticle(c *gin.Context) {}
+
+func (ahandler *ArticleHandler) SearchArticleByContent(c *gin.Context) {
+	// searching article by content.
+}
 
 //
 func (ahandler *ArticleHandler) ListArticlesOfACourse(c *gin.Context) {}

@@ -1,0 +1,63 @@
+{
+    "msg": " article succesfully created",
+    "article": {
+        "id": "61e4009a0fcd5f3acf494b29",
+        "course_id": "6186dc10c252a16864f82129",
+        "title": "atoms",
+        "title_translation": "",
+        "desc": [
+            "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+            "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+            "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+            "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+        ],
+        "figure": {
+            "desc": "electrons revolving in their orbit",
+            "imgurl": "images/articles/e3nVXn9.png"
+        },
+        "sub_articles": [
+            {
+                "index": 1,
+                "sub_title": " particles",
+                "figure": {
+                    "desc": "electrons revolving in their orbit",
+                    "imgurl": "images/articles/subarticles/jSUOT8.JPG"
+                },
+                "datas": [
+                    "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+                    "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+                ]
+            },
+            {
+                "index": 2,
+                "sub_title": " particles",
+                "figure": {
+                    "desc": "electrons revolving in their orbit",
+                    "imgurl": "images/articles/subarticles/Kwlx3M.jpg"
+                },
+                "datas": [
+                    "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+                    "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+                ]
+            },
+            {
+                "index": 3,
+                "sub_title": " particles",
+                "figure": {
+                    "desc": "electrons revolving in their orbit",
+                    "imgurl": "images/articles/subarticles/OYY7cO.jpg"
+                },
+                "datas": [
+                    "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+                    "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+                ]
+            }
+        ]
+    }
+}

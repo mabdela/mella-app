@@ -1,0 +1,49 @@
+{
+    "title" : "atoms",
+    "desc" : [
+        "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+        "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+        "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+        "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+        ],
+    "course_id"  : "6186dc10c252a16864f82129",
+    "figure_desc"  : "electrons revolving in their orbit" , 
+    "sub_articles": [
+            {
+                "index":1 , 
+                "sub_title" : " particles",
+                "sub_title_translation" : "la particle broda ",
+                "figure_desc"  : "electrons revolving in their orbit" , 
+                "datas" : [
+                    "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+                    "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+                    ]
+            },
+            {
+                "index":2 , 
+                "sub_title" : " particles",
+                "sub_title_translation" : "la particle broda ",
+                "figure_desc"  : "electrons revolving in their orbit" , 
+                "datas" : [
+                    "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+                    "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+                ]
+            },
+            {
+                "index":3, 
+                "sub_title" : " particles",
+                "sub_title_translation" : "la particle broda ",
+                "figure_desc"  : "electrons revolving in their orbit" , 
+                "datas" : [
+                    "This article is about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This sdfjadkfjis about the yihe ye articlochu description yihonal jal aregagut",
+                    "This article sdflads about the yihe ye articlochu description yihonal jal aregagut ",
+                    "This article is sdfakdfjalut the yihe ye articlochu description yihonal jal aregagut "
+                ]
+            }
+        ]
+    }

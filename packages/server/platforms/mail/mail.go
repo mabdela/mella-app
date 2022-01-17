@@ -101,6 +101,75 @@ func SendPasswordEmailSMTP(to []string, password string, newpassword bool, fulln
 	return true
 }
 
+var deactivationptemplate = `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>  
+		New Account
+	</title>
+</head>
+<body>
+    <h1 style="background-color:#006699";color:#fff >   Mellaye System  </h1>
+	{{ if .Forgot }}
+			<p> Hi, According to your action in the Mellaye you can update your email using the link provided below.
+			[[ WARNING : DO NOT SHARE THIS LINK TO ANY ONE! ]]
+			<a href="{{.HOST}}/api/forgot-password?secret={{.Secret}}'" > Not Mine </a>
+	{{else}}
+		<p> Hi, According to your action in the Mellaye this email is used to register a User named {{.Fullname }} in the system .<br>
+		we have sent you a password to be used when login with <br>
+		If this action was not trigger by you, confirm that by clicking on the link below.
+		<a href="{{.HOST}}/api/deactivate/?secret={{.Secret}}'" > Not Mine </a>
+	{{end}}
+	</p>
+	<hr>
+	<i> Mellaye </i> 
+	<hr>
+	</body>
+</html>`
+
+// This function sends an email regarding the creation of an account with a deactivation link in it.
+// The Deactivation Link will have an encrypted message which can only be interpreted by the daectivating handler
+// the encrypted message will have the email information in it.
+func SendApprovalEmail(to []string, secret string, fullname, host string, forgotpassword bool) bool {
+	smtpHost := "smtp.gmail.com"
+	smtpPort := "587"
+	from := os.Getenv("EMAIL_ADDRESS")
+	auth := smtp.PlainAuth("", from, os.Getenv("EMAIL_PASSWORD"), smtpHost)
+	t, _ := template.New("forgot-password").Parse(deactivationptemplate)
+	var body bytes.Buffer
+	mimeHeaders := "MIME-version: 1.0;\nContent-Type: text/html; charset=\"UTF-8\";\n\n"
+
+	subject := " Mellaye account confirmation "
+	if forgotpassword {
+		subject = " Mellaye forgot password "
+	}
+
+	body.Write([]byte(fmt.Sprintf("Subject: %s \n%s\n\n", subject, mimeHeaders)))
+	t.Execute(&body, struct {
+		Email    string
+		HOST     string
+		Fullname string
+		Secret   string
+		Forgot   bool
+	}{
+		Fullname: fullname,
+		Email:    to[0],
+		HOST:     state.HOST,
+		Secret:   secret,
+		Forgot:   forgotpassword,
+	})
+	err := smtp.SendMail(smtpHost+":"+smtpPort, auth, from, to, body.Bytes())
+	if err != nil {
+		fmt.Println(err)
+		return false
+	}
+	fmt.Println("Email Sent!")
+	return true
+}
+
 func SendEmail(from, to, password string) bool {
 	templ, er := template.New("forgot").Parse(dpassword)
 	println(password)

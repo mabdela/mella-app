@@ -26,6 +26,9 @@ type Authenticator interface {
 	FaceBookAdminSignin(response http.ResponseWriter, request *http.Request)
 	FaceBookUserSignin(response http.ResponseWriter, request *http.Request)
 	FaceBookUserSignUP(response http.ResponseWriter, request *http.Request)
+	// ---------
+	GetEmailInfo(secretInfo string) (*model.EmailInfo, error)
+	GetSecreteEmailInfo(email string) (string, bool)
 }
 
 // authenticator representing the Cookie methods and handler in jwt
