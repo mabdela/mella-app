@@ -80,11 +80,11 @@ func main() {
 	commentrepo := mongodb.NewCommentRepo(conn)
 	commentservice := comment.NewCommentService(commentrepo)
 	commenthandler := rest.NewCommentHandler(authenticator, commentservice)
-
+	outlinehandler := rest.NewOutlineHandler(authenticator)
 	articlerepo := mongodb.NewArticleRepo(conn)
 	articleservice := article.NewArticleService(articlerepo)
 	articlehandler := rest.NewArticleHandler(articleservice, authenticator)
 	oauthhandler := rest.NewOAuthHandler(userhandler, adminhandler, GoogleAuthConfig, FacebookAuthConfig)
 
-	rest.Route(rules, authenticator, oauthhandler, adminhandler, userhandler, coursehandler, articlehandler, commenthandler).Run(":8080")
+	rest.Route(rules, authenticator, oauthhandler, adminhandler, userhandler, coursehandler, articlehandler, commenthandler, outlinehandler).Run(":8080")
 }
