@@ -129,14 +129,17 @@ func (repo *CourseRepo) RemoveCourse(ctx context.Context) (bool, error) {
 
 func (repo *CourseRepo) GetAllCourses(ctx context.Context) ([]*model.Course, error) {
 	courses := []*model.Course{}
-	if cursor, er := repo.Conn.Collection(state.COURSES).Find(ctx, bson.D{}); cursor != nil && er == nil {
+
+	if cursor, er := repo.Conn.Collection(state.COURSES).Find(ctx, bson.M{}); cursor != nil && er == nil {
 		for cursor.Next(ctx) {
-			course := &model.Course{}
-			e := cursor.Decode(course)
+			// course := &model.Course{}
+			insCouse := &mongo_models.MCourse{}
+			e := cursor.Decode(insCouse)
 			if e == nil {
-				courses = append(courses, course)
+				courses = append(courses, insCouse.GetCourse())
 			}
 		}
+		// fmt.Println(courses)
 		return courses, nil
 	} else {
 		return courses, errors.New(" no record found ")
