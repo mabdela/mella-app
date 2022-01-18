@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"io"
+	"log"
 	"net/http"
 	"os"
 
@@ -201,7 +202,8 @@ func (coursehr *CourseHandler) UploadCourseImage(c *gin.Context) {
 
 // uses a param not a JSON
 func (coursehr *CourseHandler) GetCourseByID(c *gin.Context) {
-	courseID := c.Request.FormValue("id")
+
+	courseID := c.Param("id")
 	eres := &struct {
 		Error string `json:"error"`
 	}{"bad input  ; course id is not mensioned"}
@@ -223,8 +225,17 @@ func (coursehr *CourseHandler) GetCourseByID(c *gin.Context) {
 
 func (coursehr *CourseHandler) GetAllCourses(c *gin.Context) {
 	courses, er := coursehr.Service.GetAllCourses(c.Request.Context())
+
 	if er != nil || courses == nil || len(courses) == 0 {
-		c.JSON(http.StatusNotFound, []*model.Course{})
+
+		if er != nil {
+			log.Println(" error while loading courses :", er.Error())
+			c.JSON(http.StatusInternalServerError, []*model.Course{})
+			return
+		} else if courses == nil || len(courses) == 0 {
+			log.Println("courses field is emptey ", er.Error())
+			c.JSON(http.StatusNotFound, gin.H{"msg": "courses not found"})
+		}
 	}
 	c.JSON(http.StatusOK, courses)
 }
