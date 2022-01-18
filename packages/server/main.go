@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"time"
 
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 )
@@ -101,12 +102,43 @@ func main() {
 	// val2, _ := json.Marshal(&model.Article{})
 	// println(string(val2))
 
+	chapter := &model.Chapter{
+		ID:                    "k83405934805280",
+		CourseID:              "k83405934805280",
+		ChapterNumber:         1,
+		Title:                 "Kinematics of Particles",
+		CreatedAt:             time.Now(),
+		ArticlesCount:         1,
+		IntroductionArticleID: "61e3fb9a2436acb12ac8e173",
+	}
+
 	dec := json.NewDecoder(bytes.NewBuffer([]byte(data)))
-	er := dec.Decode(&model.Article{})
+	article := &model.Article{}
+	er := dec.Decode(article)
 	if er != nil {
 		print(er.Error())
 		return
 	}
+	data, er := json.Marshal(chapter)
+	if er != nil {
+		return
+	}
+	// println(string(data))
+
+	chapterDetail := model.ChapterDetail{
+		Chapter: chapter,
+		Articles: []*model.ArticleOverview{
+			article.GetArticleOverview(),
+			article.GetArticleOverview(),
+			article.GetArticleOverview(),
+			article.GetArticleOverview(),
+		},
+	}
+	data, er = json.Marshal(chapterDetail)
+	if er != nil {
+		return
+	}
+	println(string(data))
 
 	// pfile := &model.PartFileHeader{}
 	// bytona := bytes.NewBuffer([]byte(`{"Content-Disposition":["form-data; name=\"title\"; filename=\"task2.step2.png\""],"Content-Type":["multipart/form-data"]}`))

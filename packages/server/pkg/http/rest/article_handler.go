@@ -669,7 +669,28 @@ func (ahandler *ArticleHandler) ChangeSubArticleImage(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
-func (ahandler *ArticleHandler) SearchArticle(c *gin.Context) {}
+func (ahandler *ArticleHandler) SearchArticle(c *gin.Context) {
+	q := c.Query("q")
+	ctx := c.Request.Context()
+	resp := &struct {
+		model.Article
+	}{}
+	eresp := &struct {
+		Error string `json:"error"`
+	}{"bad query"}
+	if q == "" {
+		c.JSON(http.StatusBadRequest, eresp)
+		return
+	}
+	ctx = context.WithValue(ctx, "q", q)
+	articleInfos, errs, status := ahandler.Service.SearchArticlesByTitle(ctx)
+	if errs != nil || status == state.NOT_FOUND {
+		eresp.Error = "no article instance found"
+		c.JSON(http.StatusNotFound, eresp)
+	}else if status = state.INTERNAL_SERVER_ERROR {
+		
+	}
+}
 
 func (ahandler *ArticleHandler) SearchArticleByContent(c *gin.Context) {
 	// searching article by content.
