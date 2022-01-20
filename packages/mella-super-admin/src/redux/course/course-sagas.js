@@ -63,7 +63,6 @@ export function* listCourseSaga() {
       null,
       'GET'
     );
-    console.log(courseList);
     yield put(listCourse(courseList));
   } catch (error) {
     yield put(setErrors(error));

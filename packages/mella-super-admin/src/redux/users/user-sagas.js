@@ -12,7 +12,6 @@ import { userActionTypes } from './users-types';
 
 export function* addSuperAdminSaga(action) {
   try {
-    console.log(action.payload);
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
     const addedAdmin = yield call(
       apiData,
@@ -20,7 +19,7 @@ export function* addSuperAdminSaga(action) {
       action.payload,
       'POST'
     );
-    yield put(addAdmin({ message: addedAdmin.message }));
+    yield put(addAdmin({ message: addedAdmin.data.message }));
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -74,6 +73,7 @@ export function* searchSuperAdminByNameSaga(action) {
       null,
       'GET'
     );
+    console.log(searchData);
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
 
     yield put(searchAdminByName(searchData));

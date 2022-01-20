@@ -18,7 +18,7 @@ const CourseList = () => {
   const dispatch = useDispatch();
   const courses = useSelector(state => state.course.courses);
   const loading = useSelector(state => state.users.loading);
-  const message = useSelector(state => state.users.message);
+  const message = useSelector(state => state.course.message);
   const error = useSelector(state => state.errors.message);
 
   const [open, setOpen] = useState(false);

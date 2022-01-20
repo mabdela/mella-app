@@ -34,17 +34,21 @@ const ListData = ({ data, handleEdit, handleDelete }) => {
           <Box display={'flex'} mb={2} fontSize={'20px'} fontWeight={600}>
             {data.title
               ? data.title
-              : (data.first_name.charAt(0).toUpperCase() +
-                  data.first_name.slice(1),
-                data.last_name.charAt(0).toUpperCase() +
-                  data.last_name.slice(1))}
+              : `${
+                  data.first_name.charAt(0).toUpperCase() +
+                  data.first_name.slice(1)
+                } ${
+                  data.last_name.charAt(0).toUpperCase() +
+                  data.last_name.slice(1)
+                }`}
           </Box>
           <span>
             <i
               className="far fa-edit"
               onClick={() =>
                 handleEdit &&
-                (data.id ? handleEdit(data.id) : handleEdit(data._id))
+                // (data.id ? handleEdit(data.id) : handleEdit(data._id))
+                handleEdit(data.id)
               }
               style={{
                 color: 'rgba(24,125,24,.7215686274509804)',
@@ -53,9 +57,10 @@ const ListData = ({ data, handleEdit, handleDelete }) => {
             ></i>
             <i
               onClick={() => {
-                data.id
-                  ? handleDelete(data.id)
-                  : handleDelete(data._id, data.first_name, data.last_name);
+                // data.id
+                //   ? handleDelete(data.id)
+                //   : handleDelete(data._id, data.first_name, data.last_name);
+                handleDelete(data.id, data.first_name, data.last_name);
               }}
               className="far fa-trash-alt"
               style={{

@@ -11,12 +11,10 @@ export const apiData = async (url, data, method) => {
     return getData.data;
   } else if (method === 'POST') {
     const postData = await axios.post(url, data, config);
-    console.log(postData);
     return { data: postData.data, token: postData.headers['authorization'] };
   } else if (method === 'PUT') {
     console.log('data: ', data);
     const putData = await axios.put(url, data, config);
-    console.log('putData: ', putData);
     return putData.data;
   } else if (method === 'DELETE') {
     const deleteData = await axios.delete(url, config);
