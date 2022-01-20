@@ -35,7 +35,7 @@ type IArticleHandler interface {
 	// this parameter include "offset"  and "limit" for paging.
 	SearchArticle(c *gin.Context)
 	//
-	ListArticlesOfACourse(c *gin.Context)
+	ListArticlesOfAChapter(c *gin.Context)
 	// DeleteArticleByID the authorization will be for
 	// the admin  who craeted the article and the superadmins.
 	DeleteArticleByID(c *gin.Context)
@@ -669,15 +669,31 @@ func (ahandler *ArticleHandler) ChangeSubArticleImage(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// SearchArticle a handler fuction to search for articles using
+// title , sub_titles , description content and other texts in the article instances.
 func (ahandler *ArticleHandler) SearchArticle(c *gin.Context) {
-	q := c.Query("q")
 	ctx := c.Request.Context()
+	q := c.Query("q")
+	offset, er := strconv.Atoi(c.Query("offset"))
+	if er != nil {
+		offset = 0
+	}
+	limit := offset + 20
+	courseID := c.Query("course_id")
+	chapterID := c.Query("chapter_id")
+	ctx = context.WithValue(ctx, "course_id", string(courseID))
+	ctx = context.WithValue(ctx, "chapter_id", string(chapterID))
+	ctx = context.WithValue(ctx, "offset", uint(offset))
+	ctx = context.WithValue(ctx, "limit", uint(limit))
 	resp := &struct {
-		model.Article
-	}{}
+		Articles []*model.ArticleOverview `json:"articles"`
+		Message  string                   `json:"message"`
+		Q        string                   `json:"q"`
+	}{Q: q}
 	eresp := &struct {
+		Q     string `json:"q"`
 		Error string `json:"error"`
-	}{"bad query"}
+	}{"bad query", q}
 	if q == "" {
 		c.JSON(http.StatusBadRequest, eresp)
 		return
@@ -687,18 +703,44 @@ func (ahandler *ArticleHandler) SearchArticle(c *gin.Context) {
 	if errs != nil || status == state.NOT_FOUND {
 		eresp.Error = "no article instance found"
 		c.JSON(http.StatusNotFound, eresp)
-	}else if status = state.INTERNAL_SERVER_ERROR {
-		
+	} else if status == state.OK {
+		resp.Articles = articleInfos
+		resp.Message = " succesfully fetched " + strconv.Itoa(len(articleInfos)) + " articles!"
+		c.JSON(http.StatusOK, resp)
+		return
 	}
-}
-
-func (ahandler *ArticleHandler) SearchArticleByContent(c *gin.Context) {
-	// searching article by content.
+	// else /* if status == state.INTERNAL_SERVER_ERROR || status == state.QUERY_ERROR */ {
+	eresp.Error = "internal problem please try again!"
+	c.JSON(http.StatusInternalServerError, eresp)
+	// }
 }
 
 //
-func (ahandler *ArticleHandler) ListArticlesOfACourse(c *gin.Context) {}
+func (ahandler *ArticleHandler) ListArticlesOfAChapter(c *gin.Context) {}
 
 // DeleteArticleByID the authorization will be for
 // the admin  who craeted the article and the superadmins.
-func (ahandler *ArticleHandler) DeleteArticleByID(c *gin.Context) {}
+func (ahandler *ArticleHandler) DeleteArticleByID(c *gin.Context) {
+	ctx := c.Request.Context()
+	res := &struct {
+		Msg string `json:"msg"`
+	}{}
+	eres := &struct {
+		Error string `json:"error"`
+	}{}
+	articleID := c.Query("id")
+	if articleID == "" {
+		eres.Error = "invalid article id"
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	ctx = context.WithValue(ctx, "article_id", articleID)
+	success := ahandler.Service.DeleteArticleByID(ctx)
+	if !success {
+		eres.Error = "can't delete the article"
+		c.JSON(http.StatusNotModified, eres)
+		return
+	}
+	res.Msg = "article with id " + articleID + " deleted succesfuly "
+	c.JSON(http.StatusOK, res)
+}

@@ -26,6 +26,8 @@ type IArticleService interface {
 	// "article_id" string
 	// "article_index"  uint
 	UpdateSubArticleImageByID(ctx context.Context) (*model.ImageWithDescription, error)
+	// SearchArticlesByTitle   uses "q" string to query list of articles.
+	SearchArticlesByTitle(ctx context.Context) ([]*model.ArticleOverview, error, int)
 }
 
 type ArticleService struct {
@@ -68,4 +70,7 @@ func (aser *ArticleService) GetSubArticleImage(ctx context.Context) (*model.Imag
 }
 func (aser *ArticleService) UpdateSubArticleImageByID(ctx context.Context) (*model.ImageWithDescription, error) {
 	return aser.Repo.UpdateSubArticleImageByID(ctx)
+}
+func (aser *ArticleService) SearchArticlesByTitle(ctx context.Context) ([]*model.ArticleOverview, error, int) {
+	return aser.Repo.SearchArticlesByTitle(ctx)
 }

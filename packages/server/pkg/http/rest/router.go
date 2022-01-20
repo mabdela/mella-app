@@ -97,9 +97,12 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	// ----------------------------------------------------------------
 	router.POST("/api/admin/article/new", rules.Authenticated(), rules.Authorized(), articlehandler.CreateArticle)
 	router.PUT("/api/admin/article", rules.Authenticated(), rules.Authorized(), articlehandler.UpdateArticle)
-	router.GET("/api/admin/article", rules.Authenticated(), articlehandler.GetArticleByID)
+	router.GET("/api/admin/article", articlehandler.GetArticleByID)
 	router.POST("/api/admin/article/image/new", rules.Authenticated(), articlehandler.ChangeArticleImage)
 	router.POST("/api/admin/article/subarticle/image/new", rules.Authenticated(), articlehandler.ChangeSubArticleImage)
+	router.GET("/api/article", rules.Authenticated(), rules.Authorized(), articlehandler.SearchArticle)
+	// not tested
+	router.DELETE("/api/article", rules.Authenticated(), rules.Authorized(), articlehandler.DeleteArticleByID)
 	// ----------------------------------------------------------------
 	router.RouterGroup.Use(FilterDirectory())
 	{
