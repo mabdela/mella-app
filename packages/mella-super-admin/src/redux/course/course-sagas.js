@@ -29,13 +29,11 @@ export function* deleteCourseSaga(action) {
     yield put({ type: adminCourseTypes.SET_LOADING });
     const deletedCourse = yield call(
       apiData,
-      `${process.env.REACT_APP_ADMIN_DELETE_COURSE}`,
-      action.payload,
+      `${process.env.REACT_APP_ADMIN_DELETE_COURSE}/${action.payload}`,
+      null,
       'DELETE'
     );
-    yield put(
-      deleteCourse({ msg: deletedCourse.msg, id: action.payload.course_id })
-    );
+    yield put(deleteCourse({ msg: deletedCourse.msg, id: action.payload }));
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -56,16 +54,17 @@ export function* updateCourseSaga(action) {
   }
 }
 
-export function* listCourseSaga(action) {
+export function* listCourseSaga() {
   try {
     yield put({ type: adminCourseTypes.SET_LOADING });
-    const addedAdmin = yield call(
+    const courseList = yield call(
       apiData,
-      `${process.env.REACT_APP_ADD_ADMIN}`,
-      action.payload,
+      `${process.env.REACT_APP_ADMIN_LIST_COURSES}`,
+      null,
       'GET'
     );
-    yield put(listCourse({ message: addedAdmin.message }));
+    console.log(courseList);
+    yield put(listCourse(courseList));
   } catch (error) {
     yield put(setErrors(error));
   }
