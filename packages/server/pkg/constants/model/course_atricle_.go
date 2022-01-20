@@ -8,6 +8,7 @@ type (
 		Imgurl          string `json:"imgurl,omitempty"`
 		ArticleCount    int    `json:"article_count,omitempty"`
 		CreatedBy       string `json:"created_by,omitempty"`
+		ChapterNumber   uint   `json:"chapter_number"`
 	}
 
 	Article struct {
@@ -18,6 +19,7 @@ type (
 		Desc             []string              `json:"desc"` // Description  // this lisr of string represents a paragraphs in each article and sub articles.
 		Figure           *ImageWithDescription `json:"figure,omitempty"`
 		Subarticles      []*SubArticle         `json:"sub_articles,omitempty"`
+		ChapterID        string                `json:"chapter_id"`
 	}
 	SubArticle struct {
 		Index     int                   `bson:"index,omitempty" json:"index,omitempty"`
@@ -42,6 +44,7 @@ type (
 		FigureDescription string          `json:"figure_desc,omitempty"`
 		Figure            string          `json:"figure,omitempty"`
 		Subarticles       []*InSubArticle `json:"sub_articles,omitempty"`
+		ChapterID         string          `json:"chapter_id"`
 	}
 	InSubArticle struct {
 		Index                int      `bson:"index,omitempty" json:"index,omitempty"`
@@ -63,6 +66,7 @@ func (inarticle *InArticle) ToArticle() *Article {
 		Desc:             inarticle.Desc,
 		Figure:           &ImageWithDescription{Description: inarticle.FigureDescription, Imageurl: inarticle.Figure},
 		Subarticles:      GetSubArticles(inarticle.Subarticles),
+		ChapterID:        inarticle.ChapterID,
 	}
 }
 

@@ -189,3 +189,53 @@ func (repo *ArticleRepo) UpdateSubArticleImageByID(ctx context.Context) (*model.
 		return nil, errors.New("no article was found")
 	}
 }
+
+func (repo *ArticleRepo) SearchArticlesByTitle(ctx context.Context) ([]*model.ArticleOverview, error, int) {
+	q := ctx.Value("q").(string)
+	limit := ctx.Value("limit").(uint)
+	offset := ctx.Value("offset").(uint)
+	courseID := ctx.Value("course_id").(string)
+	chapterID := ctx.Value("chapter_id").(string)
+	create := func(val int64) *int64 {
+		return &val
+	}
+	articleOverviews := []*model.ArticleOverview{}
+
+	offsetAndLimit := struct {
+		Offset *int64
+		Limit  *int64
+	}{
+		Offset: create(int64(offset)),
+		Limit:  create(int64(limit)),
+	}
+	var filter primitive.M
+	if courseID != "" && chapterID != "" {
+		filter = bson.M{"$text": bson.D{{"$search", q + "*"}},
+			"course_id": courseID, "chapter_id": chapterID}
+	} else if courseID != "" && chapterID == "" {
+		filter = bson.M{"$text": bson.D{{"$search", q + "*"}},
+			"course_id": courseID}
+	} else if courseID == "" && chapterID == "" {
+		filter = bson.M{"$text": bson.D{{"$search", q + "*"}}}
+	} else if courseID == "" && chapterID != "" {
+		filter = bson.M{"$text": bson.D{{"$search", q + "*"}}, "chapter_id": chapterID}
+	} else {
+		filter = bson.M{"$text": bson.D{{"$search", q + "*"}}}
+	}
+	resu, err := repo.Conn.Collection(state.ARTICLES).Find(ctx, filter, &options.FindOptions{Limit: offsetAndLimit.Limit}, &options.FindOptions{Skip: offsetAndLimit.Offset})
+	if err == nil && resu != nil {
+		for resu.Next(ctx) {
+			arti := &mongo_models.MArticle{}
+			er := resu.Decode(arti)
+			if er != nil {
+				articleOverviews = append(articleOverviews, arti.GetArticle().GetArticleOverview())
+			}
+		}
+		if len(articleOverviews) == 0 {
+			return articleOverviews, nil, state.NOT_FOUND
+		}
+		return articleOverviews, nil, state.OK
+	} else {
+		return articleOverviews, err, state.QUERY_ERROR
+	}
+}

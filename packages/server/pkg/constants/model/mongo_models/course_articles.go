@@ -14,6 +14,7 @@ type (
 		Imgurl          string             `bson:"imgurl,omitempty"`
 		ArticleCount    int                `bson:"article_count,omitempty"`
 		CreatedBy       string             `bson:"created_by,omitempty"`
+		ChapterNumber   string             `bson:"chapter_number"`
 	}
 
 	MArticle struct {
@@ -24,6 +25,7 @@ type (
 		Desc             []string                    `bson:"desc"` // Description
 		Figure           *model.ImageWithDescription `bson:"figure,omitempty"`
 		Subarticles      []*model.SubArticle         `bson:"sub_articles,omitempty"`
+		ChapterID        string                      `json:"chapter_id"`
 	}
 )
 
@@ -60,6 +62,7 @@ func (marticle *MArticle) GetArticle() *model.Article {
 		Desc:             marticle.Desc,
 		Figure:           marticle.Figure,
 		Subarticles:      marticle.Subarticles,
+		ChapterID:        marticle.ChapterID,
 	}
 }
 
@@ -73,5 +76,6 @@ func GetMArticle(article *model.Article) *MArticle {
 		Desc:             article.Desc,
 		Figure:           article.Figure,
 		Subarticles:      article.Subarticles,
+		ChapterID:        article.ChapterID,
 	}
 }

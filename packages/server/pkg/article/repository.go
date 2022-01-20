@@ -15,4 +15,5 @@ type IArticleRepo interface {
 	UpdateArticleMainImageByID(ctx context.Context) (*model.ImageWithDescription, error)
 	GetSubArticleImage(ctx context.Context) (*model.ImageWithDescription, error, int)
 	UpdateSubArticleImageByID(ctx context.Context) (*model.ImageWithDescription, error)
+	SearchArticlesByTitle(ctx context.Context) ([]*model.ArticleOverview, error, int)
 }
