@@ -53,6 +53,8 @@ export function* deleteSuperAdminSaga(action) {
       'DELETE'
     );
 
+    console.log('deleted admin : ', deletedAdminData);
+
     const { firstname, _id } = deletedAdminData;
     yield put(
       deleteAdmin({
@@ -90,9 +92,12 @@ export function* searchSuperAdminByEmailSaga(action) {
       null,
       'GET'
     );
+    console.log('search admin by email: ', action.payload);
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
 
-    yield put(searchAdminByEmail(searchData));
+    yield put(
+      searchAdminByEmail({ msg: searchData.msg, admin: searchData.Admin })
+    );
   } catch (error) {
     yield put(setErrors(error));
   }

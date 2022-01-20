@@ -49,7 +49,8 @@ const userReducer = (state = initialState, action) => {
     case userActionTypes.SEARCH_BY_EMAIL:
       return {
         ...state,
-        admin: action.payload,
+        admin: [action.payload.admin],
+        message: action.payload.msg,
         loading: false,
       };
 
