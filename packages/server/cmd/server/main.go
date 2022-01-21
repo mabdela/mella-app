@@ -8,6 +8,7 @@ import (
 
 	"github.com/mabdela/mella-app/packages/server/pkg/admin"
 	"github.com/mabdela/mella-app/packages/server/pkg/article"
+	"github.com/mabdela/mella-app/packages/server/pkg/chapter"
 	"github.com/mabdela/mella-app/packages/server/pkg/comment"
 	"github.com/mabdela/mella-app/packages/server/pkg/course"
 	"github.com/mabdela/mella-app/packages/server/pkg/http/rest"
@@ -81,10 +82,14 @@ func main() {
 	commentservice := comment.NewCommentService(commentrepo)
 	commenthandler := rest.NewCommentHandler(authenticator, commentservice)
 
+	chapterrepo := mongodb.NewChapterRepo(conn)
+	chapterser := chapter.NewChapterService(chapterrepo)
+	chapterhandler := rest.NewChapterHandler(chapterser, courseser)
+
 	articlerepo := mongodb.NewArticleRepo(conn)
 	articleservice := article.NewArticleService(articlerepo)
-	articlehandler := rest.NewArticleHandler(articleservice, authenticator)
+	articlehandler := rest.NewArticleHandler(articleservice, authenticator, chapterser)
 	oauthhandler := rest.NewOAuthHandler(userhandler, adminhandler, GoogleAuthConfig, FacebookAuthConfig)
 
-	rest.Route(rules, authenticator, oauthhandler, adminhandler, userhandler, coursehandler, articlehandler, commenthandler).Run(":8080")
+	rest.Route(rules, authenticator, oauthhandler, adminhandler, userhandler, coursehandler, articlehandler, commenthandler, chapterhandler).Run(":8080")
 }
