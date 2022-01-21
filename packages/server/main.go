@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"encoding/json"
 	"time"
 
@@ -102,44 +101,55 @@ func main() {
 	// val2, _ := json.Marshal(&model.Article{})
 	// println(string(val2))
 
-	chapter := &model.Chapter{
-		ID:                    "k83405934805280",
-		CourseID:              "k83405934805280",
-		ChapterNumber:         1,
-		Title:                 "Kinematics of Particles",
-		CreatedAt:             time.Now(),
-		ArticlesCount:         1,
-		IntroductionArticleID: "61e3fb9a2436acb12ac8e173",
-	}
+	// chapter := &model.Chapter{
+	// 	ID:                    "k83405934805280",
+	// 	CourseID:              "k83405934805280",
+	// 	ChapterNumber:         1,
+	// 	Title:                 "Kinematics of Particles",
+	// 	CreatedAt:             time.Now(),
+	// 	ArticlesCount:         1,
+	// 	IntroductionArticleID: "61e3fb9a2436acb12ac8e173",
+	// }
 
-	dec := json.NewDecoder(bytes.NewBuffer([]byte(data)))
-	article := &model.Article{}
-	er := dec.Decode(article)
-	if er != nil {
-		print(er.Error())
-		return
-	}
-	data, er := json.Marshal(chapter)
-	if er != nil {
-		return
-	}
+	// dec := json.NewDecoder(bytes.NewBuffer([]byte(data)))
+	// article := &model.Article{}
+	// er := dec.Decode(article)
+	// if er != nil {
+	// 	print(er.Error())
+	// 	return
+	// }
+	// data, er := json.Marshal(chapter)
+	// if er != nil {
+	// 	return
+	// }
+	// // println(string(data))
+
+	// chapterDetail := model.ChapterDetail{
+	// 	Chapter: chapter,
+	// 	Articles: []*model.ArticleOverview{
+	// 		article.GetArticleOverview(),
+	// 		article.GetArticleOverview(),
+	// 		article.GetArticleOverview(),
+	// 		article.GetArticleOverview(),
+	// 	},
+	// }
+	// data, er = json.Marshal(chapterDetail)
+	// if er != nil {
+	// 	return
+	// }
 	// println(string(data))
 
-	chapterDetail := model.ChapterDetail{
-		Chapter: chapter,
-		Articles: []*model.ArticleOverview{
-			article.GetArticleOverview(),
-			article.GetArticleOverview(),
-			article.GetArticleOverview(),
-			article.GetArticleOverview(),
-		},
+	chapter := &model.Chapter{
+		ID:                    "78979878",
+		CourseID:              "hsdjkfh6482376",
+		ArticlesCount:         5,
+		ChapterNumber:         1,
+		Title:                 "Introduction to Kinematics ",
+		CreatedAt:             time.Now(),
+		IntroductionArticleID: "5656yuiy8768^&676&",
 	}
-	data, er = json.Marshal(chapterDetail)
-	if er != nil {
-		return
-	}
-	println(string(data))
-
+	val, _ := json.Marshal(chapter)
+	println(string(val))
 	// pfile := &model.PartFileHeader{}
 	// bytona := bytes.NewBuffer([]byte(`{"Content-Disposition":["form-data; name=\"title\"; filename=\"task2.step2.png\""],"Content-Type":["multipart/form-data"]}`))
 	// jdec := json.NewDecoder(bytona)

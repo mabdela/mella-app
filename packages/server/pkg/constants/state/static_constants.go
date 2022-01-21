@@ -68,13 +68,15 @@ const (
 	NO_SUBARTICLE_MODOFIED
 	INTERNAL_SERVER_ERROR
 	MISSING_INPUT_PARAMETER
+	INVALID_MONGODB_OBJECT_ID
 )
 
 var STATUS_CODES = map[int]string{
-	BAD_REQUEST_VALUES:      "bad request values ",
-	OK:                      "ok",
-	QUERY_ERROR:             "error while querying",
-	NO_SUBARTICLE_MODOFIED:  "no sub article is nmodified",
-	INTERNAL_SERVER_ERROR:   "internal server error",
-	MISSING_INPUT_PARAMETER: "missing input parameter",
+	BAD_REQUEST_VALUES:        "bad request values ",
+	OK:                        "ok",
+	QUERY_ERROR:               "error while querying",
+	NO_SUBARTICLE_MODOFIED:    "no sub article is nmodified",
+	INTERNAL_SERVER_ERROR:     "internal server error",
+	MISSING_INPUT_PARAMETER:   "missing input parameter",
+	INVALID_MONGODB_OBJECT_ID: "invalid mongo database object id",
 }

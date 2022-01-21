@@ -8,7 +8,15 @@ import (
 
 // IChapterService .. a chapter service interface.
 type IChapterService interface {
+	// CreateChapter  uses "chapter"  *model.Chapter
 	CreateChapter(ctx context.Context) (*model.Chapter, error)
+	// GetChapterByTitleAndCourseID uses "course_id"  string and "chapter_title" string
+	// and returns a chapter instance , error and status code .
+	GetChapterByTitleAndCourseID(ctx context.Context) (*model.Chapter, error, int)
+	// GetCourseIDByChapterID uses "chapter_id"
+	GetCourseIDByChapterID(ctx context.Context) (string, error, int)
+	// GetChapterByID uses "chapter_id"
+	GetChapterByID(ctx context.Context) (*model.Chapter, error, int)
 }
 
 // ChapterService ... a chapter service instance service class.
@@ -24,4 +32,17 @@ func NewChapterService(repo IChapterRepo) IChapterService {
 
 func (chser *ChapterService) CreateChapter(ctx context.Context) (*model.Chapter, error) {
 	return chser.Repo.CreateChapter(ctx)
+}
+
+func (chser *ChapterService) GetChapterByTitleAndCourseID(ctx context.Context) (*model.Chapter, error, int) {
+	return chser.Repo.GetChapterByTitleAndCourseID(ctx)
+}
+
+func (chser *ChapterService) GetCourseIDByChapterID(ctx context.Context) (string, error, int) {
+	return chser.Repo.GetCourseIDByChapterID(ctx)
+}
+
+// GetChapterByID ...
+func (chser *ChapterService) GetChapterByID(ctx context.Context) (*model.Chapter, error, int) {
+	return chser.Repo.GetChapterByID(ctx)
 }

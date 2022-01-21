@@ -13,6 +13,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/mabdela/mella-app/packages/server/pkg/article"
+	"github.com/mabdela/mella-app/packages/server/pkg/chapter"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
 	"github.com/mabdela/mella-app/packages/server/pkg/http/rest/auth"
@@ -42,14 +43,16 @@ type IArticleHandler interface {
 }
 
 type ArticleHandler struct {
-	Service       article.IArticleService
-	Authenticator auth.Authenticator
+	Service        article.IArticleService
+	ChapterService chapter.IChapterService
+	Authenticator  auth.Authenticator
 }
 
-func NewArticleHandler(service article.IArticleService, authenticator auth.Authenticator) IArticleHandler {
+func NewArticleHandler(service article.IArticleService, authenticator auth.Authenticator, chapterservice chapter.IChapterService) IArticleHandler {
 	return &ArticleHandler{
-		Service:       service,
-		Authenticator: authenticator,
+		Service:        service,
+		ChapterService: chapterservice,
+		Authenticator:  authenticator,
 	}
 }
 
@@ -194,23 +197,40 @@ func (ahandler *ArticleHandler) CreateArticle(c *gin.Context) {
 		return
 	}
 
-	importantDatas := []string{" title ", " description ", "title and description ", " course id ", "title and course id ", " description and course id ", " title  , description , and course id "}
+	importantDatas := []string{" title ", " description ", "title and description ", " chapter id ", "title and course id ", " description and chapter id ", " title  , description , and chapter id "}
 	init := 0
 	// check whether the article had  a valid data in it.
-	if articleInput.Title == "" || articleInput.CourseID == "" || articleInput.Desc == nil {
+	if articleInput.Title == "" || articleInput.ChapterID == "" || articleInput.Desc == nil {
 		if articleInput.Title == "" {
 			init = init | 1
 		}
 		if articleInput.Desc == nil {
 			init = init | 2
 		}
-		if articleInput.CourseID == "" {
+		if articleInput.ChapterID == "" {
 			init = init | 4
 		}
 		eres.Error = fmt.Sprintf("missing important data %s ", importantDatas[init-1])
 		c.JSON(http.StatusBadRequest, eres)
 		return
 	}
+	ctx = context.WithValue(ctx, "chapter_id", articleInput.ChapterID)
+	courseIDOFChapter, er, scode := ahandler.ChapterService.GetCourseIDByChapterID(ctx)
+	if scode != state.OK && er != nil {
+		switch scode {
+		case state.NOT_FOUND:
+			{
+				eres.Error = " course with this chapter id does nto exist"
+			}
+		case state.INVALID_MONGODB_OBJECT_ID:
+			{
+				eres.Error = " invlaid course id"
+			}
+		}
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	articleInput.CourseID = courseIDOFChapter
 	// RULES for the SUB-ARTICLES
 	/*
 		1. sub article indes must not be repeated.

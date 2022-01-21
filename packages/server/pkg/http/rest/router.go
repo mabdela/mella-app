@@ -18,7 +18,7 @@ import (
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler) *gin.Engine {
+func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler, chapterhandler IChapterHandler) *gin.Engine {
 	router := gin.Default()
 
 	chirouter := chi.NewRouter()
@@ -102,6 +102,11 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/article", rules.Authenticated(), rules.Authorized(), articlehandler.SearchArticle)
 	// not tested
 	router.DELETE("/api/article", rules.Authenticated(), rules.Authorized(), articlehandler.DeleteArticleByID)
+
+	// -----------------------chapter handler routes --------------------------------------------
+	router.POST("/api/chapter/new", rules.Authenticated(), rules.Authorized(), chapterhandler.CreateChapter)
+	router.GET("/api/chapter", chapterhandler.GetChapterByID)
+
 	// ----------------------------------------------------------------
 	router.RouterGroup.Use(FilterDirectory())
 	{
