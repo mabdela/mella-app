@@ -93,7 +93,7 @@ func (coursehr *CourseHandler) UpdateCourse(c *gin.Context) {
 		} else if course.ID == "" {
 			resp.Msg = "course id must be submitted"
 		} else {
-			resp.Msg = "at least course title or translated title must be submitted "
+			resp.Msg = "Course title or translated title must be submitted "
 		}
 		c.JSON(http.StatusBadRequest, resp)
 		return
