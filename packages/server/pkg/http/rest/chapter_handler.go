@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mabdela/mella-app/packages/server/pkg/chapter"
@@ -17,6 +18,7 @@ import (
 type IChapterHandler interface {
 	CreateChapter(c *gin.Context)
 	GetChapterByID(c *gin.Context)
+	UpdateChapter(c *gin.Context)
 }
 
 type ChapterHandler struct {
@@ -98,6 +100,7 @@ func (chah *ChapterHandler) CreateChapter(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, eres)
 		return
 	}
+	inp.CreatedAt = time.Now()
 	ctx = context.WithValue(ctx, "chapter", inp)
 	chapter, er = chah.Service.CreateChapter(ctx)
 	if er != nil || chapter == nil {
@@ -154,5 +157,73 @@ func (chah *ChapterHandler) GetChapterByID(c *gin.Context) {
 }
 
 func (chah *ChapterHandler) UpdateChapter(c *gin.Context) {
+	in := &struct {
+		Title string `json:"title"`
+		ID    string `json:"id"`
+	}{}
+	resp := &struct {
+		Chapter *model.Chapter `json:"course"`
+		Updated bool           `json:"updated"`
+	}{}
+	eres := &struct {
+		Error string `json:"error"`
+	}{}
 
+	println("The Chapter ID and Title are ", in.ID, in.Title)
+	jdec := json.NewDecoder(c.Request.Body)
+	er := jdec.Decode(in)
+	msgs := []string{
+		" chapter id ", " title (length must be >= 5 characters)", "title(length must be >= 5 characters) and chapter id",
+	}
+	ctr := 0
+	if er != nil || in.ID == "" || (in.Title == "" || (len(in.Title) < 4)) {
+		if in.Title == "" || (len(in.Title) < 4) {
+			ctr = ctr | 2
+		}
+		if in.ID == "" {
+			ctr = ctr | 1
+		}
+		if ctr == 0 || er != nil {
+			eres.Error = "invalid input"
+		} else {
+			eres.Error = msgs[ctr-1]
+		}
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	ctx := c.Request.Context()
+	ctx = context.WithValue(ctx, "chapter_id", in.ID)
+	chapter, er, _ := chah.Service.GetChapterByID(ctx)
+	if er != nil || chapter.ID == "" {
+		eres.Error = " not found "
+		c.JSON(http.StatusNotFound, eres)
+		return
+	}
+	if chapter.Title == in.Title {
+		resp.Chapter = chapter
+		resp.Updated = false
+		c.JSON(http.StatusNotModified, resp)
+		return
+	}
+	chapter.Title = in.Title
+	ctx = context.WithValue(ctx, "chapter", chapter)
+	success, er := chah.Service.UpdateChapter(ctx)
+	if er != nil || !success {
+		if er != nil {
+			println(er.Error())
+		}
+		eres.Error = "no chapter was modified"
+		c.JSON(http.StatusNotModified, eres)
+		return
+	}
+	resp.Chapter = chapter
+	resp.Updated = true
+	c.JSON(http.StatusOK, resp)
 }
+
+// func (chah *ChapterHandler) GetChaptersOfACourse(c *gin.Context) (*model.Course, error, int) {
+// 	ctx := c.Request.Context()
+// 	in  :=&struct{
+
+// 	}
+// }

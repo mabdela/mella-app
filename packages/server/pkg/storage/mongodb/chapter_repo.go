@@ -87,3 +87,19 @@ func (repo *ChapterRepo) GetChapterByID(ctx context.Context) (*model.Chapter, er
 	}
 	return chapter, nil, state.OK
 }
+
+func (repo *ChapterRepo) UpdateChapter(ctx context.Context) (bool, error) {
+	chapter := ctx.Value("chapter").(*model.Chapter)
+	oid, er := primitive.ObjectIDFromHex(chapter.ID)
+	if er != nil {
+		return false, er
+	}
+	filter := bson.D{{"_id", oid}}
+	if uc, er := repo.Conn.Collection(state.CHAPTER).UpdateOne(ctx, filter, bson.D{{"$set",
+		bson.D{
+			{"title", chapter.Title},
+		}}}); er != nil || uc.ModifiedCount == 0 {
+		return false, errors.New("no record was updated")
+	}
+	return true, nil
+}
