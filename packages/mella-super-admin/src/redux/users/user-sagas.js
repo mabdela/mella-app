@@ -45,21 +45,18 @@ export function* getSuperAdminSaga(action) {
 
 export function* deleteSuperAdminSaga(action) {
   try {
-    yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
-    const deletedAdminData = yield call(
+    // yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
+    yield call(
       apiData,
       `${process.env.REACT_APP_DELETE_ADMIN_BY_ID}/${action.payload}`,
       null,
       'DELETE'
     );
 
-    console.log('deleted admin : ', deletedAdminData);
-
-    const { firstname, _id } = deletedAdminData;
     yield put(
       deleteAdmin({
-        message: `Admin User ${firstname} is successfully deleted`,
-        id: _id,
+        message: `Admin deleted successfully.`,
+        id: action.payload,
       })
     );
   } catch (error) {
@@ -75,10 +72,9 @@ export function* searchSuperAdminByNameSaga(action) {
       null,
       'GET'
     );
-    console.log(searchData);
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
 
-    yield put(searchAdminByName(searchData));
+    yield put(searchAdminByName(searchData.Admin));
   } catch (error) {
     yield put(setErrors(error));
   }

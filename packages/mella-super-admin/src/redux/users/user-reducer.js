@@ -34,8 +34,8 @@ const userReducer = (state = initialState, action) => {
       return {
         ...state,
         message: action.payload.message,
-        admins: state.admins.filter(admin => admin._id !== action.payload.id),
-        admin: state.admin.filter(admin => admin._id !== action.payload.id),
+        admins: state.admins.filter(admin => admin.id !== action.payload.id),
+        admin: state.admin.filter(admin => admin.id !== action.payload.id),
         loading: false,
       };
     case userActionTypes.GET_ADMIN:
@@ -49,7 +49,7 @@ const userReducer = (state = initialState, action) => {
     case userActionTypes.SEARCH_BY_EMAIL:
       return {
         ...state,
-        admin: [action.payload.admin],
+        admin: action.payload,
         message: action.payload.msg,
         loading: false,
       };

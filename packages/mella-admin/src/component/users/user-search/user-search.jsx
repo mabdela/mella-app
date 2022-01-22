@@ -188,6 +188,7 @@ const UserSearch = () => {
               <CommonList
                 key={user._id}
                 data={user}
+                edit={true}
                 handleEdit={handleModalOpen}
                 handleDelete={handleOpen}
               />

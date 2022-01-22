@@ -292,7 +292,8 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 			resp.Message = " Invalid Fullname \n Your full name should include yours and your father's name!"
 			fail = true
 		}
-		if input.Password == input.ConfirmPassword {
+		//  
+		if input.Password != input.ConfirmPassword {
 			resp.Message = "password mismatch"
 			fail = true
 		}
@@ -324,8 +325,8 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 			// 	c.JSON(http.StatusInternalServerError, nil)
 			// }
 			// Send Email for the password if this doesn't work raise internal server error.
-			// success := mail.SendApprovalEmail([]string{user.Email}, secretInfo /* The secrete here */, user.Firstname+" "+user.Lastname, c.Request.Host, false); success {
-			if true {
+			// if success := mail.SendApprovalEmail([]string{user.Email}, secretInfo /* The secrete here */, user.Firstname+" "+user.Lastname, c.Request.Host, false); success {
+				if true {
 				ctx = c.Request.Context()
 				ctx = context.WithValue(ctx, "user", user)
 				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {
