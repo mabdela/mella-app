@@ -19,6 +19,12 @@ type IChapterHandler interface {
 	CreateChapter(c *gin.Context)
 	GetChapterByID(c *gin.Context)
 	UpdateChapter(c *gin.Context)
+	// ------------------------------------------
+	GetChaptersOfACourse(c *gin.Context)
+	GetCourseOutline(c *gin.Context)
+	DeleteChapterByID(c *gin.Context)
+	GetArticleOverviewsOfChapter(c *gin.Context)
+	CountArticlesOfChapter(c *gin.Context)
 }
 
 type ChapterHandler struct {
@@ -169,7 +175,6 @@ func (chah *ChapterHandler) UpdateChapter(c *gin.Context) {
 		Error string `json:"error"`
 	}{}
 
-	println("The Chapter ID and Title are ", in.ID, in.Title)
 	jdec := json.NewDecoder(c.Request.Body)
 	er := jdec.Decode(in)
 	msgs := []string{
@@ -194,7 +199,11 @@ func (chah *ChapterHandler) UpdateChapter(c *gin.Context) {
 	ctx := c.Request.Context()
 	ctx = context.WithValue(ctx, "chapter_id", in.ID)
 	chapter, er, _ := chah.Service.GetChapterByID(ctx)
+	chapter.GetChapterIDFromObjectID()
 	if er != nil || chapter.ID == "" {
+		if er != nil {
+			println(er.Error())
+		}
 		eres.Error = " not found "
 		c.JSON(http.StatusNotFound, eres)
 		return
@@ -221,9 +230,40 @@ func (chah *ChapterHandler) UpdateChapter(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-// func (chah *ChapterHandler) GetChaptersOfACourse(c *gin.Context) (*model.Course, error, int) {
-// 	ctx := c.Request.Context()
-// 	in  :=&struct{
+func (chah *ChapterHandler) GetChaptersOfACourse(c *gin.Context) {
+	ctx := c.Request.Context()
+	courseID := c.Query("id")
+	eres := &struct {
+		Error string `json:"error"`
+	}{}
+	res := &struct {
+		Msg      string           `json:"msg"`
+		Chapters []*model.Chapter `json:"chapters"`
+	}{}
+	if courseID == "" {
+		eres.Error = "bad course id value"
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
 
-// 	}
-// }
+	ctx = context.WithValue(ctx, "course_id", courseID)
+	chapters, er, stcode := chah.Service.ChaptersOfACourse(ctx)
+	if er != nil || stcode == state.NOT_FOUND || stcode == state.INVALID_MONGODB_OBJECT_ID {
+
+	}
+	val, _ := json.Marshal(ctx)
+	vlas, _ := json.Marshal(in)
+	println(string(val), string(vlas))
+
+}
+func (chah *ChapterHandler) GetCourseOutline(c *gin.Context) {
+}
+
+func (chah *ChapterHandler) DeleteChapterByID(c *gin.Context) {
+}
+
+func (chah *ChapterHandler) GetArticleOverviewsOfChapter(c *gin.Context) {
+}
+
+func (chah *ChapterHandler) CountArticlesOfChapter(c *gin.Context) {
+}

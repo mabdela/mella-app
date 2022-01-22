@@ -19,6 +19,8 @@ type IChapterService interface {
 	GetChapterByID(ctx context.Context) (*model.Chapter, error, int)
 	// UpdateChapter uses "chapter" *model.Chapter instance to update the chapter.
 	UpdateChapter(ctx context.Context) (bool, error)
+	// ChaptersOfACourse uses "course_id"
+	ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int)
 }
 
 // ChapterService ... a chapter service instance service class.
@@ -51,4 +53,7 @@ func (chser *ChapterService) GetChapterByID(ctx context.Context) (*model.Chapter
 
 func (chser *ChapterService) UpdateChapter(ctx context.Context) (bool, error) {
 	return chser.Repo.UpdateChapter(ctx)
+}
+func (chser *ChapterService) ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int) {
+	return chser.Repo.ChaptersOfACourse(ctx)
 }

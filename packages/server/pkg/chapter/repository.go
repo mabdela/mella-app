@@ -13,4 +13,5 @@ type IChapterRepo interface {
 	GetCourseIDByChapterID(ctx context.Context) (string, error, int)
 	GetChapterByID(ctx context.Context) (*model.Chapter, error, int)
 	UpdateChapter(ctx context.Context) (bool, error)
+	ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int)
 }

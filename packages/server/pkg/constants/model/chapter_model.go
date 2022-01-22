@@ -3,6 +3,7 @@ package model
 import (
 	"time"
 
+	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -18,6 +19,10 @@ type Chapter struct {
 	// This introduction article id holds the reference to the introduction to this chapter
 	// by default the first article if this chapter will be assumed as the first and introduction article.
 	IntroductionArticleID string `json:"intro_article_id"  	  bson:"intro_article_id"`
+}
+
+func (ch *Chapter) GetChapterIDFromObjectID() {
+	ch.ID = helper.ObjectIDStringFromObjectID(ch.OID)
 }
 
 // This is the OneCategory that is going to be presented in the side bar layout.

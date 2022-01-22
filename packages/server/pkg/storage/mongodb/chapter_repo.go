@@ -90,6 +90,7 @@ func (repo *ChapterRepo) GetChapterByID(ctx context.Context) (*model.Chapter, er
 
 func (repo *ChapterRepo) UpdateChapter(ctx context.Context) (bool, error) {
 	chapter := ctx.Value("chapter").(*model.Chapter)
+	println("Chapter Updated ", chapter.Title)
 	oid, er := primitive.ObjectIDFromHex(chapter.ID)
 	if er != nil {
 		return false, er
@@ -102,4 +103,8 @@ func (repo *ChapterRepo) UpdateChapter(ctx context.Context) (bool, error) {
 		return false, errors.New("no record was updated")
 	}
 	return true, nil
+}
+
+func (repo *ChapterRepo) ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int) {
+	return nil, nil, 0
 }
