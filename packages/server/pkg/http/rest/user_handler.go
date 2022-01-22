@@ -319,12 +319,13 @@ func (userhandler *UserHandler) CreateUser(c *gin.Context) {
 				Email:     input.Email, //
 				Password:  hash,
 			}
-			secretInfo, success := userhandler.Authenticator.GetSecreteEmailInfo(user.Email)
-			if !success {
-				c.JSON(http.StatusInternalServerError, nil)
-			}
+			// secretInfo, success := userhandler.Authenticator.GetSecreteEmailInfo(user.Email)
+			// if !success {
+			// 	c.JSON(http.StatusInternalServerError, nil)
+			// }
 			// Send Email for the password if this doesn't work raise internal server error.
-			if success := mail.SendApprovalEmail([]string{user.Email}, secretInfo /* The secrete here */, user.Firstname+" "+user.Lastname, c.Request.Host, false); success {
+			// success := mail.SendApprovalEmail([]string{user.Email}, secretInfo /* The secrete here */, user.Firstname+" "+user.Lastname, c.Request.Host, false); success {
+			if true {
 				ctx = c.Request.Context()
 				ctx = context.WithValue(ctx, "user", user)
 				if user, er = userhandler.Service.CreateUser(ctx); user != nil && er == nil {

@@ -36,9 +36,12 @@ func loadOutlineJson(courseId string) ([]byte, error) {
 		log.Println(err)
 	}
 	fmt.Println(pwd)
-	pwd = strings.TrimRight(pwd, "cmd/server")
+	
+	pwd = strings.TrimRight(pwd, "/server")
+	pwd = strings.TrimRight(pwd, "/cmd")
+	
 	fmt.Println(pwd)
-	path := pwd + "es/server/content/english/outline.json" //to be modified
+	path := pwd + "/content/english/outline.json" //to be modified
 	// path = "/home/jeno/Desktop/jeno1990/mellaye2/mella-app/packages/server/content/english/outline.json"
 
 	jsonFile, err := os.Open(path)

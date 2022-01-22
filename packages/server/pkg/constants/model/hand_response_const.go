@@ -62,5 +62,10 @@ type UserResponse struct {
 type AdminResponse struct {
 	Success bool   `json:"success"`
 	Message string `json:"msg"`
-	Admin    *Admin
+	Admin   *Admin
+}
+type MoreThanOneAdminResponse struct {
+	Success bool   `json:"success"`
+	Message string `json:"msg"`
+	Admin   []*Admin
 }
