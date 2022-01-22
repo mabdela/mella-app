@@ -21,7 +21,7 @@ const SignUp = () => {
     lastname: '',
     email: '',
     password: '',
-    confirmPassword: '',
+    confirm_password: '',
   });
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
@@ -53,7 +53,7 @@ const SignUp = () => {
     dispatch(removeErrors());
   };
 
-  const { firstname, lastname, confirmPassword, email, password } =
+  const { firstname, lastname, confirm_password, email, password } =
     userCredential;
   return (
     <div className="container">
@@ -120,13 +120,13 @@ const SignUp = () => {
 
           <div className="input-container">
             <CommonInput
-              isError={errors.confirmPassword ? true : false}
+              isError={errors.confirm_password ? true : false}
               label="Confirm Password"
               type="password"
-              name="confirmPassword"
-              value={confirmPassword}
+              name="confirm_password"
+              value={confirm_password}
               onChange={handleChange}
-              error={errors.confirmPassword}
+              error={errors.confirm_password}
             />
           </div>
         </form>

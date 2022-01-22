@@ -12,12 +12,18 @@ const EditCourse = ({ handleClose, data }) => {
   const [translatedTitle, setTranslatedTitle] = useState(
     data.translated_title ? data.translated_title : ''
   );
+  const [imageurl, setImageUrl] = useState(data.imageurl ? data.imageurl : '');
+  const [articleCount, setArticleCount] = useState(
+    data.article_count ? data.article_count : ''
+  );
 
   const handleClick = () => {
     dispatch(
       updateCourseRequest({
         id: data.id,
         title,
+        imgurl: imageurl,
+        article_count: parseInt(articleCount),
         translated_title: translatedTitle,
       })
     );
@@ -56,6 +62,22 @@ const EditCourse = ({ handleClose, data }) => {
         type="text"
         name="translated_title"
         onChange={e => setTranslatedTitle(e.target.value)}
+      />
+      <CommonInput
+        value={imageurl}
+        needmargin
+        label="imageurl"
+        type="text"
+        name="imageurl"
+        onChange={e => setImageUrl(e.target.value)}
+      />
+      <CommonInput
+        value={articleCount}
+        needmargin
+        label="article_count"
+        type="text"
+        name="article_count"
+        onChange={e => setArticleCount(e.target.value)}
       />
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
         <CommonButton

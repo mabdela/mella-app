@@ -18,6 +18,7 @@ export const apiData = async (url, data, method) => {
     return putData.data;
   } else if (method === 'DELETE') {
     const deleteData = await axios.delete(url, config);
+    console.log('Delete URL: ', url, deleteData);
     return deleteData.data;
   }
 };

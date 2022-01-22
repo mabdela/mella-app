@@ -1,22 +1,30 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import {
+  BrowserRouter as Router,
+  Redirect,
+  Route,
+  Switch,
+} from 'react-router-dom';
 import DashboardPage from './pages/dashboard/dashboard';
 import LandingPage from './pages/landing/landing';
-import Resume from './pages/resume/resume';
+// import Resume from './pages/resume/resume';
 import CommonNotFound from '@mono-repo/common/not-found/not-found';
 import Course from './pages/course/course';
 import PrivateRoute from '@mono-repo/common/private-route/private-route';
 
 const App = () => {
   const user = useSelector(state => state.auth.isAuthenticated);
+
   return (
     <Router>
       <Switch>
         <Route
           exact
           path="/"
-          component={() => (user ? <Resume /> : <LandingPage />)}
+          component={() =>
+            user ? <Redirect to="/course-list" /> : <LandingPage />
+          }
         />
 
         <Route exact path="/about" component={LandingPage} />

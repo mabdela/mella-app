@@ -45,7 +45,7 @@ export function* getSuperAdminSaga(action) {
 
 export function* deleteSuperAdminSaga(action) {
   try {
-    yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
+    // yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
     const deletedAdminData = yield call(
       apiData,
       `${process.env.REACT_APP_DELETE_ADMIN_BY_ID}/${action.payload}`,

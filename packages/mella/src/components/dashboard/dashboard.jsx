@@ -8,7 +8,7 @@ import { togglePane } from '../../redux/side-bar/side-bar-actions';
 import { useMediaQuery } from 'react-responsive';
 
 import { Button } from '@mui/material';
-import { Link, Route, useRouteMatch } from 'react-router-dom';
+import { Link, Route, useLocation, useRouteMatch } from 'react-router-dom';
 import { logoutUserRequest } from '../../redux/user/user-action';
 import Routes from '../routing/routes';
 
@@ -34,12 +34,18 @@ const Dashboard = () => {
   };
 
   let { url } = useRouteMatch();
+
+  let { search } = useLocation();
+
+  const query = new URLSearchParams(search);
+  const queryParam = query.get('course');
+
   return (
     <div className="wrapper">
       {errorState && (
         <CommonAlert message={errorState} state="error" remove={removeAlert} />
       )}
-      <SideBar />
+      <SideBar query={queryParam} />
       <div className="main-content">
         <div
           className="nav"

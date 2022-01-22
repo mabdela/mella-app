@@ -20,7 +20,7 @@ import { useMediaQuery } from 'react-responsive';
 import { useLocation } from 'react-router';
 import { Link } from 'react-router-dom';
 
-const SideBar = () => {
+const SideBar = ({ query }) => {
   const [, setSearch] = useState('');
   const dispatch = useDispatch();
   const location = useLocation();
@@ -40,8 +40,8 @@ const SideBar = () => {
   };
 
   useEffect(() => {
-    dispatch(getItemsRequest());
-  }, [dispatch]);
+    dispatch(getItemsRequest(query));
+  }, [dispatch, query]);
 
   useEffect(() => {
     setFilteredCategories(state.items);
@@ -104,22 +104,18 @@ const SideBar = () => {
 
       {filteredCategories.length > 0 &&
         filteredCategories.map((data, index) => {
-          const newFilteredData =
-            data.id === 0
-              ? {
-                  ...data,
-                  name:
-                    `${name.charAt(0).toUpperCase() + name.slice(1)}'s ` +
-                    data.name,
-                }
-              : data;
+          // const newFilteredData =
+          //   data.id === 0
+          //     ? {
+          //         ...data,
+          //         name:
+          //           `${name.charAt(0).toUpperCase() + name.slice(1)}'s ` +
+          //           data.name,
+          //       }
+          //     : data;
 
           return (
-            <SubMenu
-              key={index}
-              data={newFilteredData}
-              handleSubNavClicked={showActive}
-            />
+            <SubMenu key={index} data={data} handleSubNavClicked={showActive} />
           );
         })}
 

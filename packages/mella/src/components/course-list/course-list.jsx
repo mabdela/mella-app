@@ -7,18 +7,23 @@ const CourseList = ({ course }) => {
   return (
     <Box sx={{ flexGrow: 1, textAlign: 'center', mt: 4 }}>
       <div className="course-card-list">
-        {course.map((data, index) => (
-          <Link to={data.link} className="link" key={index}>
-            <div className="course-card-container">
-              <img
-                src={data.image}
-                alt={data.name}
-                className="course-card-image"
-              />
-              <h2 style={{ color: '#4267b2' }}>{data.name}</h2>
-            </div>
-          </Link>
-        ))}
+        {course &&
+          course.map((data, index) => (
+            <Link
+              to={'/dashboard?course=' + data.id}
+              className="link"
+              key={index}
+            >
+              <div className="course-card-container">
+                <img
+                  src={data.imgurl}
+                  alt={data.title}
+                  className="course-card-image"
+                />
+                <h2 style={{ color: '#4267b2' }}>{data.title}</h2>
+              </div>
+            </Link>
+          ))}
       </div>
     </Box>
   );

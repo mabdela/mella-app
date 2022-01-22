@@ -84,8 +84,8 @@ export const sidebarReducer = (state = initialState, action) => {
     case sidebarTypes.GET_ITEMS:
       return {
         ...state,
-        items: action.payload.items,
-        mapObjects: action.payload.newMap,
+        items: action.payload,
+        // mapObjects: action.payload.newMap,
       };
     default:
       return state;
