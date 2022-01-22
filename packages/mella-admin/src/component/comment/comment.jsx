@@ -137,6 +137,7 @@ const Comment = () => {
             <CommonList
               key={comment.comment_id}
               comment={comment}
+              edit={false}
               handleDelete={handleOpen}
             />
           ))

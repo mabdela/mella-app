@@ -64,6 +64,7 @@ func (repo *AdminRepo) CreateAdmin(ctx context.Context) (*model.Admin, error) {
 		return nil, er
 	}
 }
+
 func (repo *AdminRepo) AdminByID(ctx context.Context) (*model.Admin, error) {
 	adminid := ctx.Value("admin_id").(string)
 	oid, er := primitive.ObjectIDFromHex(adminid)
@@ -79,6 +80,7 @@ func (repo *AdminRepo) AdminByID(ctx context.Context) (*model.Admin, error) {
 		return nil, er
 	}
 }
+
 func (repo *AdminRepo) UpdateAdmin(ctx context.Context) (*model.Admin, error) {
 	admin := ctx.Value("admin").(*model.Admin)
 	oid, er := primitive.ObjectIDFromHex(admin.ID)
@@ -193,12 +195,38 @@ func (repo *AdminRepo) GetAllAdmins(ctx context.Context) ([]*model.Admin, error)
 		return admins, nil
 	}
 }
-func (repo *AdminRepo) DeleteAccountById(ctx context.Context) (bool,error){
-	admin_id := ctx.Value("admin_id").(string)
-	Padmin_id, err := primitive.ObjectIDFromHex(admin_id)
+
+func (repo *AdminRepo) AdminByFirstName(ctx context.Context) ([]*model.Admin, error) {
+	firstName := ctx.Value("first_name").(string)
+	admins := []*model.Admin{}
+	// filter := bson.D{{"first_name", firstName}}
+
+	filter := func() bson.D {
+		return bson.D{{"first_name", firstName}}
+	}()
+	if cnt, er := repo.Conn.Collection(state.ADMINS).Find(ctx, filter); er != nil || cnt == nil {
+		return admins, er
+	} else {
+		for cnt.Next(ctx) {
+			madmin := &mongo_models.MAdmin{}
+			if er := cnt.Decode(madmin); er == nil {
+				admin := madmin.GetAdmin()
+				admins = append(admins, admin)
+			}
+		}
+		return admins, nil
+	}
+}
+
+func (repo *AdminRepo) DeleteAccountById(ctx context.Context) (bool, error) {
+
+	admin_id := ctx.Value("admin_id")
+
+	Padmin_id, err := primitive.ObjectIDFromHex(admin_id.(string))
 	if err != nil {
 		return false, err
 	}
+
 	filter := bson.M{"_id": Padmin_id}
 	collection := repo.Conn.Collection(state.ADMINS)
 	_, err = collection.DeleteOne(ctx, filter)
@@ -207,3 +235,5 @@ func (repo *AdminRepo) DeleteAccountById(ctx context.Context) (bool,error){
 	}
 	return true, nil
 }
+
+

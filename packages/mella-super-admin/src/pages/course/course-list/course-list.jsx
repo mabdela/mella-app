@@ -102,6 +102,7 @@ const CourseList = () => {
               <CommonList
                 key={course.id}
                 data={course}
+                edit={true}
                 handleEdit={handleEdit}
                 handleDelete={handleDelete}
               />

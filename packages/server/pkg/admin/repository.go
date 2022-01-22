@@ -11,9 +11,12 @@ type IAdminRepo interface {
 	AdminByEmail(ctx context.Context) (*model.Admin, error)
 	ChangePassword(ctx context.Context) bool
 	DeleteAccountByEmail(context.Context) error
+
 	DeleteAccountById(context.Context) (bool , error)
+	
 	CreateAdmin(ctx context.Context) (*model.Admin, error)
 	AdminByID(ctx context.Context) (*model.Admin, error)
+	AdminByFirstName(ctx context.Context) ([]*model.Admin, error)
 	UpdateAdmin(ctx context.Context) (*model.Admin, error)
 	// GetImageUrl  uses session in the context of the application to retrieve the user informationa
 	GetImageUrl(ctx context.Context) (string, error)

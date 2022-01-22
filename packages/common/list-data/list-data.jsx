@@ -13,7 +13,7 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-const ListData = ({ data, handleEdit, handleDelete }) => {
+const ListData = ({ data, handleEdit, handleDelete, edit }) => {
   const classes = useStyles();
   return (
     <Box
@@ -43,18 +43,16 @@ const ListData = ({ data, handleEdit, handleDelete }) => {
                 }`}
           </Box>
           <span>
-            <i
-              className="far fa-edit"
-              onClick={() =>
-                handleEdit &&
-                // (data.id ? handleEdit(data.id) : handleEdit(data._id))
-                handleEdit(data.id)
-              }
-              style={{
-                color: 'rgba(24,125,24,.7215686274509804)',
-                cursor: 'pointer',
-              }}
-            ></i>
+            {edit && (
+              <i
+                className="far fa-edit"
+                onClick={() => handleEdit && handleEdit(data.id)}
+                style={{
+                  color: 'rgba(24,125,24,.7215686274509804)',
+                  cursor: 'pointer',
+                }}
+              ></i>
+            )}
             <i
               onClick={() => {
                 // data.id

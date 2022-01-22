@@ -169,7 +169,7 @@ const AdminSearch = () => {
               <CommonList
                 key={user.id}
                 data={user}
-                // handleEdit={handleModalOpen}
+                edit={false}
                 handleDelete={handleOpen}
               />
             ))}

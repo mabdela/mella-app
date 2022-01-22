@@ -38,6 +38,7 @@ type IAdminHandler interface {
 	GoogleAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.GoogleUser)
 	FacebookAdminLoginCallBack(writer http.ResponseWriter, request *http.Request, user *model.FacebookUser)
 
+	AdminByFirstName(c *gin.Context)
 	GetAdminById(c *gin.Context)
 	GetAdminByEmail(c *gin.Context)
 	DeleteAdminById(c *gin.Context)
@@ -668,11 +669,6 @@ func (handler *AdminHandler) GetAdminById(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, res)
 		return
 	}
-	// if session.Role!=state.SUPERADMIN{
-	// 	res.Message="unauthorized request"
-	// 	c.JSON(http.StatusUnauthorized,res)
-	// 	return
-	// }
 	ctx = context.WithValue(ctx, "admin_id", adminId)
 	admin, err := handler.AdminSer.AdminByID(ctx)
 	if err != nil || admin == nil {
@@ -691,6 +687,38 @@ func (handler *AdminHandler) GetAdminById(c *gin.Context) {
 	res.Admin = admin
 	c.JSON(http.StatusOK, res)
 }
+
+func (handler *AdminHandler) AdminByFirstName(c *gin.Context) {
+	firstName := c.Param("first_name")
+	ctx := c.Request.Context()
+	// session:=ctx.Value("session").(*model.Session)
+	res := model.MoreThanOneAdminResponse{}
+	res.Success = false
+	res.Admin = nil
+	if firstName == "" {
+		res.Message = "the request should contain first name"
+		c.JSON(http.StatusBadRequest, res)
+		return
+	}
+	ctx = context.WithValue(ctx, "first_name", firstName)
+	admins, err := handler.AdminSer.AdminByFirstName(ctx)
+	if err != nil || admins == nil {
+		if strings.Contains(err.Error(), "no documet") {
+			res.Message = "admin not found"
+			c.JSON(http.StatusNotFound, res)
+			return
+		} else {
+			res.Message = "Internal server error"
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+	}
+	res.Message = "successfully loaded an admin"
+	res.Success = true
+	res.Admin = admins
+	c.JSON(http.StatusOK, res)
+}
+
 func (handler *AdminHandler) GetAdminByEmail(c *gin.Context) {
 	email := c.Param("email")
 	ctx := c.Request.Context()
@@ -742,8 +770,10 @@ func (handler *AdminHandler) DeleteAdminById(c *gin.Context) {
 	// 	c.JSON(http.StatusUnauthorized,res)
 	// 	return
 	// }
-	ctx = context.WithValue(ctx, "admin_ad", admin_id)
+	ctx = context.WithValue(ctx, "admin_id", admin_id)
+	fmt.Println(admin_id, " <= admin id")
 	success, err := handler.AdminSer.DeleteAcountById(ctx)
+	fmt.Println("after the call of Deleteacountbyid method")
 	if !success || err != nil {
 		res.Message = "Internal server error"
 		c.JSON(http.StatusInternalServerError, res)
@@ -753,6 +783,7 @@ func (handler *AdminHandler) DeleteAdminById(c *gin.Context) {
 	res.Success = true
 	c.JSON(http.StatusOK, res)
 }
+
 func (handler *AdminHandler) DeleteAdminByEmail(c *gin.Context) {
 	email := c.Param("email")
 	res := model.SimpleSuccessNotifier{}
