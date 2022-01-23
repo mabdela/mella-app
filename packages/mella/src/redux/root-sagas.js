@@ -20,6 +20,8 @@ import { getEndUserItemsSaga } from './side-bar/side-bar-sagas';
 import { maincontentTypes } from './main-content/main-content-types';
 import { sidebarTypes } from './side-bar/side-bar-types';
 import { userTypes } from './user/user-types';
+import { courseTypes } from './course/course-tyes';
+import { listCoursesEndUserSaga } from './course/course-sagas';
 
 function* rootSaga() {
   yield all([
@@ -43,6 +45,9 @@ function* rootSaga() {
     takeLatest(userTypes.GETING_COMMENTS, getEndUserCommentsSaga),
     takeLatest(userTypes.DELETING_COMMENT, deleteEndUserCommentSaga),
     takeLatest(userTypes.UPDATING_LIKE, updateEndUserLikeSaga),
+
+    // course
+    takeLatest(courseTypes.LISTING_COURSES, listCoursesEndUserSaga),
   ]);
 }
 

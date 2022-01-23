@@ -3,6 +3,7 @@ package rest
 import (
 	"context"
 	"io"
+	"log"
 	"net/http"
 	"os"
 
@@ -92,7 +93,7 @@ func (coursehr *CourseHandler) UpdateCourse(c *gin.Context) {
 		} else if course.ID == "" {
 			resp.Msg = "course id must be submitted"
 		} else {
-			resp.Msg = "at least course title or translated title must be submitted "
+			resp.Msg = "Course title or translated title must be submitted "
 		}
 		c.JSON(http.StatusBadRequest, resp)
 		return
@@ -111,7 +112,17 @@ func (coursehr *CourseHandler) UpdateCourse(c *gin.Context) {
 		changed = true
 	}
 	if oldCourse.TranslatedTitle != course.TranslatedTitle && len(course.TranslatedTitle) > 4 {
-		oldCourse.Title = course.TranslatedTitle
+		oldCourse.TranslatedTitle = course.TranslatedTitle
+		changed = true
+	}
+
+	if oldCourse.ArticleCount != course.ArticleCount {
+		oldCourse.ArticleCount = course.ArticleCount
+		changed = true
+	}
+
+	if oldCourse.Imgurl != course.Imgurl {
+		oldCourse.Imgurl = course.Imgurl
 		changed = true
 	}
 
@@ -201,7 +212,8 @@ func (coursehr *CourseHandler) UploadCourseImage(c *gin.Context) {
 
 // uses a param not a JSON
 func (coursehr *CourseHandler) GetCourseByID(c *gin.Context) {
-	courseID := c.Request.FormValue("id")
+
+	courseID := c.Param("id")
 	eres := &struct {
 		Error string `json:"error"`
 	}{"bad input  ; course id is not mensioned"}
@@ -223,36 +235,42 @@ func (coursehr *CourseHandler) GetCourseByID(c *gin.Context) {
 
 func (coursehr *CourseHandler) GetAllCourses(c *gin.Context) {
 	courses, er := coursehr.Service.GetAllCourses(c.Request.Context())
+
 	if er != nil || courses == nil || len(courses) == 0 {
-		c.JSON(http.StatusNotFound, []*model.Course{})
+
+		if er != nil {
+			log.Println(" error while loading courses :", er.Error())
+			c.JSON(http.StatusInternalServerError, []*model.Course{})
+			return
+		} else if courses == nil || len(courses) == 0 {
+			log.Println("courses field is emptey ", er.Error())
+			c.JSON(http.StatusNotFound, gin.H{"msg": "courses not found"})
+		}
 	}
 	c.JSON(http.StatusOK, courses)
 }
 
 func (handler *CourseHandler) RemoveCourse(c *gin.Context) {
 	ctx := c.Request.Context()
-	input := &struct {
-		CourseId string `json:"course_id"`
-	}{}
+	courseId:= c.Param("course_id")
+	// input := &struct {
+	// 	CourseId string `json:"course_id"`
+	// }{}
 	resp :=
 		&struct {
 			Succ bool   `json:"success"`
 			Msg  string `json:"msg"`
 		}{}
-	err := c.BindJSON(input)
+	// err := c.BindJSON(input)
 
 	resp.Succ = false
 	resp.Msg = ""
-	if err != nil || input.CourseId == "" {
-		if err != nil {
-			resp.Msg = "Bad paylod"
-		} else if input.CourseId == "" {
+	if courseId == "" {
 			resp.Msg = "empty Id field"
-		}
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
-	ctx = context.WithValue(ctx, "course_id", input.CourseId)
+	ctx = context.WithValue(ctx, "course_id", courseId)
 	response, err := handler.Service.RemoveCourse(ctx)
 	if response == false || err != nil {
 		resp.Msg = "internal server error"

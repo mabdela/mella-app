@@ -14,11 +14,12 @@ type IAdminService interface {
 	ChangePassword(ctx context.Context) bool
 	// DeleteAccountByEmail uses "email" string to delete an admin
 	DeleteAccountByEmail(context.Context) bool
-	DeleteAcountById(ctx context.Context) (bool , error)
+	DeleteAcountById(ctx context.Context) (bool, error)
 	// CreateAdmin uses "admin" *model.Admin to create a new Admin instance.
 	CreateAdmin(context.Context) (*model.Admin, error)
 	// AdminByID uses "admin_id" stringto return an admin instance.
 	AdminByID(ctx context.Context) (*model.Admin, error)
+	AdminByFirstName(ctx context.Context) ([]*model.Admin, error)
 	// UpdateAdmin uses "admin" *model.Admin
 	UpdateAdmin(ctx context.Context) (*model.Admin, error)
 	// GetImageUrl  uses the session (*model.Session) in the context of the application to retrieve the user informationa
@@ -68,6 +69,9 @@ func (adminser *AdminService) CreateAdmin(ctx context.Context) (*model.Admin, er
 func (adminser *AdminService) AdminByID(ctx context.Context) (*model.Admin, error) {
 	return adminser.Repo.AdminByID(ctx)
 }
+func (adminser *AdminService) AdminByFirstName(ctx context.Context) ([]*model.Admin, error) {
+	return adminser.Repo.AdminByFirstName(ctx)
+}
 func (adminser *AdminService) UpdateAdmin(ctx context.Context) (*model.Admin, error) {
 	return adminser.Repo.UpdateAdmin(ctx)
 }
@@ -91,6 +95,9 @@ func (adminser *AdminService) DeleteProfilePicture(ctx context.Context) bool {
 func (adminser *AdminService) GetAllAdmins(ctx context.Context) ([]*model.Admin, error) {
 	return adminser.Repo.GetAllAdmins(ctx)
 }
-func (adminser *AdminService) DeleteAcountById(ctx context.Context) (bool,error){
-	return adminser.DeleteAcountById(ctx)
+
+func (adminser *AdminService) DeleteAcountById(ctx context.Context) (bool, error) {
+	// fmt.Println("inside the service ",ctx.Value("admin_id"))
+
+	return adminser.Repo.DeleteAccountById(ctx)
 }

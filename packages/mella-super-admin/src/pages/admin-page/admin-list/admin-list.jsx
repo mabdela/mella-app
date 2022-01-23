@@ -23,14 +23,14 @@ const AdminList = () => {
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
+  // const [firstname, setFirstname] = useState('');
+  // const [lastname, setLastname] = useState('');
 
-  const handleOpen = (id, firstname, lastname) => {
+  const handleOpen = id => {
     setOpen(true);
     setId(id);
-    setFirstname(firstname);
-    setLastname(lastname);
+    // setFirstname(firstname);
+    // setLastname(lastname);
   };
   const handleClose = () => {
     setOpen(false);
@@ -84,8 +84,8 @@ const AdminList = () => {
               open={open}
               handleClose={handleClose}
               id={id}
-              firstname={firstname}
-              lastname={lastname}
+              // firstname={firstname}
+              // lastname={lastname}
             />
           )}
 
@@ -93,9 +93,9 @@ const AdminList = () => {
 
           {users.map(user => (
             <CommonList
-              key={user._id}
+              key={user.id}
               data={user}
-              // handleEdit={handleModalOpen}
+              edit={false}
               handleDelete={handleOpen}
             />
           ))}

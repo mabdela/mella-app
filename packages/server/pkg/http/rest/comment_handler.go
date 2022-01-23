@@ -20,6 +20,7 @@ type ICommentHandler interface {
 	UpdateCommentsLike(c *gin.Context)
 	RemoveComment(c *gin.Context)
 }
+
 type CommentHandler struct {
 	Authenticator auth.Authenticator
 	CommentSer    comment.ICommentService
@@ -31,6 +32,7 @@ func NewCommentHandler(auth auth.Authenticator, commentser comment.ICommentServi
 		CommentSer:    commentser,
 	}
 }
+
 func (handler *CommentHandler) AddComments(c *gin.Context) {
 	ctx := c.Request.Context()
 	res := model.CommentRes{}

@@ -18,7 +18,10 @@ import (
 )
 
 // Route returns an http handler for the api.
-func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler, chapterhandler IChapterHandler) *gin.Engine {
+
+func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler, outlinehundler IOutlineHandler,chapterhandler IChapterHandler) *gin.Engine {
+
+
 	router := gin.Default()
 
 	chirouter := chi.NewRouter()
@@ -49,9 +52,13 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.DELETE("/api/admin/user_by_email/:email", rules.Authenticated(), rules.Authorized(), userhandler.DeleteUsersByEmail)
 
 	router.GET("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminById)
+	router.GET("/api/admin/admin_by_firstname/:first_name", rules.Authenticated(), rules.Authorized(), adminhandler.AdminByFirstName)
+
 	router.GET("/api/admin/admin_by_Email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminByEmail)
+	
 	router.DELETE("/api/admin/admin_by_email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminByEmail)
 	router.DELETE("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminById)
+	
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -64,10 +71,11 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.POST("/api/superadmin/course/new", rules.Authenticated(), rules.Authorized(), coursehandler.CreateCourse)
 	router.PUT("/api/superadmin/course", rules.Authenticated(), rules.Authorized(), coursehandler.UpdateCourse)
 	router.PUT("/api/superadmin/course/picture", rules.Authenticated(), rules.Authorized(), coursehandler.UploadCourseImage)
-	router.DELETE("/api/superadmin/course/delete", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
+	router.DELETE("/api/superadmin/course/delete/:course_id", rules.Authenticated(), rules.Authorized(), coursehandler.RemoveCourse)
 	// This course handlers are newly added  , JENO Test them and edit something if needed
-	router.GET("/api/course/", rules.Authenticated(), coursehandler.GetCourseByID)
-	router.GET("/api/courses/", rules.Authenticated(), coursehandler.GetAllCourses)
+	router.GET("/api/course/:id", rules.Authenticated(), coursehandler.GetCourseByID)
+	router.GET("/api/courses", rules.Authenticated(), coursehandler.GetAllCourses)
+
 	router.PUT("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.ChangeProfilePicture)
 	router.DELETE("/api/user/profile/img", rules.Authenticated(), rules.Authorized(), userhandler.DeleteProfilePicture)
 	router.DELETE("/api/user/deactivate", userhandler.DeactivateAccount)
@@ -114,6 +122,8 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 		router.StaticFS("/images/", http.Dir(os.Getenv("ASSETS_DIRECTORY")+"images/"))
 	}
 
+	//load outiline
+	router.GET("/api/user/outline/:course_id", rules.Authenticated(), rules.Authorized(), outlinehundler.GetOutline)
 	return router
 }
 

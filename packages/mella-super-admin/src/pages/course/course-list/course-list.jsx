@@ -12,25 +12,34 @@ import {
   listCourseRequest,
   removeMessage,
 } from 'src/redux/course/course-action';
+import EditCourse from 'src/component/edit-modal/edit-course';
 
 const CourseList = () => {
   const dispatch = useDispatch();
   const courses = useSelector(state => state.course.courses);
   const loading = useSelector(state => state.users.loading);
-  const message = useSelector(state => state.users.message);
+  const message = useSelector(state => state.course.message);
   const error = useSelector(state => state.errors.message);
 
   const [open, setOpen] = useState(false);
+  const [showEdit, setShowEdit] = useState(false);
   const [id, setId] = useState('');
-  const [firstname, setFirstname] = useState('');
-  const [lastname, setLastname] = useState('');
+  const [updatedId, setUpdatedId] = useState('');
 
-  const handleOpen = (id, firstname, lastname) => {
+  const handleDelete = id => {
     setOpen(true);
     setId(id);
-    setFirstname(firstname);
-    setLastname(lastname);
   };
+
+  const handleEdit = id => {
+    setUpdatedId(id);
+    setShowEdit(true);
+  };
+
+  const handleCloseEdit = () => {
+    setShowEdit(false);
+  };
+
   const handleClose = () => {
     setOpen(false);
   };
@@ -73,31 +82,31 @@ const CourseList = () => {
         />
       )}
 
+      {/* update */}
+      {showEdit && (
+        <EditCourse
+          handleClose={handleCloseEdit}
+          data={courses.find(course => course.id === updatedId)}
+        />
+      )}
+
       {loading ? (
         <CommonLoading />
       ) : (
         <>
-          {/*modal  */}
-          {open && (
-            <PopUp
-              open={open}
-              handleClose={handleClose}
-              id={id}
-              firstname={firstname}
-              lastname={lastname}
-            />
-          )}
+          {/*delete modal  */}
+          {open && <PopUp open={open} handleClose={handleClose} id={id} />}
 
-          {/* take a look at it */}
-
-          {courses.map(course => (
-            <CommonList
-              key={course._id}
-              data={course}
-              // handleEdit={handleModalOpen}
-              handleDelete={handleOpen}
-            />
-          ))}
+          {courses.length &&
+            courses.map(course => (
+              <CommonList
+                key={course.id}
+                data={course}
+                edit={true}
+                handleEdit={handleEdit}
+                handleDelete={handleDelete}
+              />
+            ))}
         </>
       )}
     </Box>

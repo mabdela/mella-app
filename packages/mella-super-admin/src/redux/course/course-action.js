@@ -45,7 +45,6 @@ export const deleteCourseRequest = course => ({
   payload: course,
 });
 
-export const listCourseRequest = course => ({
+export const listCourseRequest = () => ({
   type: adminCourseTypes.LISTING_COURSE,
-  payload: course,
 });
