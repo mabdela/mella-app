@@ -3,16 +3,22 @@ package rest
 import (
 	"context"
 	"encoding/json"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/mabdela/mella-app/packages/server/pkg/chapter"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
 	"github.com/mabdela/mella-app/packages/server/pkg/course"
 )
 
 // IChapterHandler represents an interface for the ChapterHandler structure.
 type IChapterHandler interface {
+	CreateChapter(c *gin.Context)
+	GetChapterByID(c *gin.Context)
+	UpdateChapter(c *gin.Context)
 }
 
 type ChapterHandler struct {
@@ -42,10 +48,24 @@ func (chah *ChapterHandler) CreateChapter(c *gin.Context) {
 	}{}
 	dec := json.NewDecoder(c.Request.Body)
 	err := dec.Decode(inp)
+
+	misses := []string{
+		"course id",
+		"title",
+		"course id and title",
+	}
+	temp := 0
 	if err != nil ||
 		inp.CourseID == "" ||
-		inp.ChapterNumber == 0 ||
+		// inp.ChapterNumber == 0 ||
 		inp.Title == "" {
+		if inp.CourseID == "" {
+			temp = temp | 1
+		}
+		if inp.Title == "" {
+			temp = temp | 2
+		}
+		eres.Error = misses[temp-1]
 		eres.StatusCode = http.StatusBadRequest
 		c.JSON(http.StatusBadRequest, eres)
 		return
@@ -58,6 +78,18 @@ func (chah *ChapterHandler) CreateChapter(c *gin.Context) {
 		c.JSON(http.StatusNotFound, eres)
 		return
 	}
+
+	// check whether the chapter title in this course already exist.
+	// using a method get a chapter with this course_id and chapter_title
+	ctx = context.WithValue(ctx, "chapter_title", inp.Title)
+	ctx = context.WithValue(ctx, "course_id", inp.CourseID)
+	chapter, _, _ := chah.Service.GetChapterByTitleAndCourseID(ctx)
+	if chapter != nil {
+		eres.Error = "chapter with this title already exist"
+		eres.StatusCode = uint(http.StatusUnauthorized)
+		c.JSON(http.StatusUnauthorized, eres)
+		return
+	}
 	course.ChapterNumber++
 	inp.ChapterNumber = course.ChapterNumber
 	ctx = context.WithValue(ctx, "course", course)
@@ -68,9 +100,11 @@ func (chah *ChapterHandler) CreateChapter(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, eres)
 		return
 	}
-	ctx = context.WithValue(ctx, "chapter_id", inp)
-	chapter, er := chah.Service.CreateChapter(ctx)
+	inp.CreatedAt = time.Now()
+	ctx = context.WithValue(ctx, "chapter", inp)
+	chapter, er = chah.Service.CreateChapter(ctx)
 	if er != nil || chapter == nil {
+		println(er.Error())
 		eres.Error = "internal problem please try again"
 		eres.StatusCode = http.StatusInternalServerError
 		c.JSON(http.StatusInternalServerError, eres)
@@ -82,8 +116,114 @@ func (chah *ChapterHandler) CreateChapter(c *gin.Context) {
 	c.JSON(http.StatusOK, res)
 }
 
+// GetChapterByID ..
 func (chah *ChapterHandler) GetChapterByID(c *gin.Context) {
 	ctx := c.Request.Context()
 	chapterID := c.Query("id")
-	print(chapterID, ctx)
+	res := &struct {
+		Chapter *model.Chapter `json:"chapter"`
+		ID      string         `json:"id"`
+	}{}
+	eres := &struct {
+		Error string `json:"error"`
+	}{
+		"bad request ",
+	}
+	if chapterID == "" {
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	res.ID = chapterID
+	var er error
+	var scode int
+	ctx = context.WithValue(ctx, "chapter_id", chapterID)
+	res.Chapter, er, scode = chah.Service.GetChapterByID(ctx)
+	if er != nil {
+		switch scode {
+		case state.NOT_FOUND:
+			{
+				log.Println("Chapter Record Not found with ID  ", chapterID)
+			}
+		case state.INVALID_MONGODB_OBJECT_ID:
+			{
+				log.Println("Invalid Mongodb ID ")
+			}
+		}
+		eres.Error = "article with this id does not exist"
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	c.JSON(http.StatusOK, res)
 }
+
+func (chah *ChapterHandler) UpdateChapter(c *gin.Context) {
+	in := &struct {
+		Title string `json:"title"`
+		ID    string `json:"id"`
+	}{}
+	resp := &struct {
+		Chapter *model.Chapter `json:"course"`
+		Updated bool           `json:"updated"`
+	}{}
+	eres := &struct {
+		Error string `json:"error"`
+	}{}
+
+	println("The Chapter ID and Title are ", in.ID, in.Title)
+	jdec := json.NewDecoder(c.Request.Body)
+	er := jdec.Decode(in)
+	msgs := []string{
+		" chapter id ", " title (length must be >= 5 characters)", "title(length must be >= 5 characters) and chapter id",
+	}
+	ctr := 0
+	if er != nil || in.ID == "" || (in.Title == "" || (len(in.Title) < 4)) {
+		if in.Title == "" || (len(in.Title) < 4) {
+			ctr = ctr | 2
+		}
+		if in.ID == "" {
+			ctr = ctr | 1
+		}
+		if ctr == 0 || er != nil {
+			eres.Error = "invalid input"
+		} else {
+			eres.Error = msgs[ctr-1]
+		}
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	ctx := c.Request.Context()
+	ctx = context.WithValue(ctx, "chapter_id", in.ID)
+	chapter, er, _ := chah.Service.GetChapterByID(ctx)
+	if er != nil || chapter.ID == "" {
+		eres.Error = " not found "
+		c.JSON(http.StatusNotFound, eres)
+		return
+	}
+	if chapter.Title == in.Title {
+		resp.Chapter = chapter
+		resp.Updated = false
+		c.JSON(http.StatusNotModified, resp)
+		return
+	}
+	chapter.Title = in.Title
+	ctx = context.WithValue(ctx, "chapter", chapter)
+	success, er := chah.Service.UpdateChapter(ctx)
+	if er != nil || !success {
+		if er != nil {
+			println(er.Error())
+		}
+		eres.Error = "no chapter was modified"
+		c.JSON(http.StatusNotModified, eres)
+		return
+	}
+	resp.Chapter = chapter
+	resp.Updated = true
+	c.JSON(http.StatusOK, resp)
+}
+
+// func (chah *ChapterHandler) GetChaptersOfACourse(c *gin.Context) (*model.Course, error, int) {
+// 	ctx := c.Request.Context()
+// 	in  :=&struct{
+
+// 	}
+// }

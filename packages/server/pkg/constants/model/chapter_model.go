@@ -8,7 +8,7 @@ import (
 
 // This is the Chapter model holding the information to
 type Chapter struct {
-	OID           primitive.ObjectID `bson:"_id,omitempty"`
+	OID           primitive.ObjectID `bson:"_id,omitempty" json:"-"`
 	ID            string             `json:"id,omitempty" 		  bson:"id,omitempty"`
 	CourseID      string             `json:"course_id"  		  bson:"course_id"`
 	ChapterNumber uint               `json:"chapter_number" 	  bson:"chapter_number"`
