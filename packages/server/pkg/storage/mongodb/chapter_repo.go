@@ -122,6 +122,7 @@ func (repo *ChapterRepo) ChaptersOfACourse(ctx context.Context) ([]*model.Chapte
 		chapter := &model.Chapter{}
 		eer := rows.Decode(chapter)
 		if eer == nil {
+			chapter.GetChapterIDFromObjectID()
 			chapters = append(chapters, chapter)
 		}
 	}

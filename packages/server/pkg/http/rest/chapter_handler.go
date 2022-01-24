@@ -21,8 +21,8 @@ type IChapterHandler interface {
 	UpdateChapter(c *gin.Context)
 	GetChaptersOfACourse(c *gin.Context)
 	GetCourseOutline(c *gin.Context)
-	// ------------------------------------------
 	DeleteChapterByID(c *gin.Context)
+	// ------------------------------------------
 	GetArticleOverviewsOfChapter(c *gin.Context)
 	CountArticlesOfChapter(c *gin.Context)
 }
@@ -233,10 +233,6 @@ func (chah *ChapterHandler) UpdateChapter(c *gin.Context) {
 func (chah *ChapterHandler) GetChaptersOfACourse(c *gin.Context) {
 	ctx := c.Request.Context()
 	courseID := c.Query("course_id")
-	// outline, er := strconv.ParseBool(c.Query("outline"))
-	// if er != nil {
-	// 	outline = false
-	// }
 	eres := &struct {
 		Error string `json:"error"`
 	}{}
@@ -252,13 +248,8 @@ func (chah *ChapterHandler) GetChaptersOfACourse(c *gin.Context) {
 	var chapters []*model.Chapter
 	var stcode int
 	var er error
-
 	ctx = context.WithValue(ctx, "course_id", courseID)
-	// if outline {
-	// 	chapter, er, stcode = chah.Service.OutlinedChaptersOfCourse(ctx)
-	// } else {
 	chapters, er, stcode = chah.Service.ChaptersOfACourse(ctx)
-	// }
 	if er != nil || stcode != state.OK {
 		if stcode == state.NOT_FOUND {
 			eres.Error = "not record found"
@@ -297,7 +288,6 @@ func (chah *ChapterHandler) GetCourseOutline(c *gin.Context) {
 	var chapters []*model.ChapterDetail
 	var stcode int
 	var er error
-
 	ctx = context.WithValue(ctx, "course_id", courseID)
 	chapters, er, stcode = chah.Service.OutlinedChaptersOfCourse(ctx)
 	if er != nil || stcode != state.OK {
@@ -320,7 +310,6 @@ func (chah *ChapterHandler) GetCourseOutline(c *gin.Context) {
 	res.Chapters = chapters
 	c.JSON(http.StatusOK, res)
 }
-
 func (chah *ChapterHandler) DeleteChapterByID(c *gin.Context) {
 	chapterID := c.Query("id")
 	ctx := c.Request.Context()
@@ -363,6 +352,5 @@ func (chah *ChapterHandler) DeleteChapterByID(c *gin.Context) {
 
 func (chah *ChapterHandler) GetArticleOverviewsOfChapter(c *gin.Context) {
 }
-
 func (chah *ChapterHandler) CountArticlesOfChapter(c *gin.Context) {
 }
