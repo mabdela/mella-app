@@ -252,21 +252,16 @@ func (coursehr *CourseHandler) GetAllCourses(c *gin.Context) {
 
 func (handler *CourseHandler) RemoveCourse(c *gin.Context) {
 	ctx := c.Request.Context()
-	courseId:= c.Param("course_id")
-	// input := &struct {
-	// 	CourseId string `json:"course_id"`
-	// }{}
+	courseId := c.Param("course_id")
 	resp :=
 		&struct {
 			Succ bool   `json:"success"`
 			Msg  string `json:"msg"`
 		}{}
-	// err := c.BindJSON(input)
-
 	resp.Succ = false
 	resp.Msg = ""
 	if courseId == "" {
-			resp.Msg = "empty Id field"
+		resp.Msg = "empty Id field"
 		c.JSON(http.StatusBadRequest, resp)
 		return
 	}
