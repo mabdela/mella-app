@@ -5,6 +5,7 @@ import {
   addComment,
   deleteComment,
   getComments,
+  listCorses,
   loginFacebook,
   loginGoogle,
   loginUser,
@@ -15,6 +16,8 @@ import {
 
 export function* registerEndUserSaga(action) {
   try {
+    console.log(action.payload);
+
     yield call(
       apiData,
       `${process.env.REACT_APP_SIGN_UP}`,
@@ -77,6 +80,7 @@ export function* loginGoogleSaga(action) {
 export function* logoutEndUserSaga() {
   try {
     yield call(apiData, `${process.env.REACT_APP_LOG_OUT}`, null, 'GET');
+    localStorage.removeItem('token');
     yield put(logoutUser());
   } catch (error) {
     yield put(setErrors(error));

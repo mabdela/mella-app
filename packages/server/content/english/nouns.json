@@ -1,0 +1,64 @@
+{
+    "title" : "nouns",
+    "desc" : [
+        "This course is to describe nouns in detail "
+        ],
+    "course_id"  : "6186dc10c252a16864f82129",
+    "figure_desc"  : "" , 
+    "sub_articles": [
+            {
+                "index":1 , 
+                "sub_title" : " What is noun",
+                "sub_title_translation" : "",
+                "figure_desc"  : "" , 
+                "datas" : [
+                    "Nouns are an important part of speech in English, probably second only to verbs. It is difficult to say much without using a noun \n There are several different types of English nouns. It is often useful to recognize what type a noun is because different types sometimes have different rules. This helps you to use them correctly. "
+                    ]
+            },
+            {
+                "index":2 , 
+                "sub_title" : " Common Nouns and Proper Nouns",
+                "sub_title_translation" : "",
+                "figure_desc"  : "" , 
+                "datas" : [
+                    " Most nouns are common nouns. Common nouns refer to people, places and things in general like chair or dog. Any noun that is not a name is a common noun. \n Examples: teacher, car, music, danger, receipt"
+                ]
+            },
+            {
+                "index":3, 
+                "sub_title" : " Proper Nouns",
+                "sub_title_translation" : "",
+                "figure_desc"  : "" , 
+                "datas" : [
+                    "Names of people, places or organizations are proper nouns. Your name is a proper noun. London is a proper noun United Nations is a proper noun.\n Rule: Proper nouns always start with a capital letter.\nExamples: Jane Thailand, Sunday, James Bond, Einstein, Superman,Game of Thrones, Shakespeare \nNote: Adjectives that we make from proper nouns also usually startwith a capital letter, for example Shakespearian, Orwellian."
+                ]
+            },
+            {
+                "index":4, 
+                "sub_title" : "Concrete Nouns and Abstract Nouns",
+                "sub_title_translation" : "",
+                "figure_desc"  : "" , 
+                "datas" : [
+                    "oncrete nouns are physical things that you can touch.\n Examples: man, rice, head, car, furniture, mobile phone"
+                ]
+            },
+            {
+                "index":5, 
+                "sub_title" : "Countable Nouns and Uncountable Nouns",
+                "sub_title_translation" : "",
+                "figure_desc"  : "" , 
+                "datas" : [
+                    "countable nouns \nYou can count countable nouns. Countable nouns have singular and plural forms.\nExamples: ball, boy, cat, person \n uncountable nouns\nYou cannot count uncountable nouns. You need to use 'measure words' to quantify them."
+                ]
+            },
+            {
+                "index":6, 
+                "sub_title" : "Singular and Plural Possessive Nouns",
+                "sub_title_translation" : "",
+                "figure_desc"  : "" , 
+                "datas" : [
+                    "singular nouns\nIn English grammar, an apostrophe is used to indecate ownership ,However, apostrophes can be tricky. This article is intended to help you understand how to use apostrophes correctly with singular & plural nouns "
+                ]
+            }
+        ]
+    }

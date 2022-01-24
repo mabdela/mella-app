@@ -12,7 +12,6 @@ import { userActionTypes } from './users-types';
 
 export function* addSuperAdminSaga(action) {
   try {
-    console.log(action.payload);
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
     const addedAdmin = yield call(
       apiData,
@@ -20,7 +19,7 @@ export function* addSuperAdminSaga(action) {
       action.payload,
       'POST'
     );
-    yield put(addAdmin({ message: addedAdmin.message }));
+    yield put(addAdmin({ message: addedAdmin.data.message }));
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -46,19 +45,18 @@ export function* getSuperAdminSaga(action) {
 
 export function* deleteSuperAdminSaga(action) {
   try {
-    yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
-    const deletedAdminData = yield call(
+    // yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
+    yield call(
       apiData,
       `${process.env.REACT_APP_DELETE_ADMIN_BY_ID}/${action.payload}`,
       null,
       'DELETE'
     );
 
-    const { firstname, _id } = deletedAdminData;
     yield put(
       deleteAdmin({
-        message: `Admin User ${firstname} is successfully deleted`,
-        id: _id,
+        message: `Admin deleted successfully.`,
+        id: action.payload,
       })
     );
   } catch (error) {
@@ -76,7 +74,7 @@ export function* searchSuperAdminByNameSaga(action) {
     );
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
 
-    yield put(searchAdminByName(searchData));
+    yield put(searchAdminByName(searchData.Admin));
   } catch (error) {
     yield put(setErrors(error));
   }
@@ -90,9 +88,12 @@ export function* searchSuperAdminByEmailSaga(action) {
       null,
       'GET'
     );
+    console.log('search admin by email: ', action.payload);
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
 
-    yield put(searchAdminByEmail(searchData));
+    yield put(
+      searchAdminByEmail({ msg: searchData.msg, admin: searchData.Admin })
+    );
   } catch (error) {
     yield put(setErrors(error));
   }

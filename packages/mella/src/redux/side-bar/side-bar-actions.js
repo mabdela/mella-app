@@ -46,13 +46,14 @@ export const setLocation = location => ({
 });
 //
 
-export const getItems = ({ items, newMap }) => ({
+export const getItems = items => ({
   type: sidebarTypes.GET_ITEMS,
-  payload: { items, newMap },
+  payload: items,
 });
 
 // action creators
 
-export const getItemsRequest = () => ({
+export const getItemsRequest = courseId => ({
   type: sidebarTypes.GETING_ITEMS,
+  id: courseId,
 });

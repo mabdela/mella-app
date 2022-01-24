@@ -1,5 +1,5 @@
+import { Box, Modal, Typography } from '@mui/material';
 import React from 'react';
-import { Modal, Box, Typography } from '@mui/material';
 import { useLocation } from 'react-router';
 import './pop-up.scss';
 
@@ -11,6 +11,7 @@ const PopUp = ({
   deleteComment,
   deleteUser,
   deleteAdmin,
+  deleteCourse,
   deleteQuiz,
   question,
 }) => {
@@ -38,12 +39,8 @@ const PopUp = ({
             >
               Are you sure?
             </Typography>
-            <Typography
-              id="modal-modal-description"
-              sx={{ mt: 2 }}
-              gutterBottom={true}
-            >
-              {location.pathname === '/quizzes/quizzes-list'
+            <Typography id="modal-modal-description" mt={2} gutterBottom={true}>
+              {/* {location.pathname === '/quizzes/quizzes-list'
                 ? `Are you sure you want to delete question number ${question}`
                 : location.pathname === '/comments/comment-list'
                 ? `Are you sure you want to permanently delete ${
@@ -57,7 +54,8 @@ const PopUp = ({
                   `Are you sure you want to permanently delete ${
                     firstname.charAt(0).toUpperCase() + firstname.slice(1)
                   }
-             ${lastname.charAt(0).toUpperCase() + lastname.slice(1)}?`}
+             ${lastname.charAt(0).toUpperCase() + lastname.slice(1)}?`} */}
+              Are you sure you want to permanently delete?
             </Typography>
             <Box mt={2}>
               <button
@@ -80,6 +78,8 @@ const PopUp = ({
                     ? deleteAdmin
                     : location.pathname === '/quizzes/quizzes-list'
                     ? deleteQuiz
+                    : location.pathname === '/admin/course-list'
+                    ? deleteCourse
                     : undefined
                 }
                 // variant="contained"

@@ -25,6 +25,4 @@ export const userTypes = {
 
   GOOGLE_LOGIN: 'GOOGLE_LOGIN',
   GOOGLE_LOGING: 'GOOGLE_LOGING',
-
-  ADD_LIKE: 'ADD_LIKE',
 };
