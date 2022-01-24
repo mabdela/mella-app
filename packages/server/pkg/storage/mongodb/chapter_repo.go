@@ -3,9 +3,11 @@ package mongodb
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/mabdela/mella-app/packages/server/pkg/chapter"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model/mongo_models"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
 	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 	"go.mongodb.org/mongo-driver/bson"
@@ -90,6 +92,7 @@ func (repo *ChapterRepo) GetChapterByID(ctx context.Context) (*model.Chapter, er
 
 func (repo *ChapterRepo) UpdateChapter(ctx context.Context) (bool, error) {
 	chapter := ctx.Value("chapter").(*model.Chapter)
+	println("Chapter Updated ", chapter.Title)
 	oid, er := primitive.ObjectIDFromHex(chapter.ID)
 	if er != nil {
 		return false, er
@@ -102,4 +105,85 @@ func (repo *ChapterRepo) UpdateChapter(ctx context.Context) (bool, error) {
 		return false, errors.New("no record was updated")
 	}
 	return true, nil
+}
+
+func (repo *ChapterRepo) ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int) {
+	courseID := ctx.Value("course_id").(string)
+	filter := bson.D{{"courseid", courseID}}
+	rows, er := repo.Conn.Collection(state.CHAPTER).Find(ctx, filter)
+	if er != nil || rows == nil {
+		if er != nil {
+			return nil, er, state.QUERY_ERROR
+		}
+		return nil, fmt.Errorf("no record was found"), state.NOT_FOUND
+	}
+	chapters := []*model.Chapter{}
+	for rows.Next(ctx) {
+		chapter := &model.Chapter{}
+		eer := rows.Decode(chapter)
+		if eer == nil {
+			chapters = append(chapters, chapter)
+		}
+	}
+	if len(chapters) == 0 {
+		return chapters, errors.New("not found"), state.NOT_FOUND
+	}
+	return chapters, nil, state.OK
+}
+
+func (repo *ChapterRepo) OutlinedChaptersOfCourse(ctx context.Context) ([]*model.ChapterDetail, error, int) {
+	courseID := ctx.Value("course_id").(string)
+	filter := bson.D{{"courseid", courseID}}
+	rows, er := repo.Conn.Collection(state.CHAPTER).Find(ctx, filter)
+	if er != nil || rows == nil {
+		if er != nil {
+			return nil, er, state.QUERY_ERROR
+		}
+		return nil, fmt.Errorf("no record was found"), state.NOT_FOUND
+	}
+	chapters := []*model.ChapterDetail{}
+	for rows.Next(ctx) {
+		chapter := &model.ChapterDetail{}
+		eer := rows.Decode(&(chapter.Chapter))
+		articleOverviews := []*model.ArticleOverview{}
+		if eer == nil {
+			// getting the articlesg
+			chapter.Chapter.GetChapterIDFromObjectID()
+			fil := bson.D{{"chapterid", chapter.Chapter.ID}}
+			resu, err := repo.Conn.Collection(state.ARTICLES).Find(ctx, fil)
+			if err == nil && resu != nil {
+				for resu.Next(ctx) {
+					arti := &mongo_models.MArticle{}
+					er := resu.Decode(arti)
+					if er == nil {
+						articleOverviews = append(articleOverviews, arti.GetArticle().GetArticleOverview())
+					}
+				}
+				chapter.Articles = articleOverviews
+			} else {
+				chapter.Articles = []*model.ArticleOverview{}
+			}
+			chapters = append(chapters, chapter)
+		}
+	}
+	if len(chapters) == 0 {
+		return chapters, errors.New("not found"), state.NOT_FOUND
+	}
+	return chapters, nil, state.OK
+}
+func (repo *ChapterRepo) DeleteChapterByID(ctx context.Context) (error, int) {
+	chapterID := ctx.Value("chapter_id").(string)
+	oid, er := primitive.ObjectIDFromHex(chapterID)
+	if er != nil {
+		return er, state.INVALID_MONGODB_OBJECT_ID
+	}
+	filter := bson.D{{"_id", oid}}
+	uc, er := repo.Conn.Collection(state.CHAPTER).DeleteOne(ctx, filter)
+	if er != nil || uc.DeletedCount == 0 {
+		if er != nil {
+			return er, state.QUERY_ERROR
+		}
+		return errors.New("no row deleted"), state.NOT_FOUND
+	}
+	return nil, state.OK
 }

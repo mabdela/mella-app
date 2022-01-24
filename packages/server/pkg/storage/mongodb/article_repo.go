@@ -227,7 +227,7 @@ func (repo *ArticleRepo) SearchArticlesByTitle(ctx context.Context) ([]*model.Ar
 		for resu.Next(ctx) {
 			arti := &mongo_models.MArticle{}
 			er := resu.Decode(arti)
-			if er != nil {
+			if er == nil {
 				articleOverviews = append(articleOverviews, arti.GetArticle().GetArticleOverview())
 			}
 		}

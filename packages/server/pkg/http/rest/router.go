@@ -19,8 +19,7 @@ import (
 
 // Route returns an http handler for the api.
 
-func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler, outlinehundler IOutlineHandler,chapterhandler IChapterHandler) *gin.Engine {
-
+func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandler IOAuthHandler, adminhandler IAdminHandler, userhandler IUserHandler, coursehandler ICourseHandler, articlehandler IArticleHandler, commenthandler ICommentHandler, outlinehundler IOutlineHandler, chapterhandler IChapterHandler) *gin.Engine {
 
 	router := gin.Default()
 
@@ -55,10 +54,10 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.GET("/api/admin/admin_by_firstname/:first_name", rules.Authenticated(), rules.Authorized(), adminhandler.AdminByFirstName)
 
 	router.GET("/api/admin/admin_by_Email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.GetAdminByEmail)
-	
+
 	router.DELETE("/api/admin/admin_by_email/:email", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminByEmail)
 	router.DELETE("/api/admin/admin_by_id/:admin_id", rules.Authenticated(), rules.Authorized(), adminhandler.DeleteAdminById)
-	
+
 	// New Tested
 	router.GET("/api/admins", rules.Authenticated(), rules.Authorized(), adminhandler.GetAllAdmins)
 	// Users Route here
@@ -115,6 +114,9 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.POST("/api/chapter/new", rules.Authenticated(), rules.Authorized(), chapterhandler.CreateChapter)
 	router.GET("/api/chapter", chapterhandler.GetChapterByID)
 	router.PUT("/api/admin/chapter", rules.Authenticated(), rules.Authorized(), chapterhandler.UpdateChapter)
+	router.GET("/api/course/chapters", rules.Authenticated(), rules.Authorized(), chapterhandler.GetChaptersOfACourse)
+	router.GET("/api/course/outline", rules.Authenticated(), rules.Authorized(), chapterhandler.GetCourseOutline)
+	router.DELETE("/api/course/chapter", rules.Authenticated(), rules.Authorized(), chapterhandler.DeleteChapterByID)
 
 	// ----------------------------------------------------------------
 	router.RouterGroup.Use(FilterDirectory())
