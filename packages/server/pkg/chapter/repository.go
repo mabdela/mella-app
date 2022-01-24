@@ -15,4 +15,5 @@ type IChapterRepo interface {
 	UpdateChapter(ctx context.Context) (bool, error)
 	ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int)
 	OutlinedChaptersOfCourse(ctx context.Context) ([]*model.ChapterDetail, error, int)
+	DeleteChapterByID(ctx context.Context) (error, int)
 }

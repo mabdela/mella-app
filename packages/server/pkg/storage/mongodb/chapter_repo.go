@@ -147,7 +147,7 @@ func (repo *ChapterRepo) OutlinedChaptersOfCourse(ctx context.Context) ([]*model
 		eer := rows.Decode(&(chapter.Chapter))
 		articleOverviews := []*model.ArticleOverview{}
 		if eer == nil {
-			// getting the articles
+			// getting the articlesg
 			chapter.Chapter.GetChapterIDFromObjectID()
 			fil := bson.D{{"chapterid", chapter.Chapter.ID}}
 			resu, err := repo.Conn.Collection(state.ARTICLES).Find(ctx, fil)
@@ -170,4 +170,20 @@ func (repo *ChapterRepo) OutlinedChaptersOfCourse(ctx context.Context) ([]*model
 		return chapters, errors.New("not found"), state.NOT_FOUND
 	}
 	return chapters, nil, state.OK
+}
+func (repo *ChapterRepo) DeleteChapterByID(ctx context.Context) (error, int) {
+	chapterID := ctx.Value("chapter_id").(string)
+	oid, er := primitive.ObjectIDFromHex(chapterID)
+	if er != nil {
+		return er, state.INVALID_MONGODB_OBJECT_ID
+	}
+	filter := bson.D{{"_id", oid}}
+	uc, er := repo.Conn.Collection(state.CHAPTER).DeleteOne(ctx, filter)
+	if er != nil || uc.DeletedCount == 0 {
+		if er != nil {
+			return er, state.QUERY_ERROR
+		}
+		return errors.New("no row deleted"), state.NOT_FOUND
+	}
+	return nil, state.OK
 }

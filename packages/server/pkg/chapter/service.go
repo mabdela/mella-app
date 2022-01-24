@@ -23,6 +23,8 @@ type IChapterService interface {
 	ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int)
 	// OutlinedChaptersOfCourse  uses "course_id"
 	OutlinedChaptersOfCourse(ctx context.Context) ([]*model.ChapterDetail, error, int)
+	// DeleteChapterByID uses "chapter_id"  string
+	DeleteChapterByID(ctx context.Context) (bool, int)
 }
 
 // ChapterService ... a chapter service instance service class.
@@ -62,4 +64,8 @@ func (chser *ChapterService) ChaptersOfACourse(ctx context.Context) ([]*model.Ch
 
 func (chser *ChapterService) OutlinedChaptersOfCourse(ctx context.Context) ([]*model.ChapterDetail, error, int) {
 	return chser.Repo.OutlinedChaptersOfCourse(ctx)
+}
+func (chser *ChapterService) DeleteChapterByID(ctx context.Context) (bool, int) {
+	er, val := chser.Repo.DeleteChapterByID(ctx)
+	return er == nil, val
 }

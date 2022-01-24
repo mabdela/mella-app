@@ -322,6 +322,43 @@ func (chah *ChapterHandler) GetCourseOutline(c *gin.Context) {
 }
 
 func (chah *ChapterHandler) DeleteChapterByID(c *gin.Context) {
+	chapterID := c.Query("id")
+	ctx := c.Request.Context()
+	res := &struct {
+		ChapterID string `json:"chapter_id"`
+		Msg       string `json:"msg"`
+	}{}
+	eres := &struct {
+		Error string `json:"error"`
+	}{}
+	if chapterID == "" {
+		eres.Error = "missing query value \"id\""
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	ctx = context.WithValue(ctx, "chapter_id", chapterID)
+	success, scode := chah.Service.DeleteChapterByID(ctx)
+	if scode != state.OK || !success {
+		switch scode {
+		case state.INVALID_MONGODB_OBJECT_ID:
+			{
+				eres.Error = "invalid chapter id"
+			}
+		case state.NOT_FOUND:
+			{
+				eres.Error = "chapter with this id does not exist"
+			}
+		default:
+			{
+				eres.Error = "not deleted"
+			}
+		}
+		c.JSON(http.StatusInternalServerError, eres)
+		return
+	}
+	res.ChapterID = chapterID
+	res.Msg = "successfully deleted"
+	c.JSON(http.StatusOK, res)
 }
 
 func (chah *ChapterHandler) GetArticleOverviewsOfChapter(c *gin.Context) {
