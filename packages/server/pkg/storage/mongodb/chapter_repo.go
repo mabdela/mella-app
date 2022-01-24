@@ -3,9 +3,11 @@ package mongodb
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/mabdela/mella-app/packages/server/pkg/chapter"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/model"
+	"github.com/mabdela/mella-app/packages/server/pkg/constants/model/mongo_models"
 	"github.com/mabdela/mella-app/packages/server/pkg/constants/state"
 	"github.com/mabdela/mella-app/packages/server/platforms/helper"
 	"go.mongodb.org/mongo-driver/bson"
@@ -106,5 +108,66 @@ func (repo *ChapterRepo) UpdateChapter(ctx context.Context) (bool, error) {
 }
 
 func (repo *ChapterRepo) ChaptersOfACourse(ctx context.Context) ([]*model.Chapter, error, int) {
-	return nil, nil, 0
+	courseID := ctx.Value("course_id").(string)
+	filter := bson.D{{"courseid", courseID}}
+	rows, er := repo.Conn.Collection(state.CHAPTER).Find(ctx, filter)
+	if er != nil || rows == nil {
+		if er != nil {
+			return nil, er, state.QUERY_ERROR
+		}
+		return nil, fmt.Errorf("no record was found"), state.NOT_FOUND
+	}
+	chapters := []*model.Chapter{}
+	for rows.Next(ctx) {
+		chapter := &model.Chapter{}
+		eer := rows.Decode(chapter)
+		if eer == nil {
+			chapters = append(chapters, chapter)
+		}
+	}
+	if len(chapters) == 0 {
+		return chapters, errors.New("not found"), state.NOT_FOUND
+	}
+	return chapters, nil, state.OK
+}
+
+func (repo *ChapterRepo) OutlinedChaptersOfCourse(ctx context.Context) ([]*model.ChapterDetail, error, int) {
+	courseID := ctx.Value("course_id").(string)
+	filter := bson.D{{"courseid", courseID}}
+	rows, er := repo.Conn.Collection(state.CHAPTER).Find(ctx, filter)
+	if er != nil || rows == nil {
+		if er != nil {
+			return nil, er, state.QUERY_ERROR
+		}
+		return nil, fmt.Errorf("no record was found"), state.NOT_FOUND
+	}
+	chapters := []*model.ChapterDetail{}
+	for rows.Next(ctx) {
+		chapter := &model.ChapterDetail{}
+		eer := rows.Decode(&(chapter.Chapter))
+		articleOverviews := []*model.ArticleOverview{}
+		if eer == nil {
+			// getting the articles
+			chapter.Chapter.GetChapterIDFromObjectID()
+			fil := bson.D{{"chapterid", chapter.Chapter.ID}}
+			resu, err := repo.Conn.Collection(state.ARTICLES).Find(ctx, fil)
+			if err == nil && resu != nil {
+				for resu.Next(ctx) {
+					arti := &mongo_models.MArticle{}
+					er := resu.Decode(arti)
+					if er == nil {
+						articleOverviews = append(articleOverviews, arti.GetArticle().GetArticleOverview())
+					}
+				}
+				chapter.Articles = articleOverviews
+			} else {
+				chapter.Articles = []*model.ArticleOverview{}
+			}
+			chapters = append(chapters, chapter)
+		}
+	}
+	if len(chapters) == 0 {
+		return chapters, errors.New("not found"), state.NOT_FOUND
+	}
+	return chapters, nil, state.OK
 }

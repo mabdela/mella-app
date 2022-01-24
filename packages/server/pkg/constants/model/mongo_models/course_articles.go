@@ -25,7 +25,7 @@ type (
 		Desc             []string                    `bson:"desc"` // Description
 		Figure           *model.ImageWithDescription `bson:"figure,omitempty"`
 		Subarticles      []*model.SubArticle         `bson:"sub_articles,omitempty"`
-		ChapterID        string                      `json:"chapter_id"`
+		ChapterID        string                      `bson:"chapterid"`
 	}
 )
 

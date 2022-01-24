@@ -107,6 +107,8 @@ func Route(rules middleware.Rules, authenticator auth.Authenticator, oauthHandle
 	router.POST("/api/chapter/new", rules.Authenticated(), rules.Authorized(), chapterhandler.CreateChapter)
 	router.GET("/api/chapter", chapterhandler.GetChapterByID)
 	router.PUT("/api/admin/chapter", rules.Authenticated(), rules.Authorized(), chapterhandler.UpdateChapter)
+	router.GET("/api/course/chapters", rules.Authenticated(), rules.Authorized(), chapterhandler.GetChaptersOfACourse)
+	router.GET("/api/course/outline", rules.Authenticated(), rules.Authorized(), chapterhandler.GetCourseOutline)
 
 	// ----------------------------------------------------------------
 	router.RouterGroup.Use(FilterDirectory())

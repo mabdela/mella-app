@@ -19,9 +19,9 @@ type IChapterHandler interface {
 	CreateChapter(c *gin.Context)
 	GetChapterByID(c *gin.Context)
 	UpdateChapter(c *gin.Context)
-	// ------------------------------------------
 	GetChaptersOfACourse(c *gin.Context)
 	GetCourseOutline(c *gin.Context)
+	// ------------------------------------------
 	DeleteChapterByID(c *gin.Context)
 	GetArticleOverviewsOfChapter(c *gin.Context)
 	CountArticlesOfChapter(c *gin.Context)
@@ -232,31 +232,93 @@ func (chah *ChapterHandler) UpdateChapter(c *gin.Context) {
 
 func (chah *ChapterHandler) GetChaptersOfACourse(c *gin.Context) {
 	ctx := c.Request.Context()
-	courseID := c.Query("id")
+	courseID := c.Query("course_id")
+	// outline, er := strconv.ParseBool(c.Query("outline"))
+	// if er != nil {
+	// 	outline = false
+	// }
 	eres := &struct {
 		Error string `json:"error"`
 	}{}
 	res := &struct {
-		Msg      string           `json:"msg"`
+		CourseID string           `json:"course_id"`
 		Chapters []*model.Chapter `json:"chapters"`
 	}{}
 	if courseID == "" {
-		eres.Error = "bad course id value"
+		eres.Error = "\"course_id\" parameter value is missing"
 		c.JSON(http.StatusBadRequest, eres)
 		return
 	}
+	var chapters []*model.Chapter
+	var stcode int
+	var er error
 
 	ctx = context.WithValue(ctx, "course_id", courseID)
-	chapters, er, stcode := chah.Service.ChaptersOfACourse(ctx)
-	if er != nil || stcode == state.NOT_FOUND || stcode == state.INVALID_MONGODB_OBJECT_ID {
-
+	// if outline {
+	// 	chapter, er, stcode = chah.Service.OutlinedChaptersOfCourse(ctx)
+	// } else {
+	chapters, er, stcode = chah.Service.ChaptersOfACourse(ctx)
+	// }
+	if er != nil || stcode != state.OK {
+		if stcode == state.NOT_FOUND {
+			eres.Error = "not record found"
+			c.JSON(http.StatusNotFound, eres)
+			return
+		} else if stcode == state.QUERY_ERROR {
+			log.Println("Chapter Handler : 257 :: Query error ")
+			eres.Error = " Internal problem!"
+			c.JSON(http.StatusInternalServerError, eres)
+			return
+		} else {
+			eres.Error = "problem happened"
+			c.JSON(http.StatusInternalServerError, eres)
+			return
+		}
 	}
-	val, _ := json.Marshal(ctx)
-	vlas, _ := json.Marshal(in)
-	println(string(val), string(vlas))
-
+	res.CourseID = courseID
+	res.Chapters = chapters
+	c.JSON(http.StatusOK, res)
 }
 func (chah *ChapterHandler) GetCourseOutline(c *gin.Context) {
+	ctx := c.Request.Context()
+	courseID := c.Query("course_id")
+	eres := &struct {
+		Error string `json:"error"`
+	}{}
+	res := &struct {
+		CourseID string                 `json:"course_id"`
+		Chapters []*model.ChapterDetail `json:"chapter_details"`
+	}{}
+	if courseID == "" {
+		eres.Error = "\"course_id\" parameter value is missing"
+		c.JSON(http.StatusBadRequest, eres)
+		return
+	}
+	var chapters []*model.ChapterDetail
+	var stcode int
+	var er error
+
+	ctx = context.WithValue(ctx, "course_id", courseID)
+	chapters, er, stcode = chah.Service.OutlinedChaptersOfCourse(ctx)
+	if er != nil || stcode != state.OK {
+		if stcode == state.NOT_FOUND {
+			eres.Error = "not record found"
+			c.JSON(http.StatusNotFound, eres)
+			return
+		} else if stcode == state.QUERY_ERROR {
+			log.Println("Chapter Handler : 257 :: Query error ")
+			eres.Error = " Internal problem!"
+			c.JSON(http.StatusInternalServerError, eres)
+			return
+		} else {
+			eres.Error = "problem happened"
+			c.JSON(http.StatusInternalServerError, eres)
+			return
+		}
+	}
+	res.CourseID = courseID
+	res.Chapters = chapters
+	c.JSON(http.StatusOK, res)
 }
 
 func (chah *ChapterHandler) DeleteChapterByID(c *gin.Context) {
