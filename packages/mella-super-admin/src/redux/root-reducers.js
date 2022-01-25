@@ -6,6 +6,7 @@ import userReducer from './users/user-reducer';
 import { persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage'; // local storage
 import courseReducer from './course/course-reducer';
+import chapterReducer from './chapter/chapter-reducer';
 
 const persistConfig = {
   key: 'auth',
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   users: userReducer,
   course: courseReducer,
+  chapter: chapterReducer,
   errors: errorReducer,
 });
 

@@ -19,7 +19,6 @@ const AdminList = () => {
   const loading = useSelector(state => state.users.loading);
   const message = useSelector(state => state.users.message);
   const error = useSelector(state => state.errors.message);
-  const token = useSelector(state => state.auth.token);
 
   const [open, setOpen] = useState(false);
   const [id, setId] = useState('');
@@ -49,8 +48,8 @@ const AdminList = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    dispatch(getAdminRequest(token));
-  }, [dispatch, token]);
+    dispatch(getAdminRequest());
+  }, [dispatch]);
 
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>

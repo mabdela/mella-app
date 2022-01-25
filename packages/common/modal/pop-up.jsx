@@ -14,6 +14,7 @@ const PopUp = ({
   deleteCourse,
   deleteQuiz,
   question,
+  deleteChapter,
 }) => {
   const location = useLocation();
 
@@ -80,6 +81,8 @@ const PopUp = ({
                     ? deleteQuiz
                     : location.pathname === '/admin/course-list'
                     ? deleteCourse
+                    : location.pathname === '/admin/chapter-list'
+                    ? deleteChapter
                     : undefined
                 }
                 // variant="contained"

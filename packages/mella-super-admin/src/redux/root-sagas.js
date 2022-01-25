@@ -2,6 +2,12 @@ import { all, takeLatest } from 'redux-saga/effects';
 import { loginSuperAdminSaga, logoutSuperAdminSaga } from './auth/auth-sagas';
 import { authActionType } from './auth/auth-types';
 import {
+  chapterDeleteSaga,
+  chapterListSaga,
+  createChapterSaga,
+} from './chapter/chapter-sagas';
+import { chapterTypes } from './chapter/chapter-types';
+import {
   createCourseSaga,
   deleteCourseSaga,
   listCourseSaga,
@@ -36,6 +42,11 @@ function* rootSaga() {
     takeLatest(adminCourseTypes.DELETING_COURSE, deleteCourseSaga),
     takeLatest(adminCourseTypes.UPDATING_COURSE, updateCourseSaga),
     takeLatest(adminCourseTypes.LISTING_COURSE, listCourseSaga),
+
+    // chapter
+    takeLatest(chapterTypes.CREATING_CHAPTER, createChapterSaga),
+    takeLatest(chapterTypes.LISTING_CHAPTER, chapterListSaga),
+    takeLatest(chapterTypes.DELETING_CHAPTER, chapterDeleteSaga),
   ]);
 }
 

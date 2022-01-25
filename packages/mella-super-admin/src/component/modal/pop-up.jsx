@@ -3,6 +3,7 @@ import { useDispatch } from 'react-redux';
 import CommonPopUp from '@mono-repo/common/modal/pop-up';
 import { deleteAdminRequest } from 'src/redux/users/user-action';
 import { deleteCourseRequest } from 'src/redux/course/course-action';
+import { deleteChapterRequest } from 'src/redux/chapter/chapter-action';
 
 const PopUp = ({ open, handleClose, id, firstname, lastname }) => {
   const dispatch = useDispatch();
@@ -17,6 +18,12 @@ const PopUp = ({ open, handleClose, id, firstname, lastname }) => {
     dispatch(deleteCourseRequest(id));
     handleClose();
   };
+
+  // delete chapter
+  const deleteChapter = () => {
+    dispatch(deleteChapterRequest(id));
+    handleClose();
+  };
   return (
     <>
       <CommonPopUp
@@ -26,6 +33,7 @@ const PopUp = ({ open, handleClose, id, firstname, lastname }) => {
         lastname={lastname}
         deleteAdmin={deleteAdmin}
         deleteCourse={deleteCourse}
+        deleteChapter={deleteChapter}
       />
     </>
   );

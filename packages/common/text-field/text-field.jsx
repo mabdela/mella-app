@@ -17,7 +17,7 @@ const textfield = ({
   needBoxMargin,
 }) => {
   return (
-    <Box sx={needBoxMargin ? { mb: 2 } : { mb: 0 }}>
+    <Box sx={needBoxMargin ? { mb: 2 } : { mb: 0 }} width="100%">
       <TextField
         sx={needmargin ? { mb: 2 } : { mb: 0 }}
         error={isError}

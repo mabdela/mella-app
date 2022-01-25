@@ -125,7 +125,7 @@ const QuizAdd = () => {
   return (
     <Box
       className={classes.container}
-      sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
+      sx={{ width: { sm: '500px', md: '550px' }, mb: 3 }}
     >
       {successMessage && (
         <CommonAlert

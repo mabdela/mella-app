@@ -123,7 +123,7 @@ const UserUpdatePassword = () => {
         component="div"
         sx={{
           textAlign: { xs: 'start' },
-          width: { sm: '500px', md: '550px', xl: '800px' },
+          width: { sm: '500px', md: '550px' },
           m: '60px auto 20px',
         }}
       >
@@ -131,7 +131,7 @@ const UserUpdatePassword = () => {
       </Typography>
       <Box
         className={classes.container}
-        sx={{ width: { sm: '500px', md: '550px', xl: '800px' }, mb: 3 }}
+        sx={{ width: { sm: '500px', md: '550px' }, mb: 3 }}
       >
         <div className={classes.wrapper}>
           <form onSubmit={handleSubmit}>

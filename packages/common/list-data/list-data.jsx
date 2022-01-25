@@ -21,7 +21,7 @@ const ListData = ({ data, handleEdit, handleDelete, edit }) => {
       mr={'auto'}
       mb={3}
       className={classes.container}
-      sx={{ width: { sm: '500px', md: '550px', xl: '800px' } }}
+      sx={{ width: { sm: '500px', md: '550px' } }}
     >
       <div className={classes.wrapper}>
         <Box

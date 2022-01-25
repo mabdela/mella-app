@@ -25,7 +25,7 @@ export function* addSuperAdminSaga(action) {
   }
 }
 
-export function* getSuperAdminSaga(action) {
+export function* getSuperAdminSaga() {
   try {
     yield put({ type: userActionTypes.SET_SUPER_ADMIN_LOADING });
 
@@ -33,8 +33,7 @@ export function* getSuperAdminSaga(action) {
       apiData,
       `${process.env.REACT_APP_GET_ADMINS}`,
       null,
-      'GET',
-      action.payload
+      'GET'
     );
 
     yield put(getAdmin(admins));

@@ -71,6 +71,46 @@ const NavDrawer = () => {
           </NavLink>
         ))}
       </List>
+
+      <Divider />
+      <Typography variant="h6" sx={{ color: '#000', p: '15px', m: 0 }}>
+        Chapter
+      </Typography>
+      <Divider />
+      <List>
+        {navdata.chapterNavOptions.map(admin => (
+          <NavLink
+            className={classes.link}
+            to={`/admin/${admin.link}`}
+            key={admin.primary}
+          >
+            <ListItem button key={admin.primary}>
+              <ListItemIcon>{admin.icon}</ListItemIcon>
+              <ListItemText primary={admin.primary} />
+            </ListItem>
+          </NavLink>
+        ))}
+      </List>
+
+      <Divider />
+      <Typography variant="h6" sx={{ color: '#000', p: '15px', m: 0 }}>
+        Article
+      </Typography>
+      <Divider />
+      <List>
+        {navdata.articleNavOptions.map(admin => (
+          <NavLink
+            className={classes.link}
+            to={`/admin/${admin.link}`}
+            key={admin.primary}
+          >
+            <ListItem button key={admin.primary}>
+              <ListItemIcon>{admin.icon}</ListItemIcon>
+              <ListItemText primary={admin.primary} />
+            </ListItem>
+          </NavLink>
+        ))}
+      </List>
     </Box>
   );
 };
