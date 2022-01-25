@@ -9,7 +9,7 @@ const title = ({ text }) => {
       component="div"
       sx={{
         textAlign: { xs: 'start' },
-        width: { sm: '500px', md: '550px', xl: '800px' },
+        width: { sm: '500px', md: '550px' },
         m: '60px auto 20px',
       }}
     >

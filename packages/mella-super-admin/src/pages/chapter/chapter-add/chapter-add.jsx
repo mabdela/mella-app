@@ -1,22 +1,25 @@
-import React, { useState, useEffect } from 'react';
-import CourseValidation from '@mono-repo/common/input-validation/course-validation';
+import CommonAlert from '@mono-repo/common/alert/alert';
+import CommonButton from '@mono-repo/common/button/button';
+import ChapterValidation from '@mono-repo/common/input-validation/chapter-validation';
+import CommonInput from '@mono-repo/common/text-field/text-field';
+import CommonTitle from '@mono-repo/common/title/title';
 import {
   //  Button,
   Box,
-  // Alert,
+  MenuItem,
+  TextField,
 } from '@mui/material';
 import { makeStyles } from '@mui/styles';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import CommonInput from '@mono-repo/common/text-field/text-field';
-import CommonButton from '@mono-repo/common/button/button';
-import CommonAlert from '@mono-repo/common/alert/alert';
-import CommonTitle from '@mono-repo/common/title/title';
-import { removeAdmin, removeAdmins } from 'src/redux/users/user-action';
-import { removeErrors } from 'src/redux/error/error-actions';
 import {
-  createCourseRequest,
+  createChapterRequest,
+  removeChapter,
   removeMessage,
-} from 'src/redux/course/course-action';
+} from 'src/redux/chapter/chapter-action';
+import { listCourseRequest } from 'src/redux/course/course-action';
+import { removeErrors } from 'src/redux/error/error-actions';
+import { removeAdmin, removeAdmins } from 'src/redux/users/user-action';
 
 const useStyles = makeStyles(() => ({
   container: {
@@ -32,51 +35,45 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-const CourseAdd = () => {
+const ChapterAdd = () => {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const successMessage = useSelector(state => state.course.message);
-  const user = useSelector(state => state.auth.auth.first_name);
+  const successMessage = useSelector(state => state.chapter.message);
   const errorMessage = useSelector(state => state.errors.message);
-  const token = useSelector(state => state.auth.token);
+  const courses = useSelector(state => state.course.courses);
 
-  const [courseData, setCourseData] = useState({
+  const [chapterData, setChapterData] = useState({
     title: '',
-    translated_title: '',
-    imgurl: '',
-    article_count: '',
-    created_by: user,
+    course_id: '',
+    articles_count: '',
   });
   const [errors, setErrors] = useState({});
   const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
-    dispatch(removeAdmins());
-    dispatch(removeAdmin());
+    dispatch(listCourseRequest());
   }, [dispatch]);
 
   useEffect(() => {
-    const { title, translated_title, imgurl, article_count, created_by } =
-      courseData;
-    const articles = parseInt(article_count);
+    dispatch(removeAdmins());
+    dispatch(removeAdmin());
+    dispatch(removeChapter());
+  }, [dispatch]);
+
+  useEffect(() => {
+    const { title, course_id, articles_count } = chapterData;
     if (Object.values(errors).length === 0 && isSubmitted) {
       dispatch(
-        createCourseRequest({
-          data: {
-            title,
-            translated_title,
-            imgurl,
-            article_count: articles,
-            created_by,
-          },
-          token: token,
+        createChapterRequest({
+          title,
+          course_id,
+          articles_count: parseInt(articles_count),
         })
       );
-      setCourseData({
+      setChapterData({
         title: '',
-        translated_title: '',
-        imgurl: '',
-        article_count: '',
+        course_id: '',
+        articles_count: '',
       });
     }
   }, [errors, isSubmitted, dispatch]);
@@ -84,12 +81,12 @@ const CourseAdd = () => {
   const handleChange = e => {
     const { name, value } = e.target;
 
-    setCourseData({ ...courseData, [name]: value });
+    setChapterData({ ...chapterData, [name]: value });
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    setErrors(CourseValidation(courseData));
+    setErrors(ChapterValidation(chapterData));
     setIsSubmitted(true);
   };
 
@@ -101,11 +98,10 @@ const CourseAdd = () => {
     dispatch(removeErrors());
   };
 
-  const { title, translated_title, imgurl, article_count } = courseData;
+  const { title, articles_count, course_id } = chapterData;
   return (
     <Box sx={{ p: { xs: 1, md: 2 } }}>
-      <CommonTitle text="Add Course" />
-      {/* <UserList /> */}
+      <CommonTitle text="Add Chapter" />
 
       <Box
         className={classes.container}
@@ -129,6 +125,23 @@ const CourseAdd = () => {
         )}
         <div className={classes.wrapper}>
           <form onSubmit={handleSubmit}>
+            <TextField
+              select
+              name="course_id"
+              label="Select Course"
+              value={course_id}
+              onChange={handleChange}
+              helperText="Please select Course"
+              fullWidth
+              margin="normal"
+            >
+              {courses.map(option => (
+                <MenuItem key={option.id} value={option.id}>
+                  {option.title}
+                </MenuItem>
+              ))}
+            </TextField>
+
             <CommonInput
               isError={errors.title ? true : false}
               label="Title"
@@ -140,39 +153,18 @@ const CourseAdd = () => {
               needBoxMargin
             />
             <CommonInput
-              isError={errors.translated_title ? true : false}
-              label="Translated Title"
-              type="text"
-              name="translated_title"
-              value={translated_title}
-              onChange={handleChange}
-              error={errors.translated_title}
-              needBoxMargin
-            />
-
-            <CommonInput
-              isError={errors.imgurl ? true : false}
-              label="Image URL"
-              type="text"
-              name="imgurl"
-              value={imgurl}
-              onChange={handleChange}
-              error={errors.imgurl}
-              needBoxMargin
-            />
-            <CommonInput
-              isError={errors.article_count ? true : false}
+              isError={errors.articles_count ? true : false}
               label="Article Count"
               type="text"
-              name="article_count"
-              value={article_count}
+              name="articles_count"
+              value={articles_count}
               onChange={handleChange}
-              error={errors.article_count}
+              error={errors.articles_count}
               needBoxMargin
             />
           </form>
           <CommonButton
-            text="Add Course"
+            text="Add Chapter"
             isFilled={true}
             click={handleSubmit}
             center
@@ -183,4 +175,4 @@ const CourseAdd = () => {
   );
 };
 
-export default CourseAdd;
+export default ChapterAdd;

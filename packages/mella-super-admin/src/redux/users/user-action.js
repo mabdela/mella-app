@@ -61,9 +61,8 @@ export const searchAdminByEmailRequest = email => ({
   payload: email,
 });
 
-export const getAdminRequest = token => ({
+export const getAdminRequest = () => ({
   type: userActionTypes.GETING_ADMIN,
-  payload: token,
 });
 
 export const deleteAdminRequest = id => ({

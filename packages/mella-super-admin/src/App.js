@@ -10,6 +10,9 @@ import Navigation from './component/navigation/navigation';
 import AdminAdd from './pages/admin-page/admin-add/admin-add';
 import AdminList from './pages/admin-page/admin-list/admin-list';
 import AdminSearch from './pages/admin-page/admin-search/admin-search';
+import ArticleAdd from './pages/article/article-add/article-add';
+import ChapterAdd from './pages/chapter/chapter-add/chapter-add';
+import ChapterList from './pages/chapter/chapter-list/chapter-list';
 import CourseAdd from './pages/course/course-add/course-add';
 import CourseList from './pages/course/course-list/course-list';
 import SignIn from './pages/sign-in/sign-in';
@@ -56,6 +59,22 @@ function App() {
               exact
               path="/admin/course-list"
               component={() => (!user ? <Redirect to="/" /> : <CourseList />)}
+            />
+            <Route
+              exact
+              path="/admin/add-chapter"
+              component={() => (!user ? <Redirect to="/" /> : <ChapterAdd />)}
+            />
+
+            <Route
+              exact
+              path="/admin/chapter-list"
+              component={() => (!user ? <Redirect to="/" /> : <ChapterList />)}
+            />
+            <Route
+              exact
+              path="/admin/add-article"
+              component={() => (!user ? <Redirect to="/" /> : <ArticleAdd />)}
             />
           </Switch>
         </Box>

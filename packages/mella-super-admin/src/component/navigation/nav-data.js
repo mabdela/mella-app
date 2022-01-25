@@ -34,6 +34,26 @@ const navdata = {
       icon: <FormatListBulleted />,
     },
   ],
+  chapterNavOptions: [
+    {
+      link: 'add-chapter',
+      primary: 'Add Chapter',
+      icon: <AddCircleOutline />,
+    },
+    {
+      link: 'chapter-list',
+      primary: 'Chapter List',
+      icon: <FormatListBulleted />,
+    },
+  ],
+
+  articleNavOptions: [
+    {
+      link: 'add-article',
+      primary: 'Add Article',
+      icon: <AddCircleOutline />,
+    },
+  ],
 };
 
 export default navdata;

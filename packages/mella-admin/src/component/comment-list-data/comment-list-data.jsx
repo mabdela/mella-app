@@ -19,7 +19,7 @@ const CommentList = ({ comment, handleDelete }) => {
     <Box
       className={classes.container}
       key={comment.comment_id}
-      sx={{ mb: 2, width: { sm: '500px', md: '550px', xl: '800px' } }}
+      sx={{ mb: 2, width: { sm: '500px', md: '550px' } }}
     >
       <div
         style={{
